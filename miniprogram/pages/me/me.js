@@ -15,7 +15,6 @@ Page({
 			})
 			return;
 		}
-
 		// 获取用户信息
 		wx.getSetting({
 			success: res => {
@@ -31,7 +30,8 @@ Page({
 					})
 				}
 			}
-		})
+		});
+		wx.stopPullDownRefresh();
 	},
 
 	onGetUserInfo: function(e) {
@@ -120,7 +120,8 @@ Page({
 	},
 
 	onPullDownRefresh: function() {
-		console.log('me')
+		console.log('me');
+		this.onLoad();
 	},
 
 	onScan: function() {
@@ -129,5 +130,9 @@ Page({
 				console.log(res.result);
 			}
 		})
+	},
+
+	gotoUserDetail: function() {
+		console.log('userdetail');
 	}
 })

@@ -6,7 +6,11 @@
       class="userinfo-avatar"
       style="background-image: url({{avatarUrl}})"
     ></button>
-		<span>{{userInfo.nickName}}</span>
+		<view class="user-detail-container">
+			<view class="user-name">{{userInfo.nickName}}</view>
+			<view class="user-info-button" bindtap="gotoUserDetail"><span>个人信息</span><i class="jiantou iconfont iconarrow-right"></i></view>
+		</view>
+		
     <!-- <view>
       <button class="userinfo-nickname" bindtap="onGetOpenid">点击获取 openid</button>
     </view> -->

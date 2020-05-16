@@ -6,7 +6,7 @@ page {
 }
 .userinfo, .uploader {
   margin-top: 40rpx;
-  height: 140rpx;
+  height: 160rpx;
   width: 100%;
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -16,15 +16,34 @@ page {
   align-items: center;
   transition: all 300ms ease;
 }
-
 .userinfo {
 	margin-top: 0;
 }
-
+.user-detail-container {
+  width: 160rpx;
+  overflow: hidden;
+}
+.user-name {
+  font-size: 36rpx;
+}
+.user-info-button {
+	padding: 6rpx 0;
+	background-color: #ccc;
+	font-size: 24rpx;
+	border-radius: 10px;
+	width: 100%;
+	height: 20rpx;
+	line-height: 20rpx;
+	text-align: center;
+	color: #999;
+}
 .scan {
   margin: 0 40rpx 0 auto;
 }
-
+.jiantou {
+  font-size: 24rpx;
+  marin-left: 6rpx;
+}
 .userinfo-avatar {
   width: 100rpx;
   height: 100rpx;
@@ -33,34 +52,28 @@ page {
   background-size: cover;
   background-color: white;
 }
-
 .userinfo-avatar:after {
   border: none;
 }
-
 .userinfo-nickname {
   font-size: 32rpx;
   color: #007aff;
   background-color: white;
   background-size: cover;
 }
-
 .userinfo-nickname::after {
   border: none;
 }
-
 .uploader {
   height: auto;
   box-sizing: border-box;
 }
-
 .uploader-text {
   width: 100%;
   line-height: 52px;
   font-size: 34rpx;
   color: #007aff;
 }
-
 .uploader-container {
   width: 100%;
   height: 400rpx;
@@ -71,7 +84,6 @@ page {
   box-sizing: border-box;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
-
 .uploader-image {
   width: 100%;
   height: 360rpx;
