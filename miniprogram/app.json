@@ -1,21 +1,21 @@
-  {
-  "pages": [
-    "pages/index/index",
-	  "pages/chat/chat",
-	  "pages/me/me",
-    "pages/userConsole/userConsole",
-    "pages/storageConsole/storageConsole",
-    "pages/databaseGuide/databaseGuide",
-    "pages/addFunction/addFunction",
-    "pages/deployFunctions/deployFunctions",
-    "pages/chooseLib/chooseLib",
-    "pages/openapi/openapi",
-    "pages/openapi/serverapi/serverapi",
-    "pages/openapi/callback/callback",
-    "pages/openapi/cloudid/cloudid",
-    "pages/im/im",
-    "pages/im/room/room"
-  ],
+{
+    "pages": [
+        "pages/index/index",
+	    "pages/chat/chat",
+	    "pages/me/me",
+        "pages/userConsole/userConsole",
+        "pages/storageConsole/storageConsole",
+        "pages/databaseGuide/databaseGuide",
+        "pages/addFunction/addFunction",
+        "pages/deployFunctions/deployFunctions",
+        "pages/chooseLib/chooseLib",
+        "pages/openapi/openapi",
+        "pages/openapi/serverapi/serverapi",
+        "pages/openapi/callback/callback",
+        "pages/openapi/cloudid/cloudid",
+        "pages/im/im",
+        "pages/im/room/room"
+    ],
 	"tabBar": {
 		"color": "#7A7E83",
 		"selectedColor": "#ff9966",
@@ -42,16 +42,18 @@
 			}
 		]
 	},
-  "window": {
-    "backgroundColor": "#ff9966",
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#ff9966",
-    "navigationBarTitleText": "校园宝",
-    "navigationBarTextStyle": "white",
-		"enablePullDownRefresh": true
-  },
-  "sitemapLocation": "sitemap.json",
+    "window": {
+        "backgroundColor": "#ff9966",
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#ff9966",
+        "navigationBarTitleText": "校园宝",
+        "navigationBarTextStyle": "white",
+    	"enablePullDownRefresh": true
+    },
+    "sitemapLocation": "sitemap.json",
 	"networkTimeout": {
-		"request": 3000
-	}
+        "request": 5000,
+        "uploadFile": 15000,
+        "downloadFile": 15000
+    }
 }

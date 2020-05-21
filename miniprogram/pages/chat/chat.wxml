@@ -1,1 +1,7 @@
-<view>你好</view>
+<view>
+    <view wx:for="{{chatList}}">
+        <image class="" src="" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
+            
+        </image>
+    </view>
+</view>
