@@ -1,4 +1,4 @@
-<!-- 用户 openid -->
+<!-- 用户信息 -->
   <view class="userinfo">
     <button
       open-type="getUserInfo"
@@ -8,15 +8,20 @@
     ></button>
 		<view class="user-detail-container">
 			<view class="user-name">{{userInfo.nickName}}</view>
-			<view class="user-info-button" bindtap="gotoUserDetail"><span>个人信息</span><i class="jiantou iconfont iconarrow-right"></i></view>
+			<view
+        class="user-info-button"
+        bindtap="gotoUserDetail"
+      >
+      <span>个人信息</span>
+      <i class="jiantou iconfont iconarrow-right"></i>
+      </view>
 		</view>
-		
     <!-- <view>
       <button class="userinfo-nickname" bindtap="onGetOpenid">点击获取 openid</button>
     </view> -->
+    <!-- 扫一扫 -->
     <i class="scan iconfont iconsaoyisao" bindtap="onScan"></i>
   </view>
-
   <!-- 上传图片 -->
   <view class="uploader">
     <view class="uploader-text" bindtap="doUpload">

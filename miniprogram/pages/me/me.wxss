@@ -25,6 +25,7 @@ page {
 }
 .user-name {
   font-size: 36rpx;
+  height: 25px;
 }
 .user-info-button {
 	padding: 6rpx 0;
@@ -42,7 +43,7 @@ page {
 }
 .jiantou {
   font-size: 24rpx;
-  marin-left: 6rpx;
+  margin-left: 6rpx;
 }
 .userinfo-avatar {
   width: 100rpx;

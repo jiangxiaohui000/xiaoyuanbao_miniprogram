@@ -1,0 +1,36 @@
+/* 每一条聊天记录 */
+.chat-item {
+	padding: 20rpx 40rpx;
+	height: 100rpx;
+	width: 100%;
+	border-bottom: 1rpx solid #666;
+}
+
+/* 头像 */
+.head-portrait {
+	width: 100rpx;
+	height: 100rpx;
+	margin-right: 20rpx;
+	border-radius: 50%;
+	vertical-align: top;
+	float: left;
+}
+
+.chat-name,
+.chat-info {
+	width: calc(100% - 180rpx);
+	float: left;
+}
+
+.chat-name {
+	font-weight: bold;
+	font-size: 30rpx;
+}
+
+.chat-info {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 24rpx;
+	margin-top: 20rpx;
+}

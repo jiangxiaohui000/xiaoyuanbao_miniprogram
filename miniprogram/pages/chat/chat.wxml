@@ -1,7 +1,19 @@
 <view>
-    <view wx:for="{{chatList}}">
-        <image class="" src="" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
-            
-        </image>
-    </view>
+  <view
+    wx:for="{{chatList}}"
+    wx:key="id"
+    class="chat-item"
+  >
+    <image
+      class="head-portrait"
+      src="{{item.img}}"
+      mode="center"
+      lazy-load="false"
+      binderror=""
+      bindload=""
+    >
+    </image>
+    <view class="chat-name">{{item.name}}</view>
+    <view class="chat-info">{{item.info}}</view>
+  </view>
 </view>
