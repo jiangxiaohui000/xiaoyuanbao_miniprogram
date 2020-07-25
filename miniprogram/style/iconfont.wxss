@@ -1,25 +1,45 @@
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1589613200544'); /* IE9 */
-  src: url('iconfont.eot?t=1589613200544#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAMkAAsAAAAABvAAAALWAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDBgqBUIFXATYCJAMMCwgABCAFhG0HQBsnBiMRZmOQJ/tnQjYHtq5NVtaGmD3oy23JRe10Ssnx+ZmZNia+iSDaj9/s3T354pLEMalEsVBIhE6G1AiRkAhFm2gkP7C1DfYBPWswR6v/u6Y/bi83IEkZUUmNoYCbLf2kV0qXy9iJkpBzmwSWhecHwkwOJnIBYyBtB6D/z+X0RgEFMj9QTnMNO+oFGAcU6JiTrEAC8oaxC17gZgK9Fu2LO7vuMIzC7hWIl6aIwRS8isISrVA3TCzEW5U2/fSJN9H344+DaJFUGXvgA76ThPtb35v8OnkaIHwEOL1Cxj4K8bwx+hAUjJL1StOdWStCWirQdURcQ14f9I+XiBo7vx9sw1jie3gSkayBUySQQQ3iF3iEyePhUNXHfmoK3fgxGRA3lFQau5QY9XrkkjYax8SAcn3HSFPSbJ4YQB9r7KrN/NIcaXx4rXbdBcO9oeG7pBCJ+2oR1ob7NkqwsQ7FjaIbkJOjyS97yU0Qibu0CZB1U6nbHVeRI+RuKG1UMmwP9uJmcQJbXU3ciPOurr8Nwp8ogO79Pa/R5b+ncMqfHM/9WHzRsfy/NQJ8/Ha7yN0VGGZHewu24JfyBtYUQ2DrctG4HtdKZEeqG9boNRw6bOeor9PlE4PDhLbAY5A0FiBrraOFvA+VPkdQa12HXnvuT+8z5hUoyoJdrwGEYe8gGfQesmEf0EL+ApVJ/6A2HBleoHAcPQsaMB4m3VIY05hk8StmJmSeuwZN48IgirNsTOUFEfUYlWUGmNPmKCf2MI9qiSHWuXBpzRlXMsd2wXaYzUpWUDKNCW1LaV1YtNt505tsCZkDClsUFKOhJCbuCmNKkPJ40Fijlc8HIeFMVozqINRZjyHFYrbOONk4BqB70vwgwqNcYzknuGgax3CKlMPsAjPKOlGJKTS3S0MJmk1qQrhgkR3V40Oltu3luf/bBGywj5B0WcGIKSUv5pQpUrrFiskr09cAAAAA') format('woff2'),
-  url('iconfont.woff?t=1589613200544') format('woff'),
-  url('iconfont.ttf?t=1589613200544') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
-  url('iconfont.svg?t=1589613200544#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1595675710418'); /* IE9 */
+  src: url('iconfont.eot?t=1595675710418#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAATAAAsAAAAACSwAAAR0AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDSAqFDIQ4ATYCJAMYCw4ABCAFhG0HaRv/BxEVpBuQfVlgu9Gmxa6b0xGLt3Z9tkBAARTk+luSithci+gsOpjPB8HzaPf9uUkmw90PiBUoVe6eQeNq9vCiE9QgJUhoYChfFQCD55a82YRGFA89RYm2SJXwQY6Wae41su/y99cSmhfJvCW/Zfnpe/1pL7dypGFMoRFmKYzAYQWapxdw3JYVUBAllcU/+g908x9cTn9i4PMsy+VXYw0aY1AYYBxQYGNMWyABFwhmkoJ4Lp3o4zgECEiPvJCqJ9bO8DAY4wSQvhQWAC9lwdSUCh6CLVlqkDlw8NRUygXM9r8v3ylMPFA4GmNqw1CrYFT8Isbr/D+nrYuAG88FcKtAA3kBBmREqWcQdBjPC02g9DbUBkR4KMxYn3DFyfopN/anFEZAiMxCMDioEX88sRBNBLJuwoFPxJbAwCdGtkzLDhMKWjmY0NDmQnZbBjtiQwhcBDI6d6/5AAqxqxybbTthThsZ9zFd3u+e+9xCHj1yXXaqZE3o7s6ZLWeAMan4l8rXs7Lpgo2D1hatBK6aSW1PKbg2bzmm0Lck5AzafVxTt7BL06aVwsOH2qJZf3hcruZuo6tT+dwV2ZXXlujwLburbnZSjEgPvo0k/xZpHS0dzpLj4+G9y+NHtxS5YPYoKzQofTbGDHdCgh3CUllk3UMHEtaah7D0qA5Z+7DC3gtpnB0SXHggNbQqevmxrISD/pOUREg4aEinDpzbf5+k2tBRpK0pPefliYUvEP/td4hK/8OV5+qyVp40+tWo3daHU8lWVKQwuVHz2Ofc/uKxVaULiecaLdvUweXqPZYPdx/jb1C+m2dPL52+u1UXiG5Bq7j6tOQGvkap2FHqUyOscrVtSn1rJJLLbUVSUjrxzY4FCcik3K1443XCV99sV1lVlUikEuWzhkYEFN6AB0qirTzH+QDJVvlFSOqUeSU4CwtaXd+JCjJpK62hkilWV5rqgm6hpM72u+Yaa9gNSd2vyjMVTbEmsXVQJwpDrbGmUi4n/67mavOpBy3dKhpDjHQS/ar0nQaA2LN+mP7/788zVI9hemcZoEf3iD0pOipZrm99/a85j7c1/8ePs+yftzQAPDcvZuzT/Yks9qvX0pr7j5hoUoP8KFS5YbVGVlOriGX9irCUhPMaXRCYAYiRQGK8GsuQ7GUnBY9kMShc0oHGIytqyLzgEFJUZWmyAgTkQY3VIUnQDxoxPpAbEwFCQuwGRTynQZMQN1FDvgSH5PiptOARDQHNSZItQ7ITFS0OBY3iBvIHIMuts+y6CErP0N/URpJyn3+FEigEaZRkU6fYoowxI9z6TNWBE27ghDoN65qhEy7RalSodus4dmUviiw3vQWHgkZxA/kDkOXWue11kfv8Gfqb2khNU0X6CiVQ95BGSQv0VNO2arqW3uHWZ6qOHuWEGziBC2szztCVDyrRalT0iHbrmLRybTXR/LrmKXcAAcZ2VpRoMeKIFZfVEFJuvWs0bEdXluv6dOlrue0gn4XCtL6jdmlE+O5AyBc6C4YfyDH3eg==') format('woff2'),
+  url('iconfont.woff?t=1595675710418') format('woff'),
+  url('iconfont.ttf?t=1595675710418') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1595675710418#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
   font-family: "iconfont" !important;
-  font-size: 34rpx;
+  /* font-size: 34rpx; */
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.iconarrow-right:before {
+.icon-xitongxiaoxi:before {
+  content: "\e683";
+  font-size: 80rpx;
+  color: #ff9966;
+  margin-right: 22rpx;
+}
+
+.icon-collection-b:before {
+  content: "\e60d";
+  font-size: 60rpx;
+  color: #ff9966;
+}
+
+.icon-shangpin:before {
+  content: "\e624";
+  font-size: 60rpx;
+  color: #ff9966;
+}
+
+.icon-arrow-right:before {
   content: "\e601";
 }
 
-.iconsaoyisao:before {
+.icon-saoyisao:before {
   content: "\e607";
+  font-size: 40rpx;
 }
 

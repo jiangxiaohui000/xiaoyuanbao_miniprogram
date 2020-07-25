@@ -1,4 +1,11 @@
-<view>
+<view class="chat-container">
+  <view class="sys-message">
+    <view class="sys-message-icon"><i class="iconfont icon-xitongxiaoxi"></i></view>
+    <view class="sys-message-detail">
+      <view style="font-size: 30rpx;line-height: 66rpx">系统消息</view>
+      <view class="sys-message-detail-info">尊敬的用户，您好，感谢您注册校园宝，我们将竭诚为您服务。</view>
+    </view>
+  </view>
   <view
     wx:for="{{chatList}}"
     wx:key="id"

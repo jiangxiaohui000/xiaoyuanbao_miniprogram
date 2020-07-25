@@ -1,9 +1,14 @@
+.chat-container {
+	overflow: hidden;
+	padding: 0 40rpx;
+}
+
 /* 每一条聊天记录 */
 .chat-item {
-	padding: 20rpx 40rpx;
+	padding: 20rpx 0;
 	height: 100rpx;
 	width: 100%;
-	border-bottom: 1rpx solid #666;
+	border-bottom: 1rpx solid #ccc;
 }
 
 /* 头像 */
@@ -18,7 +23,7 @@
 
 .chat-name,
 .chat-info {
-	width: calc(100% - 180rpx);
+	width: calc(100% - 130rpx);
 	float: left;
 }
 
@@ -33,4 +38,31 @@
 	white-space: nowrap;
 	font-size: 24rpx;
 	margin-top: 20rpx;
+}
+
+.sys-message {
+	overflow: hidden;
+	height: 118rpx;
+	border-bottom: 1px solid #ccc;
+}
+
+.sys-message-icon {
+	width: 118rpx;
+	height: 118rpx;
+	float: left;
+	text-align: center;
+	line-height: 118rpx;
+}
+
+.sys-message-detail {
+	float: left;
+	font-size: 24rpx;
+	width: calc(100% - 120rpx);
+	height: 100%;
+}
+
+.sys-message-detail-info {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }

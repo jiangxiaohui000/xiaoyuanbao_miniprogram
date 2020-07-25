@@ -1,33 +1,51 @@
-<!-- 用户信息 -->
-  <view class="userinfo">
-    <button
-      open-type="getUserInfo"
-      bindgetuserinfo="onGetUserInfo"
-      class="userinfo-avatar"
-      style="background-image: url({{avatarUrl}})"
-    ></button>
-		<view class="user-detail-container">
-			<view class="user-name">{{userInfo.nickName}}</view>
-			<view
-        class="user-info-button"
-        bindtap="gotoUserDetail"
-      >
+<!-- 我的 -->
+<view class="user-info">
+  <button
+    open-type="getUserInfo"
+    bindgetuserinfo="onGetUserInfo"
+    class="user-info-avatar"
+    style="background-image: url({{avatarUrl}})"
+  ></button>
+	<view class="user-detail-container">
+		<view class="user-name">{{userInfo.nickName}}</view>
+		<view
+      class="user-info-button"
+      bindtap="gotoUserDetail"
+    >
       <span>个人信息</span>
-      <i class="jiantou iconfont iconarrow-right"></i>
-      </view>
-		</view>
-    <!-- <view>
-      <button class="userinfo-nickname" bindtap="onGetOpenid">点击获取 openid</button>
-    </view> -->
-    <!-- 扫一扫 -->
-    <i class="scan iconfont iconsaoyisao" bindtap="onScan"></i>
-  </view>
-  <!-- 上传图片 -->
-  <view class="uploader">
-    <view class="uploader-text" bindtap="doUpload">
-      <text>发布我的宝贝</text>
+      <i class="jiantou iconfont icon-arrow-right"></i>
     </view>
-    <view class="uploader-container" wx:if="{{imgUrl}}">
-      <image class="uploader-image" src="{{imgUrl}}" mode="aspectFit" bindtap="previewImg"></image>
+	</view>
+  <!-- <view>
+    <button class="userinfo-nickname" bindtap="onGetOpenid">点击获取 openid</button>
+  </view> -->
+  <!-- 扫一扫 -->
+  <i class="scan iconfont icon-saoyisao" bindtap="onScan"></i>
+</view>
+
+<view class="goods-and-collection">
+  <view class="goods" bindtap="goToGoodsDetail">
+    <i class="iconfont icon-shangpin"></i>
+    <view class="text">
+      <text>我的宝贝</text>
+      <text>0 件</text>
     </view>
   </view>
+  <view class="collection" bindtap="goToCollectionDetail">
+    <i class="iconfont icon-collection-b"></i>
+    <view class="text">
+      <text>我的收藏</text>
+      <text>1 件</text>
+    </view>
+  </view>
+</view>
+
+<!-- 上传图片 -->
+<view class="uploader">
+  <view class="uploader-text" bindtap="doUpload">
+    <text>发布</text>
+  </view>
+  <view class="uploader-container" wx:if="{{imgUrl}}">
+    <image class="uploader-image" src="{{imgUrl}}" mode="aspectFit" bindtap="previewImg"></image>
+  </view>
+</view>

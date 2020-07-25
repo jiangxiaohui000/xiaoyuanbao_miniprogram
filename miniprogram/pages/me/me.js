@@ -134,5 +134,13 @@ Page({
 
 	gotoUserDetail: function() {
 		console.log('userdetail');
+	},
+
+	goToGoodsDetail: function() {
+		console.log('goods');
+	},
+
+	goToCollectionDetail: function() {
+		console.log('collection');
 	}
 })
