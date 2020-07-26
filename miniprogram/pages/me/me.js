@@ -142,5 +142,13 @@ Page({
 
 	goToCollectionDetail: function() {
 		console.log('collection');
+	},
+
+	goToBuyDetail: () => {
+		console.log('buy');
+	},
+
+	goToEvaluateDetail: () => {
+		console.log('evaluate');
 	}
 })

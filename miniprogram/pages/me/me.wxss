@@ -22,8 +22,8 @@ page {
 
 .user-name {
   font-size: 36rpx;
-  height: 25px;
-  margin-bottom: 10rpx;
+  height: 50rpx;
+  margin-bottom: 16rpx;
 }
 
 .user-info-button {
@@ -60,17 +60,6 @@ page {
   border: none;
 }
 
-/* .userinfo-nickname {
-  font-size: 32rpx;
-  color: #007aff;
-  background-color: white;
-  background-size: cover;
-}
-
-.userinfo-nickname::after {
-  border: none;
-} */
-
 .uploader {
   height: 100rpx;
   width: 100rpx;
@@ -106,7 +95,7 @@ page {
   height: 360rpx;
 }
 
-.goods-and-collection {
+.goods-and-collection, .buy-and-evaluate {
   height: 80rpx;
   background-color: #fff;
   border-radius: 30rpx;
@@ -114,19 +103,23 @@ page {
   margin: 40rpx;
 }
 
-.goods, .collection {
+.buy-and-evaluate {
+  margin-top: 0;
+}
+
+.goods, .collection, .buy, .evaluate {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 }
 
-.goods {
+.goods, .buy {
   height: 100%;
   width: 50%;
   float: left;
 }
 
-.collection {
+.collection, .evaluate {
   height: 100%;
   width: calc(50% - 1px);
   border-left: 1px solid #ccc;

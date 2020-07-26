@@ -3,7 +3,7 @@
   <!-- 搜索框 -->
   <view class="search">
 		<icon type='search' size="32rpx"></icon>
-    <input type="text" placeholder="想买点什么？" confirm-type="search" placeholder-style="font-size: 24rpx; color: #ccc" />
+    <input type="text" placeholder="想买点什么？" confirm-type="search" placeholder-style="font-size: 30rpx; color: #ccc" />
   </view>
 
   <!-- 操作数据库 -->

@@ -8,9 +8,9 @@ page {
 }
 .search {
 	width: 90%;
-	height: 60rpx;
+	height: 80rpx;
 	background-color: #fff;
-	border-radius: 5px;
+	border-radius: 20rpx;
 	margin-top: 20rpx;
 	padding: 0 20rpx;
 	position: relative;
