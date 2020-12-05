@@ -28,7 +28,7 @@
 }
 
 .chat-name {
-	font-weight: bold;
+	font-weight: 400;
 	font-size: 30rpx;
 }
 
@@ -38,6 +38,7 @@
 	white-space: nowrap;
 	font-size: 24rpx;
 	margin-top: 20rpx;
+	color: #666;
 }
 
 .sys-message {
@@ -65,4 +66,5 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	color: #666;
 }

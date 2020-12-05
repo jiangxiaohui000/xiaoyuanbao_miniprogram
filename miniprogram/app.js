@@ -18,9 +18,7 @@ App({
     this.globalData = {}
   },
 	onShow: function() {
-		// console.log(111);
 	},
 	onHide: function() {
-		// console.log(222);
 	}
 })

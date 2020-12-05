@@ -6,7 +6,26 @@ Page({
     userInfo: {},
     logged: false,
     takeSession: false,
-    requestResult: ''
+    requestResult: '',
+    goodsList: [{
+      id: 1,
+      img: '../../images/touxiang1.jpeg',
+      desc: '假数据的覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      currentPrice: '111',
+      originPrice: '2343'
+    }, {
+      id: 2,
+      img: '../../images/touxiang1.jpeg',
+      desc: '假数据的覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      currentPrice: '111',
+      originPrice: '2343'
+    }, {
+      id: 3,
+      img: '../../images/touxiang1.jpeg',
+      desc: '假数据的覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      currentPrice: '111',
+      originPrice: '2343'
+    }]
   },
 
   onLoad: function() {
