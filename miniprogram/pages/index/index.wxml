@@ -19,7 +19,7 @@
       previous-margin="20rpx"
       next-margin="20rpx">
       <block wx:for="{{swiperImgs}}" wx:key="id">
-        <swiper-item class="swiperItem">
+        <swiper-item>
           <cover-image src="{{item.img}}" alt="" ></cover-image>
         </swiper-item>
       </block>
