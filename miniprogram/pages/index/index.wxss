@@ -1,7 +1,6 @@
 /**index.wxss**/
 page {
-  height: 100%;
-  width: 100%;
+  background-color: #ff9966;
 }
 .container {
   background: #ff9966;
@@ -19,7 +18,7 @@ page {
 	border-radius: 20rpx;
   margin-top: 20rpx;
   padding: 0 20rpx;
-	position: relative;
+  position: relative;
 }
 .search icon {
 	width: 32rpx;
@@ -34,9 +33,18 @@ page {
 	margin-left: 45rpx;
 	line-height: 100%;
 }
-.goods-container {
-  margin-top: 60rpx;
+.banner {
   width: 100%;
+  border-radius: 20rpx;
+  margin-top: 40rpx;
+  overflow: hidden;
+}
+.swiperItem {
+}
+.goods-container {
+  margin-top: 40rpx;
+  width: 100%;
+  overflow: hidden;
 }
 .goods-item {
   height: 180rpx;

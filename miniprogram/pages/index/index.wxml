@@ -6,9 +6,29 @@
     <input type="text" placeholder="想买点什么？" confirm-type="search" placeholder-style="font-size: 30rpx; color: #ccc" />
   </view>
 
+  <!-- 轮播图 -->
+  <view class="banner">
+    <swiper
+      indicator-dots="true"
+      indicator-color="#fff"
+      indicator-active-color="#ff9966"
+      autoplay="true"
+      interval="3500"
+      duration="500"
+      circular="true"
+      previous-margin="20rpx"
+      next-margin="20rpx">
+      <block wx:for="{{swiperImgs}}" wx:key="id">
+        <swiper-item class="swiperItem">
+          <cover-image src="{{item.img}}" alt="" ></cover-image>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+
   <!-- 商品列表 -->
   <view class="goods-container">
-    <view class="goods-item" wx:for="{{goodsList}}" wx:key="id">
+    <view class="goods-item" wx:for="{{goodsList}}" wx:key="id" data-id="{{item.id}}" bindtap="gotoGoodsDetail">
       <view class="img-container">
         <cover-image class="img" src="{{item.img}}" alt="" ></cover-image>
       </view>
@@ -19,7 +39,7 @@
             <text class="goods-current-price">￥{{item.currentPrice}}</text>
             <text class="goods-origin-price">￥{{item.originPrice}}</text>
           </view>
-          <button size="mini" type="primary">想要</button>
+          <button size="mini" type="primary" data-id="{{item.id}}" catchtap="gotoCurrentChat">想要</button>
         </view>
       </view>
     </view>
