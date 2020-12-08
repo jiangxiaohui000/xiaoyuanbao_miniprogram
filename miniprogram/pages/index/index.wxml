@@ -14,15 +14,11 @@
       indicator-active-color="#ff9966"
       autoplay="true"
       interval="3500"
-      duration="500"
-      circular="true"
-      previous-margin="20rpx"
-      next-margin="20rpx">
-      <block wx:for="{{swiperImgs}}" wx:key="id">
-        <swiper-item>
-          <cover-image src="{{item.img}}" alt="" ></cover-image>
-        </swiper-item>
-      </block>
+      duration="400"
+      circular="true">
+      <swiper-item wx:for="{{swiperImgs}}" wx:key="id">
+        <image src="{{item.img}}" mode="scaleToFill" ></image>
+      </swiper-item>
     </swiper>
   </view>
 
