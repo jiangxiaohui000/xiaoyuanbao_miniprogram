@@ -5,7 +5,12 @@ Page({
 	 * 页面的初始数据
 	 */
 	data: {
-		
+		userInfo: {
+			avatar: '../../images/touxiang1.jpeg',
+			name: 'sadfji',
+			releaseTime: '2020-10-10 13:49',
+			collected: 30
+		}
 	},
 
 	/**

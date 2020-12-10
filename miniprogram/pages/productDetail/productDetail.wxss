@@ -1,1 +1,46 @@
 /* miniprogram/pages/productDetail.wxss */
+.user-info {
+  /* width: 100%; */
+  height: 100rpx;
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  border-bottom-right-radius: 20rpx;
+  border-bottom-left-radius: 20rpx;
+  background-color: #ff9966;
+}
+.left-info {
+  display: flex;
+}
+.user-avatar{
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 10rpx;
+  margin-right: 20rpx;
+}
+.user-name {
+  display: flex;
+  flex-direction: column;
+}
+.user-name-name {
+  font-size: 36rpx;
+  color: #111;
+  font-weight: 700;
+  margin-bottom: 10rpx;
+}
+.user-name-time {
+  font-size: 22rpx;
+  color: #444;
+}
+.right-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.right-info-box {
+  width: 100%;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 22rpx;
+  text-align: center;
+}

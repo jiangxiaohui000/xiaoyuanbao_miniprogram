@@ -1,2 +1,13 @@
 <!--miniprogram/pages/productDetail.wxml-->
-
+<view class="user-info">
+  <view class="left-info">
+    <image class="user-avatar" src="{{userInfo.avatar}}" mode="aspectFit"></image>
+    <view class="user-name">
+      <text class="user-name-name">{{userInfo.name}}</text>
+      <text class="user-name-time">发布时间：{{userInfo.releaseTime}}</text>
+    </view>
+  </view>
+  <view class="right-info">
+    <view class="right-info-box">{{userInfo.collected}} 已收藏</view>
+  </view>
+</view>
