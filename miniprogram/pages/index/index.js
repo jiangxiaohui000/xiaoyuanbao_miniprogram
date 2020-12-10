@@ -93,16 +93,19 @@ Page({
       }
     })
   },
+  // 下拉刷新
 	onPullDownRefresh: function() {
 		console.log('index');
   },
+  // 前往商品详情页面
   gotoGoodsDetail(e) {
     console.log('detail', e.currentTarget.dataset);
     wx.navigateTo({
       url: '../productDetail/productDetail',
     })
   },
+  // 前往聊天页面
   gotoCurrentChat(e) {
     console.log('chat', e.currentTarget.dataset);
-  }
+  },
 })
