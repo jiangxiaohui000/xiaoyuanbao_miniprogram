@@ -10,6 +10,12 @@ Page({
 			name: 'sadfji',
 			releaseTime: '2020-10-10 13:49',
 			collected: 30
+		},
+		productInfo: {
+			price: 23333,
+			tags: ['全新', '不讲价'],
+			text: '加快速度阿斯殴打见覅偶按时缴费阿斯殴打见覅偶按时缴费掉阿斯偶觉得覅偶按实际掉我按实际地of啊囧死殴大四偶觉得覅欧文IE欧吉阿卡丽SV就卡死的',
+			img: ['../../images/productDetail1.jpg', '../../images/productDetail2.jpg', '../../images/productDetail3.jpg', '../../images/productDetail4.jpg'],
 		}
 	},
 
@@ -67,5 +73,13 @@ Page({
 	 */
 	onShareAppMessage: function () {
 
+	},
+
+	collectGoods() {
+		console.log('collect');
+	},
+
+	gotoChatRoom() {
+		console.log('chat');
 	}
 })

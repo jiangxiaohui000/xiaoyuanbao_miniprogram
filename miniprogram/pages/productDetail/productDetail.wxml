@@ -1,4 +1,5 @@
 <!--miniprogram/pages/productDetail.wxml-->
+<!-- 用户信息 -->
 <view class="user-info">
   <view class="left-info">
     <image class="user-avatar" src="{{userInfo.avatar}}" mode="aspectFit"></image>
@@ -10,4 +11,22 @@
   <view class="right-info">
     <view class="right-info-box">{{userInfo.collected}} 已收藏</view>
   </view>
+</view>
+<!-- 价格 -->
+<view class="product-price">
+  <view class="price-symbol">￥</view>
+  <view class="price-num">{{productInfo.price}}</view>
+  <view class="product-tag" wx:for="{{productInfo.tags}}" wx:key="index">{{item}}</view>
+</view>
+<!-- 商品描述 -->
+<view class="product-description">
+  <view class="product-desc-text">{{productInfo.text}}</view>
+  <view wx:for="{{productInfo.img}}" wx:key="index" class="product-detail-img-container">
+    <image src="{{item}}" class="product-detail-img"></image>
+  </view>
+</view>
+<!-- 聊一聊 -->
+<view class="chat">
+  <view class="chat-collection" bindtap="collectGoods"><i class="iconfont icon-shoucang"></i> 收藏</view>
+  <view><button class="chat-button" size="mini" bindtap="gotoChatRoom">聊一聊</button></view>
 </view>
