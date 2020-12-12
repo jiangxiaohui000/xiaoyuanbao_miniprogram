@@ -3,12 +3,41 @@
 	padding: 0 40rpx;
 }
 
+.sys-message {
+	overflow: hidden;
+	height: 118rpx;
+	border-bottom: 1px solid #ccc;
+}
+
+.sys-message-icon {
+	width: 118rpx;
+	height: 118rpx;
+	float: left;
+	text-align: center;
+	line-height: 118rpx;
+}
+
+.sys-message-detail {
+	float: left;
+	font-size: 24rpx;
+	width: calc(100% - 120rpx);
+	height: 100%;
+}
+
+.sys-message-detail-info {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #666;
+}
+
 /* 每一条聊天记录 */
 .chat-item {
 	padding: 20rpx 0;
 	height: 100rpx;
 	width: 100%;
 	border-bottom: 1rpx solid #ccc;
+	position: relative;
 }
 
 /* 头像 */
@@ -41,30 +70,12 @@
 	color: #666;
 }
 
-.sys-message {
-	overflow: hidden;
-	height: 118rpx;
-	border-bottom: 1px solid #ccc;
-}
-
-.sys-message-icon {
-	width: 118rpx;
-	height: 118rpx;
-	float: left;
-	text-align: center;
-	line-height: 118rpx;
-}
-
-.sys-message-detail {
-	float: left;
-	font-size: 24rpx;
-	width: calc(100% - 120rpx);
-	height: 100%;
-}
-
-.sys-message-detail-info {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	color: #666;
+.chat-unread {
+	width: 20rpx;
+	height: 20rpx;
+	background-color: red;
+	border-radius: 40%;
+	position: absolute;
+	left: 80rpx;
+	bottom: 20rpx;
 }

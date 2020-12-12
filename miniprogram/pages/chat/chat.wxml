@@ -26,5 +26,6 @@
     </image>
     <view class="chat-name">{{item.name}}</view>
     <view class="chat-info">{{item.info}}</view>
+    <view class="chat-unread"></view>
   </view>
 </view>

@@ -72,10 +72,9 @@ Page({
     if (!wx.cloud) {
       wx.redirectTo({
         url: '../chooseLib/chooseLib',
-      })
-      return
+      });
+      return;
     }
-
     // 获取用户信息
     wx.getSetting({
       success: res => {
@@ -108,4 +107,8 @@ Page({
   gotoCurrentChat(e) {
     console.log('chat', e.currentTarget.dataset);
   },
+  // 页面滚动
+  scroll(e) {
+    console.log(e);
+  }
 })

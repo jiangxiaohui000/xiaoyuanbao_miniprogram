@@ -7,9 +7,10 @@ page {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 100%;
+  align-items: center;
   height: 100%;
   padding: 0 20rpx;
+  overflow: hidden;
 }
 .search {
 	width: 94%;
@@ -18,19 +19,17 @@ page {
 	border-radius: 20rpx;
   margin-top: 20rpx;
   padding: 0 20rpx;
-  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 .search icon {
 	width: 32rpx;
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
 }
 .search input {
-	position: absolute;
 	height: 100%;
-	width: 90%;
-	margin-left: 45rpx;
+	width: 100%;
+	margin-left: 20rpx;
 	line-height: 100%;
 }
 .banner {

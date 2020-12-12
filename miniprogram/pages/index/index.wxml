@@ -1,5 +1,10 @@
 <!--index.wxml-->
-<view class="container">
+<scroll-view
+  class="container"
+  scroll-y="true"
+  enable-flex="true"
+  style="height: 100%;"
+  bindscroll="scroll">
   <!-- 搜索框 -->
   <view class="search">
 		<icon type='search' size="32rpx"></icon>
@@ -70,4 +75,4 @@
   </view> -->
 
 
-</view>
+</scroll-view>
