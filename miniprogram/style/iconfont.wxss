@@ -38,8 +38,7 @@
 .icon-xitongxiaoxi:before {
   content: "\e683";
   font-size: 80rpx;
-  color: #ff9966;
-  margin-right: 22rpx;
+  color: #fff;
 }
 
 .icon-collection-b:before {

@@ -7,21 +7,35 @@
 	overflow: hidden;
 	height: 118rpx;
 	border-bottom: 1px solid #ccc;
+	display: flex;
+	align-items: center;
+	position: relative;
+	padding: 10rpx 0;
 }
 
 .sys-message-icon {
-	width: 118rpx;
-	height: 118rpx;
-	float: left;
+	width: 100rpx;
+	height: 100rpx;
 	text-align: center;
-	line-height: 118rpx;
+	line-height: 100rpx;
+	border-radius: 50%;
+	background-color: #f96;
 }
 
 .sys-message-detail {
-	float: left;
 	font-size: 24rpx;
 	width: calc(100% - 120rpx);
 	height: 100%;
+	margin-left: 20rpx;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+}
+
+.sys-message-detail-top {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .sys-message-detail-info {
@@ -31,29 +45,48 @@
 	color: #666;
 }
 
-/* 每一条聊天记录 */
+.sys-message-unread {
+	width: 20rpx;
+	height: 20rpx;
+	background-color: #f66;
+	border-radius: 40%;
+	position: absolute;
+	left: 76rpx;
+	bottom: 18rpx;
+}
+
+.sys-message-time,
+.chat-time {
+	color: #aaa;
+	font-size: 24rpx;
+}
+
 .chat-item {
 	padding: 20rpx 0;
 	height: 100rpx;
-	width: 100%;
 	border-bottom: 1rpx solid #ccc;
 	position: relative;
+	display: flex;
 }
 
-/* 头像 */
-.head-portrait {
+.chat-head-portrait {
 	width: 100rpx;
 	height: 100rpx;
 	margin-right: 20rpx;
 	border-radius: 50%;
-	vertical-align: top;
-	float: left;
 }
 
-.chat-name,
-.chat-info {
-	width: calc(100% - 130rpx);
-	float: left;
+.chat-right-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: calc(100% - 120rpx);
+}
+
+.chat-right-info-top {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .chat-name {
@@ -73,9 +106,9 @@
 .chat-unread {
 	width: 20rpx;
 	height: 20rpx;
-	background-color: red;
+	background-color: #f66;
 	border-radius: 40%;
 	position: absolute;
 	left: 80rpx;
-	bottom: 20rpx;
+	bottom: 22rpx;
 }

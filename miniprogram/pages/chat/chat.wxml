@@ -2,9 +2,13 @@
   <!-- 系统信息 -->
   <view class="sys-message">
     <view class="sys-message-icon"><i class="iconfont icon-xitongxiaoxi"></i></view>
+    <view class="sys-message-unread" wx:if="{{sysMessageUnRead}}"></view>
     <view class="sys-message-detail">
-      <view style="font-size: 30rpx;line-height: 66rpx">系统消息</view>
-      <view class="sys-message-detail-info">尊敬的用户，您好，感谢您注册校园宝，我们将竭诚为您服务。</view>
+      <view class="sys-message-detail-top">
+        <view style="font-size: 30rpx;line-height: 66rpx">系统消息</view>
+        <view class="sys-message-time">{{sysMessageTime}}</view>
+      </view>
+      <view class="sys-message-detail-info">{{sysMessage}}</view>
     </view>
   </view>
   <!-- 聊天列表 -->
@@ -15,17 +19,22 @@
     data-id="{{item.id}}"
     bindtap="gotoChatItem"
   >
-    <image
-      class="head-portrait"
-      src="{{item.img}}"
-      mode="center"
-      lazy-load="false"
-      binderror=""
-      bindload=""
-    >
+    <view>
+      <image
+        class="chat-head-portrait"
+        src="{{item.img}}"
+        mode="center"
+        lazy-load="false"
+      >
     </image>
-    <view class="chat-name">{{item.name}}</view>
-    <view class="chat-info">{{item.info}}</view>
-    <view class="chat-unread"></view>
+    </view>
+    <view class="chat-right-info">
+      <view class="chat-right-info-top">
+        <view class="chat-name">{{item.name}}</view>
+        <view class="chat-time">{{item.time}}</view>
+      </view>
+      <view class="chat-info">{{item.info}}</view>
+    </view>
+    <view class="chat-unread" wx:if="{{item.hasUnreadMessage}}"></view>
   </view>
 </view>
