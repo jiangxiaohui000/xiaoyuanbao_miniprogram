@@ -1,16 +1,20 @@
 <!--index.wxml-->
-<scroll-view
+<view
   class="container"
-  scroll-y="true"
-  enable-flex="true"
-  style="height: 100%;"
-  bindscroll="scroll">
+>
   <!-- 搜索框 -->
-  <view class="search">
-		<icon type='search' size="32rpx"></icon>
-    <input type="text" placeholder="想买点什么？" confirm-type="search" placeholder-style="font-size: 30rpx; color: #ccc" />
+  <view class="search" bindtap="gotoSearch">
+		<icon type='search' size="14"></icon>
+    <view class="input">{{searchKeyWord}}</view>
+    <button class="search-button">搜 索</button>
   </view>
-
+  <view
+    class="hidden-search"
+    hidden="{{scrollTop > 40 ? false: true}}"
+    bindtap="gotoSearch"
+  >
+    <icon type='search' size="14" color="#fff"></icon>
+  </view>
   <!-- 轮播图 -->
   <view class="banner">
     <swiper
@@ -75,4 +79,4 @@
   </view> -->
 
 
-</scroll-view>
+</view>

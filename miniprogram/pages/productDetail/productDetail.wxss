@@ -113,7 +113,8 @@ page {
   padding-bottom: 40rpx;
 }
 .chat-collection {
-  margin-left: 50rpx;
+  width: 50%;
+  text-align: center;
   font-size: 26rpx;
 }
 .chat-button {

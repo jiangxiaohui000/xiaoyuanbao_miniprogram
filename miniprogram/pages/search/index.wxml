@@ -1,0 +1,48 @@
+<!--miniprogram/pages/search/index.wxml-->
+<view class="container">
+  <!-- 搜索框 -->
+  <view class="search">
+    <icon type='search' size="14"></icon>
+      <input
+        type="text"
+        value="{{searchValue}}"
+        placeholder="{{searchKeyWord}}"
+        confirm-type="search"
+        bindconfirm="confirmSearch"
+        bindinput="searchInput"
+        focus="true"
+        placeholder-style="font-size: 26rpx; color: #ccc"
+      />
+      <view class="clear-icon-container" bindtap="clearSearchValue">
+        <icon
+          bindtap="clearSearchValue"
+          wx:if="{{searchValue}}"
+          class="icon-cancel"
+          type="clear"
+          size="16"
+        ></icon>
+      </view>
+  </view>
+  <!-- 搜索历史 -->
+  <view class="search-history">
+    <view class="search-history-top">
+      <view class="history-title">历史搜索</view>
+      <i class="iconfont icon-delete" bindtap="clearHistory"></i>
+    </view>
+    <view
+      class="history-tag"
+      wx:for="{{historyTags}}"
+      wx:key="item"
+      bindtap="chooseTag"
+      data-value="{{item}}"
+    >{{item}}</view>
+  </view>
+  <!-- 热搜榜 -->
+  <view class="hot-search">
+    <view style="color: #333; font-size: 30rpx;">热搜榜</view>
+    <view class="hot-search-content">
+      <view class="hot-search-content-item" wx:for="{{hotSearchData}}" wx:key="item">{{item}}</view>
+    </view>
+  </view>
+</view>
+

@@ -13,24 +13,48 @@ page {
   overflow: hidden;
 }
 .search {
-	width: 94%;
-	height: 80rpx;
+	width: 96%;
+	height: 70rpx;
 	background-color: #fff;
 	border-radius: 20rpx;
   margin-top: 20rpx;
-  padding: 0 20rpx;
+  padding-left: 20rpx;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
-.search icon {
-	width: 32rpx;
+.search .input {
+	height: 80rpx;
+	width: 78%;
+  margin-left: 20rpx;
+  line-height: 80rpx;
+  font-size: 26rpx;
+  color: #999;
 }
-.search input {
-	height: 100%;
-	width: 100%;
-	margin-left: 20rpx;
-	line-height: 100%;
+.search .search-button {
+  width: 20%;
+  height: 62rpx;
+  line-height: 62rpx;
+  text-align: center;
+  background-color: #f96;
+  font-size: 24rpx;
+  color: #fff;
+  border-radius: 20rpx;
+  margin: 0 6rpx 0 0;
+  padding: 0;
+}
+.hidden-search {
+  width: 60rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  border-radius: 50%;
+  position: fixed;
+  top: 30rpx;
+  right: 30rpx;
+  z-index: 1000;
+  transition: all 1s linear;
+  background-color: #f96;
 }
 .banner {
   width: 100%;

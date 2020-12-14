@@ -7,52 +7,53 @@ Page({
     logged: false,
     takeSession: false,
     requestResult: '',
+    searchValue: '',
     goodsList: [{
       id: 1,
-      img: '../../images/touxiang1.jpeg',
-      desc: '假数据的覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '111',
       originPrice: '2343'
     }, {
       id: 2,
-      img: '../../images/touxiang2.jpeg',
-      desc: '刻录机阿空手道假数据的覅哦啊阿斯殴打见覅见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '33333',
       originPrice: '23222243'
     }, {
       id: 3,
-      img: '../../images/touxiang1.jpeg',
-      desc: '假数据的覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '111',
       originPrice: '2343'
     }, {
       id: 4,
-      img: '../../images/touxiang2.jpeg',
-      desc: '刻录机阿空手道假数据的覅哦啊阿斯殴打见覅见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '33333',
       originPrice: '23222243'
     }, {
       id: 5,
-      img: '../../images/touxiang1.jpeg',
-      desc: '假数据的覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '111',
       originPrice: '2343'
     }, {
       id: 6,
-      img: '../../images/touxiang2.jpeg',
-      desc: '刻录机阿空手道假数据的覅哦啊阿斯殴打见覅见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '33333',
       originPrice: '23222243'
     }, {
       id: 7,
-      img: '../../images/touxiang1.jpeg',
-      desc: '假数据的覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅哦啊阿斯殴打见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '111',
       originPrice: '2343'
     }, {
       id: 8,
-      img: '../../images/touxiang2.jpeg',
-      desc: '刻录机阿空手道假数据的覅哦啊阿斯殴打见覅见覅偶啊囧死的佛家是我OA水浇地偶发iOS',
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '33333',
       originPrice: '23222243'
     }],
@@ -65,7 +66,9 @@ Page({
 		}, {
 			id: 3,
 			img: '../../images/banner3.jpg'
-		}]
+    }],
+    scrollTop: 0,
+    searchKeyWord: 'Apple超级品牌日',
   },
 
   onLoad: function() {
@@ -94,7 +97,14 @@ Page({
   },
   // 下拉刷新
 	onPullDownRefresh: function() {
-		console.log('index');
+		console.log('pull');
+  },
+  // 页面滚动
+  onPageScroll(e) {
+    console.log(e);
+    this.setData({
+      scrollTop: e.scrollTop
+    })
   },
   // 前往商品详情页面
   gotoGoodsDetail(e) {
@@ -107,8 +117,10 @@ Page({
   gotoCurrentChat(e) {
     console.log('chat', e.currentTarget.dataset);
   },
-  // 页面滚动
-  scroll(e) {
-    console.log(e);
+  // 前往搜索页
+  gotoSearch() {
+    wx.navigateTo({
+      url: '../search/index',
+    })
   }
 })
