@@ -1,7 +1,5 @@
 <!--index.wxml-->
-<view
-  class="container"
->
+<view class="container">
   <!-- 搜索框 -->
   <view class="search" bindtap="gotoSearch">
 		<icon type='search' size="14"></icon>
@@ -13,7 +11,7 @@
     hidden="{{scrollTop > 40 ? false: true}}"
     bindtap="gotoSearch"
   >
-    <icon type='search' size="14" color="#fff"></icon>
+    <icon type='search' size="16" color="#f96"></icon>
   </view>
   <!-- 轮播图 -->
   <view class="banner">
@@ -30,7 +28,19 @@
       </swiper-item>
     </swiper>
   </view>
-
+  <!-- 商品分类 -->
+  <view class="goods-category-container">
+    <view class="goods-category">
+      <view
+        class="goods-category-item"
+        style="{{activeItem}}"
+        wx:for="{{goodsCategory}}"
+        wx:key="item"
+        data-index="{{index}}"
+        bindtap="chooseCategory"
+      >{{item}}</view>
+    </view>
+  </view>
   <!-- 商品列表 -->
   <view class="goods-container">
     <view class="goods-item" wx:for="{{goodsList}}" wx:key="id" data-id="{{item.id}}" bindtap="gotoGoodsDetail">
@@ -44,7 +54,12 @@
             <text class="goods-current-price">￥{{item.currentPrice}}</text>
             <text class="goods-origin-price">￥{{item.originPrice}}</text>
           </view>
-          <button size="mini" type="primary" data-id="{{item.id}}" catchtap="gotoCurrentChat">想要</button>
+          <button
+            size="mini"
+            style="background-color: #f96; color: #fff;"
+            data-id="{{item.id}}"
+            catchtap="gotoCurrentChat"
+          >想要</button>
         </view>
       </view>
     </view>
@@ -77,6 +92,4 @@
       <text>云调用</text>
     </navigator>
   </view> -->
-
-
 </view>

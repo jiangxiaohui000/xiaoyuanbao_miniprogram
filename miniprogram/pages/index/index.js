@@ -8,6 +8,7 @@ Page({
     takeSession: false,
     requestResult: '',
     searchValue: '',
+    goodsCategory: ['精选', '手机', '男装', '女装', '数码', '日用', '图书', '饰品', '美妆', '百货', '箱包', '运动'],
     goodsList: [{
       id: 1,
       img: '../../images/kouhong.jpg',
@@ -69,6 +70,9 @@ Page({
     }],
     scrollTop: 0,
     searchKeyWord: 'Apple超级品牌日',
+    // goodsCategoryWidth: undefined,
+    currentIndex: 0,
+    activeItem: '',
   },
 
   onLoad: function() {
@@ -93,7 +97,7 @@ Page({
           })
         }
       }
-    })
+    });
   },
   // 下拉刷新
 	onPullDownRefresh: function() {
@@ -101,14 +105,12 @@ Page({
   },
   // 页面滚动
   onPageScroll(e) {
-    console.log(e);
     this.setData({
       scrollTop: e.scrollTop
     })
   },
   // 前往商品详情页面
   gotoGoodsDetail(e) {
-    console.log('detail', e.currentTarget.dataset);
     wx.navigateTo({
       url: '../productDetail/productDetail',
     })
@@ -122,5 +124,17 @@ Page({
     wx.navigateTo({
       url: '../search/index',
     })
+  },
+  chooseCategory(e) {
+    console.log(e.currentTarget.dataset.index);
+    console.log(this);
+    // this.setData({
+    //   currentIndex: e.currentTarget.dataset.index
+    // })
+    // if (this.data.currentIndex === e.currentTarget.dataset.index) {
+    //   this.setData({
+    //     activeItem: 'color: #000;'
+    //   })
+    // }
   }
 })

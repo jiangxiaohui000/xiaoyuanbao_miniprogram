@@ -118,7 +118,7 @@ page {
   font-size: 26rpx;
 }
 .chat-button {
-  color: #000;
+  color: #fff;
   background-color: #f96;
   border-radius: 40rpx;
 }
