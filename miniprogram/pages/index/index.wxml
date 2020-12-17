@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="container">
+<scroll-view class="container" scroll-y="true" enable-flex="true">
   <!-- 搜索框 -->
   <view class="search" bindtap="gotoSearch">
 		<icon type='search' size="14"></icon>
@@ -32,12 +32,11 @@
   <view class="goods-category-container">
     <view class="goods-category">
       <view
-        class="goods-category-item"
-        style="{{activeItem}}"
+        bindtap="chooseCategory"
         wx:for="{{goodsCategory}}"
         wx:key="item"
         data-index="{{index}}"
-        bindtap="chooseCategory"
+        class="goods-category-item {{index === currentIndex ? 'active' : ''}}"
       >{{item}}</view>
     </view>
   </view>
@@ -92,4 +91,4 @@
       <text>云调用</text>
     </navigator>
   </view> -->
-</view>
+</scroll-view>

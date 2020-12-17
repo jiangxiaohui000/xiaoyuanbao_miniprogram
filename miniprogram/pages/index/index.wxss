@@ -8,7 +8,6 @@ page {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  height: 100%;
   padding: 0 20rpx;
   overflow: hidden;
 }
@@ -100,9 +99,9 @@ page {
 .goods-category-item:last-child {
   margin-right: 0;
 }
-/* .goods-category-item-active {
-  font-size: 36rpx;
-} */
+.active {
+  color: #FF0033;
+}
 .goods-container {
   margin-top: 20rpx;
   width: 100%;
