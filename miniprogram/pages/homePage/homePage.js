@@ -71,6 +71,7 @@ Page({
     scrollTop: 0,
     searchKeyWord: 'Apple超级品牌日',
     currentIndex: 0,
+    selectedItemLeft: undefined,
   },
 
   onLoad: function() {
@@ -125,8 +126,21 @@ Page({
   },
   // 选择商品分类
   chooseCategory: function(e) {
+    // const query = wx.createSelectorQuery();
+    // query.selectAll('.goods-category-item').boundingClientRect();
+    // query.select('.goods-category-item').boundingClientRect();
+    // query.exec(res => {
+    //   console.log(res);
+    //   const selectedItemLeft = res[0][e.target.dataset.index].left;
+    //   console.log(selectedItemLeft);
+    //   if(selectedItemLeft > 190) {
+    //     this.setData({
+    //       selectedItemLeft: selectedItemLeft
+    //     })
+    //   }
+    // });
     this.setData({
       currentIndex: e.target.dataset.index
-    })
+    });
   }
 })

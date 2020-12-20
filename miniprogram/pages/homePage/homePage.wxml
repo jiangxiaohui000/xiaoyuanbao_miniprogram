@@ -30,7 +30,7 @@
   </view>
   <!-- 商品分类 -->
   <view class="goods-category-container">
-    <view class="goods-category">
+    <scroll-view class="goods-category">
       <view
         bindtap="chooseCategory"
         wx:for="{{goodsCategory}}"
@@ -38,11 +38,16 @@
         data-index="{{index}}"
         class="goods-category-item {{index === currentIndex ? 'active' : ''}}"
       >{{item}}</view>
-    </view>
+    </scroll-view>
   </view>
   <!-- 商品列表 -->
   <view class="goods-container">
-    <view class="goods-item" wx:for="{{goodsList}}" wx:key="id" data-id="{{item.id}}" bindtap="gotoGoodsDetail">
+    <view
+      class="goods-item"
+      wx:for="{{goodsList}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="gotoGoodsDetail">
       <view class="img-container">
         <cover-image class="img" src="{{item.img}}" alt="" ></cover-image>
       </view>
