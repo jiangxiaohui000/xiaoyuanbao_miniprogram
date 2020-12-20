@@ -120,7 +120,7 @@ Page({
   // 前往搜索页
   gotoSearch() {
     wx.navigateTo({
-      url: '../search/index',
+      url: '../search/search',
     })
   },
   // 选择商品分类

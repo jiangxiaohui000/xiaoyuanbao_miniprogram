@@ -102,11 +102,13 @@ Page({
     })
     console.log(this.data.searchValue);
   },
+  // 选择
   chooseTag(e) {
     this.setData({
       searchValue: e.currentTarget.dataset.value
     })
   },
+  // 清除历史搜索
   clearHistory() {
     this.setData({
       historyTags: []

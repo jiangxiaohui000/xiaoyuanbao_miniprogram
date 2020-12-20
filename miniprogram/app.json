@@ -1,6 +1,6 @@
 {
   "pages": [
-    "pages/index/index",
+    "pages/homePage/homePage",
     "pages/chat/chat",
     "pages/me/me",
     "pages/userConsole/userConsole",
@@ -16,7 +16,7 @@
     "pages/im/im",
     "pages/im/room/room",
     "pages/productDetail/productDetail",
-    "pages/search/index"
+    "pages/search/search"
   ],
   "tabBar": {
     "color": "#7A7E83",
@@ -25,7 +25,7 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/homePage/homePage",
         "iconPath": "images/icon_home.png",
         "selectedIconPath": "images/icon_home_selected.png",
         "text": "首页"
