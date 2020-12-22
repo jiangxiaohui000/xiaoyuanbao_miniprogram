@@ -1,7 +1,7 @@
 const app = getApp()
 Page({
 	data: {
-		avatarUrl: './user-unlogin.png',
+		avatarUrl: '../../images/user-unlogin.png',
 		userInfo: {},
 		logged: false,
 		takeSession: false,
@@ -117,7 +117,7 @@ Page({
 		console.log('me');
 		this.onLoad();
 	},
-
+	// 扫一扫
 	onScan: function() {
 		wx.scanCode({
 			success: function(res) {
@@ -125,23 +125,25 @@ Page({
 			}
 		})
 	},
-
+	// 个人信息
 	gotoUserDetail: function() {
-		console.log('userdetail');
+		wx.navigateTo({
+			url: '../personalInformation/personalInformation',
+		})
 	},
-
+	// 我的宝贝
 	goToGoodsDetail: function() {
 		console.log('goods');
 	},
-
+	// 我的收藏
 	goToCollectionDetail: function() {
 		console.log('collection');
 	},
-
+	// 我的购买
 	goToBuyDetail: () => {
 		console.log('buy');
 	},
-
+	// 我的评价
 	goToEvaluateDetail: () => {
 		console.log('evaluate');
 	}

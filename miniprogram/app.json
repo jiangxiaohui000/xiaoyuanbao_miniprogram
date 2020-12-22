@@ -16,7 +16,8 @@
     "pages/im/im",
     "pages/im/room/room",
     "pages/productDetail/productDetail",
-    "pages/search/search"
+    "pages/search/search",
+    "pages/personalInformation/personalInformation"
   ],
   "tabBar": {
     "color": "#7A7E83",

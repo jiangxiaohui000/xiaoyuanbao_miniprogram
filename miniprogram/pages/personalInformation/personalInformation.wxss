@@ -1,0 +1,37 @@
+/* miniprogram/pages/personalInformation.wxss */
+.user-info {
+  display: flex;
+  padding: 10rpx;
+}
+.user-info-left {
+  width: 180rpx;
+  height: 140rpx;
+  margin: 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.user-info-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-size: cover;
+  background-color: white;
+}
+.user-info-avatar:after {
+  border: none;
+}
+.user-info-right {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #666;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.user-name {
+  font-size: 30rpx;
+  color: #333333;
+  margin-top: 10rpx;
+}

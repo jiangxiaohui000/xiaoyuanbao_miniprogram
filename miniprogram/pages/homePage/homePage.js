@@ -104,15 +104,6 @@ Page({
       wx.stopPullDownRefresh()
     }, 1000);
   },
-  // onAddToFavorites(res) {
-  //   // webview 页面返回 webviewUrl
-  //   console.log('WebviewUrl: ', res.webviewUrl)
-  //   return {
-  //     title: '自定义标题',
-  //     imageUrl: 'http://demo.png',
-  //     query: 'name=xxx&age=xxx',
-  //   }
-  // },
   // 触底操作
   onReachBottom: function() {
     console.log('bbbbb');
@@ -127,7 +118,10 @@ Page({
   gotoGoodsDetail(e) {
     wx.navigateTo({
       url: '../productDetail/productDetail',
-    })
+      success: function(res) {
+        res.eventChannel.emit('sendProductDetailID', {id: e.currentTarget.dataset.id})
+      }
+    });
   },
   // 前往聊天页面
   gotoCurrentChat(e) {

@@ -1,0 +1,15 @@
+<!--miniprogram/pages/personalInformation.wxml-->
+<view class="user-info">
+  <view class="user-info-left">
+    <button
+      open-type="getUserInfo"
+      bindgetuserinfo="onGetUserInfo"
+      class="user-info-avatar"
+      style="background-image: url({{avatarUrl}})"
+    ></button>
+  </view>
+  <view class="user-info-right">
+    <view class="user-name">{{userInfo.nickName}}</view>
+    <view class="user-desc">天津理工大学/电气电子工程学院/硕士一年级</view>
+  </view>
+</view>

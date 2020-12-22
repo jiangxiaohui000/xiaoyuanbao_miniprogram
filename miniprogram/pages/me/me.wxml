@@ -7,11 +7,10 @@
     style="background-image: url({{avatarUrl}})"
   ></button>
 	<view class="user-detail-container">
-	<view class="user-name">{{userInfo.nickName}}</view>
+	  <view class="user-name">{{userInfo.nickName}}</view>
 		<view
       class="user-info-button"
-      bindtap="gotoUserDetail"
-    >
+      bindtap="gotoUserDetail">
       <span>个人信息</span>
       <i class="jiantou iconfont icon-arrow-right"></i>
     </view>
