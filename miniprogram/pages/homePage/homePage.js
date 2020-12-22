@@ -100,7 +100,22 @@ Page({
   },
   // 下拉刷新
 	onPullDownRefresh: function() {
-		console.log('pull');
+    setTimeout(() => {
+      wx.stopPullDownRefresh()
+    }, 1000);
+  },
+  // onAddToFavorites(res) {
+  //   // webview 页面返回 webviewUrl
+  //   console.log('WebviewUrl: ', res.webviewUrl)
+  //   return {
+  //     title: '自定义标题',
+  //     imageUrl: 'http://demo.png',
+  //     query: 'name=xxx&age=xxx',
+  //   }
+  // },
+  // 触底操作
+  onReachBottom: function() {
+    console.log('bbbbb');
   },
   // 页面滚动
   onPageScroll(e) {
@@ -142,5 +157,5 @@ Page({
     this.setData({
       currentIndex: e.target.dataset.index
     });
-  }
+  },
 })
