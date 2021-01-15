@@ -29,7 +29,7 @@
     </swiper>
   </view>
   <!-- 商品分类 -->
-  <view class="goods-category-container">
+  <!-- <view class="goods-category-container">
     <scroll-view class="goods-category">
       <view
         bindtap="chooseCategory"
@@ -39,7 +39,7 @@
         class="goods-category-item {{index === currentIndex ? 'active' : ''}}"
       >{{item}}</view>
     </scroll-view>
-  </view>
+  </view> -->
   <!-- 商品列表 -->
   <view class="goods-container">
     <view

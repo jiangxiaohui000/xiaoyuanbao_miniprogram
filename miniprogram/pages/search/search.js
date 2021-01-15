@@ -9,6 +9,8 @@ Page({
     historyTags: ['纽麦', '教师节', '蓝牙耳机', '双十一狂欢', '苹果手机', 'MacBook Air', '优惠券'],
     hotSearchData: ['纽麦', '教师节', '蓝牙耳机', '双十一狂欢', '苹果手机', 'MacBook Air', '优惠券', '飞利浦显示器 292e2e', '玉兰油七重功效', 'switch游戏机'],
     searchKeyWord: 'Apple超级品牌日',
+    dialogShow: false,
+    buttons: [{text: '取消'}, {text: '确定'}],
   },
 
   /**
@@ -68,7 +70,7 @@ Page({
   },
   // 搜索
   confirmSearch(e) {
-    if (this.data.historyTags.length >= 10) {
+    if (this.data.historyTags.length >= 15) {
       this.data.historyTags.pop();
     }
     if (e.detail.value) {
@@ -86,7 +88,6 @@ Page({
         });
       };
     }
-    console.log(e.detail.value || this.data.searchKeyWord);
   },
   // 输入框输入内容
   searchInput(e) {
@@ -96,22 +97,41 @@ Page({
   },
   // 清空搜索框
   clearSearchValue() {
-    console.log(this.data.searchValue);
     this.setData({
       searchValue: ''
-    })
-    console.log(this.data.searchValue);
+    });
   },
-  // 选择
+  // 历史搜索
   chooseTag(e) {
+    const value = e.currentTarget.dataset.value;
+    const index = e.currentTarget.dataset.index;
     this.setData({
-      searchValue: e.currentTarget.dataset.value
-    })
+      searchValue: value
+    });
+    if(index !== 0) {
+      this.data.historyTags.splice(index, 1);
+      this.data.historyTags.unshift(value);
+    };
+    this.setData({
+      historyTags: this.data.historyTags
+    });
   },
   // 清除历史搜索
   clearHistory() {
-    this.setData({
-      historyTags: []
-    })
+    if(this.data.historyTags.length) {
+      this.setData({
+        dialogShow: true
+      });
+    }
   },
+  tapDialogButton(e) {
+    if(e.detail.index === 1) {
+      this.setData({
+        historyTags: []
+      });
+    }
+    this.setData({
+      dialogShow: false
+    });
+  }
 })
