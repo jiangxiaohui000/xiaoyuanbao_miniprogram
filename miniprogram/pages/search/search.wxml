@@ -34,6 +34,7 @@
       wx:for="{{historyTags}}"
       wx:key="item"
       data-value="{{item}}"
+      data-index="{{index}}"
       bindtap="chooseTag"
     >{{item}}</view>
   </view>
@@ -50,5 +51,14 @@
       >{{item}}</view>
     </view>
   </view>
+  <!-- 清空搜索历史确认框 -->
+  <dialog
+    title="清空搜索历史？"
+    show="{{dialogShow}}"
+    mask="true"
+    mask-closable="true"
+    bindbuttontap="tapDialogButton"
+    buttons="{{buttons}}">
+  </dialog>
 </view>
 
