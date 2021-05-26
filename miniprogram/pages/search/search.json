@@ -1,5 +1,6 @@
 {
   "usingComponents": {
     "dialog": "../../miniprogram_npm/weui-miniprogram/dialog/dialog"
-  }
+  },
+  "enablePullDownRefresh": false
 }
