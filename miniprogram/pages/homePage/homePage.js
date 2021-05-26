@@ -81,6 +81,30 @@ Page({
       });
       return;
     }
+    // 获取用户位置信息
+    wx.getLocation({
+      type: 'wgs84',
+      success (res) {
+        console.log(res, 'res')
+        // const latitude = res.latitude
+        // const longitude = res.longitude
+        // const speed = res.speed
+        // const accuracy = res.accuracy
+      },
+      fail () {
+        wx.showModal({
+          title: '提示',
+          content: '请自行输入您的位置',
+          success (res) {
+            if (res.confirm) {
+              console.log('用户点击确定')
+            } else if (res.cancel) {
+              console.log('用户点击取消')
+            }
+          }
+        })        
+      }
+    })
     // 获取用户信息
     wx.getSetting({
       success: res => {

@@ -1,9 +1,9 @@
 /**index.wxss**/
 page {
-  background-color: #ff9966;
+  background-color: #ffffff;
 }
 .container {
-  background: #ff9966;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -11,16 +11,23 @@ page {
   padding: 0 20rpx;
   overflow: hidden;
 }
-.search {
-	width: 96%;
-	height: 70rpx;
-	background-color: #fff;
-	border-radius: 20rpx;
+.search-box {
+  width: 100%;
+  display: flex;
+  align-items: center;
   margin-top: 20rpx;
+}
+.search {
+	/* width: 96%; */
+	height: 70rpx;
+	background-color: #eeeeee;
+	border-radius: 20rpx;
+  /* margin-top: 20rpx; */
   padding-left: 20rpx;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  flex: 1;
 }
 .search .input {
 	height: 80rpx;
@@ -35,8 +42,7 @@ page {
   height: 62rpx;
   line-height: 62rpx;
   text-align: center;
-  background-color: #f96;
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #fff;
   border-radius: 20rpx;
   margin: 0 6rpx 0 0;
@@ -45,9 +51,7 @@ page {
 .hidden-search {
   width: 100rpx;
   height: 60rpx;
-  border: 2rpx solid #f96;
-  line-height: 70rpx;
-  text-align: center;
+  border: 2rpx solid #07c160;
   border-radius: 30rpx;
   position: fixed;
   top: 30rpx;
@@ -55,12 +59,15 @@ page {
   z-index: 1000;
   transition: all 2s ease-in-out;
   background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .banner {
   width: 100%;
   height: 240rpx;
   border-radius: 20rpx;
-  margin-top: 40rpx;
+  margin-top: 20rpx;
   overflow: hidden;
 }
 .banner swiper {

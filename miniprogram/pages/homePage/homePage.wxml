@@ -1,24 +1,27 @@
 <!--index.wxml-->
 <scroll-view class="container" scroll-y="true" enable-flex="true">
-  <!-- 搜索框 -->
-  <view class="search" bindtap="gotoSearch">
-		<icon type='search' size="14"></icon>
-    <view class="input">{{searchKeyWord}}</view>
-    <button class="search-button">搜 索</button>
+  <view class="search-box">
+    <i class="iconfont icon-dingwei"></i>
+    <!-- 搜索框 -->
+    <view class="search" bindtap="gotoSearch">
+      <icon type='search' size="14"></icon>
+      <view class="input">{{searchKeyWord}}</view>
+      <button type="primary" class="search-button">搜 索</button>
+    </view>  
   </view>
   <view
     class="hidden-search"
     hidden="{{scrollTop > 40 ? false: true}}"
     bindtap="gotoSearch"
   >
-    <icon type='search' size="16" color="#f96"></icon>
+    <icon type='search' size="16" color="#07c160"></icon>
   </view>
   <!-- 轮播图 -->
   <view class="banner">
     <swiper
       indicator-dots="true"
       indicator-color="#fff"
-      indicator-active-color="#ff9966"
+      indicator-active-color="#07c160"
       autoplay="true"
       interval="3500"
       duration="400"
@@ -60,7 +63,7 @@
           </view>
           <button
             size="mini"
-            style="background-color: #f96; color: #fff;"
+            type="primary"
             data-id="{{item.id}}"
             catchtap="gotoCurrentChat"
           >想要</button>
