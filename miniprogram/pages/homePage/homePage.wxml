@@ -1,7 +1,7 @@
 <!--index.wxml-->
 <scroll-view class="container" scroll-y="true" enable-flex="true">
   <view class="search-box">
-    <i class="iconfont icon-dingwei"></i>
+    <i class="iconfont icon-dingwei" bindtap="getLocation"></i>
     <!-- 搜索框 -->
     <view class="search" bindtap="gotoSearch">
       <icon type='search' size="14"></icon>

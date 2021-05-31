@@ -176,4 +176,8 @@ Page({
       currentIndex: e.target.dataset.index
     });
   },
+  // 去往定位页面
+  getLocation() {
+    //
+  }
 })
