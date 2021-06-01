@@ -72,6 +72,9 @@ Page({
     searchKeyWord: 'Apple超级品牌日',
     currentIndex: 0,
     selectedItemLeft: undefined,
+    userAddress: '',
+    userAddressLatitude: '',
+    userAddressLongitude: '',
   },
 
   onLoad: function() {
@@ -82,32 +85,34 @@ Page({
       return;
     }
     // 获取用户位置信息
-    wx.getLocation({
-      type: 'wgs84',
-      success (res) {
-        console.log(res, 'res')
-        // const latitude = res.latitude
-        // const longitude = res.longitude
-        // const speed = res.speed
-        // const accuracy = res.accuracy
-      },
-      fail () {
-        wx.showModal({
-          title: '提示',
-          content: '请自行输入您的位置',
-          success (res) {
-            if (res.confirm) {
-              console.log('用户点击确定')
-            } else if (res.cancel) {
-              console.log('用户点击取消')
-            }
-          }
-        })        
-      }
-    })
+    // wx.getLocation({
+    //   type: 'wgs84',
+    //   success (res) {
+    //     console.log(res, 'res')
+    //     // const latitude = res.latitude
+    //     // const longitude = res.longitude
+    //     // const speed = res.speed
+    //     // const accuracy = res.accuracy
+    //   },
+    //   fail () {
+    //     wx.showModal({
+    //       title: '提示',
+    //       content: '请自行输入您的位置',
+    //       success (res) {
+    //         if (res.confirm) {
+    //           console.log('用户点击确定')
+    //         } else if (res.cancel) {
+    //           console.log('用户点击取消')
+    //         }
+    //       }
+    //     })        
+    //   }
+    // })
     // 获取用户信息
     wx.getSetting({
       success: res => {
+        console.log(res, 'getSetting');
+        // 账户信息
         if (res.authSetting['scope.userInfo']) {
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
           wx.getUserInfo({
@@ -116,6 +121,80 @@ Page({
                 avatarUrl: res.userInfo.avatarUrl,
                 userInfo: res.userInfo
               })
+            }
+          })
+        }
+        // 位置信息
+        if(res.authSetting['scope.userLocation']) {
+          // 用户同意授权位置信息
+          wx.chooseLocation({
+            success: res => {
+              this.setData({
+                userAddress: `${res.address}${res.name}`,
+                userAddressLatitude: res.latitude,
+                userAddressLongitude: res.longitude,
+              });
+            },
+            fail: () => {
+              console.log('取消选择地理位置！');
+            }
+          })
+        } else {
+          // 用户未同意授权位置信息
+          wx.authorize({
+            scope: 'scope.userLocation',  
+            success() {
+              wx.chooseLocation({
+                success: res => {
+                  this.setData({
+                    userAddress: `${res.address}${res.name}`,
+                    userAddressLatitude: res.latitude,
+                    userAddressLongitude: res.longitude,
+                  });
+                },
+                fail: res => {
+                  console.log('打开地图选择位置取消', res);
+                }
+              })
+            },
+            fail() {
+              console.log('用户未同意授权位置信息');
+              wx.showModal({
+                title: '是否授权当前位置',
+                content: '需要获取您的地理位置，请确认授权，否则地图功能将无法使用',
+                success: (tip) => {
+                  if (tip.confirm) {
+                    wx.openSetting({
+                      success: (data) => {
+                        if (data.authSetting["scope.userLocation"] === true) {
+                          wx.showToast({
+                            title: '授权成功',
+                            icon: 'success',
+                            duration: 1000
+                          })
+                          wx.chooseLocation({
+                            success: res => {
+                              this.setData({
+                                userAddress: `${res.address}${res.name}`,
+                                userAddressLatitude: res.latitude,
+                                userAddressLongitude: res.longitude,
+                              });
+                            }
+                          })
+                        } else {
+                          wx.showToast({
+                            title: '授权失败',
+                            icon: 'fail',
+                            duration: 1000
+                          })
+                        }
+                      },
+                      fail: () => {},
+                      complete: () => {}
+                    });
+                  }
+                }
+              });
             }
           })
         }
