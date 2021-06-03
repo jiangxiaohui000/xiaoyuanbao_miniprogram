@@ -16,13 +16,53 @@ page {
   display: flex;
   align-items: center;
   margin-top: 20rpx;
+  position: relative;
 }
+.user-address {
+  position: absolute;
+  padding: 10rpx;
+  background-color: rgba(200, 200, 200, 0.8);
+  left: 0;
+  top: 86rpx;
+  z-index: 1;
+  border-radius: 15rpx;
+  font-size: 24rpx;
+  line-height: 1;
+}
+.location-show {
+  animation: 2s linear l-show;
+}
+.location-none {
+  animation: 2s linear l-none;
+}
+@keyframes l-show {
+  0% {
+    display: none;
+  }
+  100% {
+    display: block;
+  }
+}
+@keyframes l-none {
+  0% {
+    display: block;
+  }
+  100% {
+    display: none;
+  }
+}
+/* .location-arrow {
+  border-width: 14rpx;
+  border-style: solid;
+  border-color: transparent transparent rgba(200, 200, 200, 0.8) transparent;
+  position: absolute;
+  left: 12rpx;
+  top: 58rpx;
+} */
 .search {
-	/* width: 96%; */
 	height: 70rpx;
 	background-color: #eeeeee;
 	border-radius: 20rpx;
-  /* margin-top: 20rpx; */
   padding-left: 20rpx;
   display: flex;
   justify-content: flex-start;
@@ -165,7 +205,7 @@ page {
   color: #aaa;
   text-decoration: line-through;
 }
-.icon-dingwei {
+.dingwei {
   animation: 2s linear 2s infinite running dingwei;
 }
 @keyframes dingwei {

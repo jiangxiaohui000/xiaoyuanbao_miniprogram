@@ -1,5 +1,6 @@
 //index.js
-const app = getApp()
+const app = getApp();
+const QQMapWX = require('../../utils/qqmap-wx-jssdk.js'); // 引入腾讯位置服务
 
 Page({
   data: {
@@ -75,6 +76,9 @@ Page({
     userAddress: '',
     userAddressLatitude: '',
     userAddressLongitude: '',
+    locationFlash: true,
+    locationShow: false,
+    timer: null,
   },
 
   onLoad: function() {
@@ -84,30 +88,6 @@ Page({
       });
       return;
     }
-    // 获取用户位置信息
-    // wx.getLocation({
-    //   type: 'wgs84',
-    //   success (res) {
-    //     console.log(res, 'res')
-    //     // const latitude = res.latitude
-    //     // const longitude = res.longitude
-    //     // const speed = res.speed
-    //     // const accuracy = res.accuracy
-    //   },
-    //   fail () {
-    //     wx.showModal({
-    //       title: '提示',
-    //       content: '请自行输入您的位置',
-    //       success (res) {
-    //         if (res.confirm) {
-    //           console.log('用户点击确定')
-    //         } else if (res.cancel) {
-    //           console.log('用户点击取消')
-    //         }
-    //       }
-    //     })        
-    //   }
-    // })
     // 获取用户信息
     wx.getSetting({
       success: res => {
@@ -127,16 +107,50 @@ Page({
         // 位置信息
         if(res.authSetting['scope.userLocation']) {
           // 用户同意授权位置信息
-          wx.chooseLocation({
-            success: res => {
-              this.setData({
-                userAddress: `${res.address}${res.name}`,
-                userAddressLatitude: res.latitude,
-                userAddressLongitude: res.longitude,
+          wx.getLocation({
+            type: 'wgs84',
+            success: (res) => {
+              console.log(res, 'userLocation');
+              const latitude = res.latitude;
+              const longitude = res.longitude;
+              const qqmapsdk = new QQMapWX({
+                key: 'A4BBZ-RMHYU-LDQVQ-BZDUV-EOPZO-5BFWK'
+              });
+              qqmapsdk.reverseGeocoder({
+                location: {latitude, longitude},
+                success: res => { // 获取到位置
+                  console.log('success', res);
+                  this.setData({
+                    userAddress: res.result.formatted_addresses.recommend,
+                    userAddressLatitude: res.result.location.lat,
+                    userAddressLongitude: res.result.location.lng,
+                    locationFlash: false,
+                    locationShow: true,
+                  });
+                  this.data.timer = setTimeout(() => {
+                    this.setData({
+                      locationShow: false
+                    });
+                    clearTimeout(this.data.timer);
+                  }, 2000);
+                },
+                fail: e => {
+                  console.log(e, 'fail')
+                }
               });
             },
-            fail: () => {
-              console.log('取消选择地理位置！');
+            fail () {
+              // wx.showModal({
+              //   title: '提示',
+              //   content: '请自行输入您的位置',
+              //   success (res) {
+              //     if (res.confirm) {
+              //       console.log('用户点击确定')
+              //     } else if (res.cancel) {
+              //       console.log('用户点击取消')
+              //     }
+              //   }
+              // })    
             }
           })
         } else {
@@ -256,7 +270,7 @@ Page({
     });
   },
   // 去往定位页面
-  getLocation() {
+  goLocationPage() {
     //
   }
 })
