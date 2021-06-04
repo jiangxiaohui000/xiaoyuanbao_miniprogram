@@ -1,4 +1,4 @@
-/**index.wxss**/
+/**homePage.wxss**/
 page {
   background-color: #ffffff;
 }
@@ -29,36 +29,6 @@ page {
   font-size: 24rpx;
   line-height: 1;
 }
-.location-show {
-  animation: 2s linear l-show;
-}
-.location-none {
-  animation: 2s linear l-none;
-}
-@keyframes l-show {
-  0% {
-    display: none;
-  }
-  100% {
-    display: block;
-  }
-}
-@keyframes l-none {
-  0% {
-    display: block;
-  }
-  100% {
-    display: none;
-  }
-}
-/* .location-arrow {
-  border-width: 14rpx;
-  border-style: solid;
-  border-color: transparent transparent rgba(200, 200, 200, 0.8) transparent;
-  position: absolute;
-  left: 12rpx;
-  top: 58rpx;
-} */
 .search {
 	height: 70rpx;
 	background-color: #eeeeee;

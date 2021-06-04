@@ -19,7 +19,7 @@
 	text-align: center;
 	line-height: 100rpx;
 	border-radius: 50%;
-	background-color: #f96;
+	background-color: #07c160;
 }
 
 .sys-message-detail {
@@ -48,11 +48,21 @@
 .sys-message-unread {
 	width: 20rpx;
 	height: 20rpx;
-	background-color: #f66;
-	border-radius: 40%;
+	background-color: #fff;
+	border-radius: 50%;
 	position: absolute;
-	left: 76rpx;
+	left: 74rpx;
 	bottom: 18rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.sys-message-unread-inner, .chat-unread-inner {
+	width: 16rpx;
+	height: 16rpx;
+	border-radius: 50%;
+	background-color: #07c160;
 }
 
 .sys-message-time,
@@ -106,9 +116,12 @@
 .chat-unread {
 	width: 20rpx;
 	height: 20rpx;
-	background-color: #f66;
-	border-radius: 40%;
+	background-color: #fff;
+	border-radius: 50%;
 	position: absolute;
-	left: 80rpx;
+	left: 76rpx;
 	bottom: 22rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }

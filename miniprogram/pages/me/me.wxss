@@ -4,28 +4,24 @@ page {
   height: 100%;
   width: 100%;
 }
-
 .user-info {
   height: 160rpx;
   width: 100%;
   margin-top: 0;
   background-color: #ffffff;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 }
-
 .user-detail-container {
   width: 160rpx;
   overflow: hidden;
 }
-
 .user-name {
   font-size: 36rpx;
   height: 50rpx;
   margin-bottom: 16rpx;
 }
-
 .user-info-button {
   padding: 6rpx 0;
   background-color: #fff;
@@ -34,19 +30,15 @@ page {
   width: 100%;
   height: 20rpx;
   line-height: 20rpx;
-  text-align: center;
   color: #999;
 }
-
 .scan {
   margin: 0 50rpx 0 auto;
 }
-
-.jiantou {
+.arrow {
   font-size: 24rpx;
   margin-left: 6rpx;
 }
-
 .user-info-avatar {
   width: 100rpx;
   height: 100rpx;
@@ -55,11 +47,9 @@ page {
   background-size: cover;
   background-color: white;
 }
-
 .user-info-avatar:after {
   border: none;
 }
-
 .uploader {
   height: 100rpx;
   width: 100rpx;
@@ -70,7 +60,6 @@ page {
   margin-right: -50rpx;
   box-shadow: 0 0 20rpx #aaa;
 }
-
 .uploader-text {
   width: 100%;
   line-height: 52px;
@@ -78,7 +67,6 @@ page {
   color: #ffffff;
   text-align: center;
 }
-
 .uploader-container {
   width: 100%;
   height: 400rpx;
@@ -89,45 +77,28 @@ page {
   box-sizing: border-box;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
-
 .uploader-image {
   width: 100%;
   height: 360rpx;
 }
-
-.goods-and-collection, .buy-and-evaluate {
-  height: 80rpx;
-  background-color: #fff;
-  border-radius: 30rpx;
-  padding: 20rpx;
-  margin: 40rpx;
-}
-
-.buy-and-evaluate {
-  margin-top: 0;
-}
-
-.goods, .collection, .buy, .evaluate {
+.mine {
+  width: 100%;
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+  background-color: #eee;
+  padding: 10rpx 0;
+  border-radius: 15rpx;
 }
-
-.goods, .buy {
-  height: 100%;
-  width: 50%;
-  float: left;
-}
-
-.collection, .evaluate {
-  height: 100%;
-  width: calc(50% - 1px);
-  border-left: 1px solid #ccc;
-  float: left;
-}
-
-.text {
+.goods, .collection, .buy, .evaluate {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  font-size: 24rpx;
+  align-items: center;
+}
+.text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26rpx;
 }

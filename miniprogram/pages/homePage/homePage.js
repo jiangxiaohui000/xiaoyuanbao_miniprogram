@@ -1,4 +1,4 @@
-//index.js
+//homePage.js
 const app = getApp();
 const QQMapWX = require('../../utils/qqmap-wx-jssdk.js'); // 引入腾讯位置服务
 
@@ -109,7 +109,7 @@ Page({
           // 用户同意授权位置信息
           wx.getLocation({
             type: 'wgs84',
-            success: (res) => {
+            success: (res) => { // 先获取到经纬度
               console.log(res, 'userLocation');
               const latitude = res.latitude;
               const longitude = res.longitude;
@@ -118,7 +118,7 @@ Page({
               });
               qqmapsdk.reverseGeocoder({
                 location: {latitude, longitude},
-                success: res => { // 获取到位置
+                success: res => { // 再通过腾讯位置服务获取到地理位置
                   console.log('success', res);
                   this.setData({
                     userAddress: res.result.formatted_addresses.recommend,
@@ -132,7 +132,7 @@ Page({
                       locationShow: false
                     });
                     clearTimeout(this.data.timer);
-                  }, 2000);
+                  }, 3000);
                 },
                 fail: e => {
                   console.log(e, 'fail')

@@ -20,6 +20,7 @@
     "pages/personalInformation/personalInformation"
   ],
   "tabBar": {
+    "custom": true,
     "color": "#7A7E83",
     "selectedColor": "#07c160",
     "borderStyle": "black",
@@ -33,14 +34,10 @@
       "pagePath": "pages/chat/chat",
       "iconPath": "images/icon_chat.png",
       "selectedIconPath": "images/icon_chat_selected.png",
-      "text": "聊天"
-    }, {
-      "pagePath": "pages/me/me",
-      "iconPath": "images/icon_me.png",
-      "selectedIconPath": "images/icon_me_selected.png",
-      "text": "我的"
+      "text": "消息"
     }]
   },
+  "usingComponents": {},
   "window": {
     "backgroundColor": "#ffffff",
     "backgroundTextStyle": "light",

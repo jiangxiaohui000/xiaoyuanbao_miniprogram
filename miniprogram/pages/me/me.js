@@ -5,7 +5,11 @@ Page({
 		userInfo: {},
 		logged: false,
 		takeSession: false,
-		requestResult: ''
+		requestResult: '',
+		goodsNum: 0,
+		collectionNum: 0,
+		buysNum: 0,
+		evaluateNum: 0,
 	},
 
 	onLoad: function() {
@@ -22,6 +26,7 @@ Page({
 					// 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
 					wx.getUserInfo({
 						success: res => {
+							console.log(res, 'me')
 							this.setData({
 								avatarUrl: res.userInfo.avatarUrl,
 								userInfo: res.userInfo
@@ -112,7 +117,7 @@ Page({
 			}
 		})
 	},
-
+	// 下拉刷新
 	onPullDownRefresh: function() {
 		console.log('me');
 		this.onLoad();
@@ -125,7 +130,7 @@ Page({
 			}
 		})
 	},
-	// 个人信息
+	// 前往个人信息页面
 	gotoUserDetail: function() {
 		wx.navigateTo({
 			url: '../personalInformation/personalInformation',

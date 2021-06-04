@@ -1,9 +1,8 @@
-<!--index.wxml-->
+<!--homePage.wxml-->
 <scroll-view class="container" scroll-y="true" enable-flex="true">
   <view class="search-box">
     <i class="iconfont icon-dingwei {{locationFlash ? 'dingwei' : ''}}" bindtap="goLocationPage"></i>
-    <text class="user-address {{locationShow ? 'location-show' : 'location-none'}}">当前位置：{{userAddress}}</text>
-    <!-- <view class="location-arrow"></view> -->
+    <text class="user-address" wx:if="{{locationShow}}">当前位置：{{userAddress}}</text>
     <!-- 搜索框 -->
     <view class="search" bindtap="gotoSearch">
       <icon type='search' size="14"></icon>
@@ -53,9 +52,11 @@
       wx:key="id"
       data-id="{{item.id}}"
       bindtap="gotoGoodsDetail">
+      <!-- 图片 -->
       <view class="img-container">
         <cover-image class="img" src="{{item.img}}" alt="" ></cover-image>
       </view>
+      <!-- 描述 -->
       <view class="text-container">
         <view class="goods-desc">{{item.desc}}</view>
         <view class="goods-price">
@@ -73,6 +74,8 @@
       </view>
     </view>
   </view>
+
+  <i class="iconfont icon-dixian"></i>
 
   <!-- 操作数据库 -->
   <!-- <view class="uploader">

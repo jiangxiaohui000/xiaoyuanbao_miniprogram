@@ -2,7 +2,9 @@
   <!-- 系统信息 -->
   <view class="sys-message">
     <view class="sys-message-icon"><i class="iconfont icon-xitongxiaoxi"></i></view>
-    <view class="sys-message-unread" wx:if="{{sysMessageUnRead}}"></view>
+    <view class="sys-message-unread" wx:if="{{sysMessageUnRead}}">
+      <view class="sys-message-unread-inner"></view>
+    </view>
     <view class="sys-message-detail">
       <view class="sys-message-detail-top">
         <view style="font-size: 30rpx;line-height: 66rpx">系统消息</view>
@@ -20,21 +22,26 @@
     bindtap="gotoChatItem"
   >
     <view>
+      <!-- 头像 -->
       <image
         class="chat-head-portrait"
         src="{{item.img}}"
         mode="center"
         lazy-load="false"
-      >
-    </image>
+      ></image>
     </view>
     <view class="chat-right-info">
+      <!-- 昵称 -->
       <view class="chat-right-info-top">
         <view class="chat-name">{{item.name}}</view>
         <view class="chat-time">{{item.time}}</view>
       </view>
+      <!-- 消息 -->
       <view class="chat-info">{{item.info}}</view>
     </view>
-    <view class="chat-unread" wx:if="{{item.hasUnreadMessage}}"></view>
+    <!-- 未读 -->
+    <view class="chat-unread" wx:if="{{item.hasUnreadMessage}}">
+      <view class="chat-unread-inner"></view>
+    </view>
   </view>
 </view>

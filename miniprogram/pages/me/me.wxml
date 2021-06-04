@@ -1,5 +1,6 @@
 <!-- 我的 -->
 <view class="user-info">
+  <!-- 用户头像 -->
   <button
     open-type="getUserInfo"
     bindgetuserinfo="onGetUserInfo"
@@ -7,12 +8,13 @@
     style="background-image: url({{avatarUrl}})"
   ></button>
 	<view class="user-detail-container">
+    <!-- 用户昵称 -->
 	  <view class="user-name">{{userInfo.nickName}}</view>
 		<view
       class="user-info-button"
       bindtap="gotoUserDetail">
       <span>个人信息</span>
-      <i class="jiantou iconfont icon-arrow-right"></i>
+      <i class="iconfont icon-arrow-right arrow"></i>
     </view>
 	</view>
   <!-- <view>
@@ -22,37 +24,34 @@
   <i class="scan iconfont icon-saoyisao" bindtap="onScan"></i>
 </view>
 
-<view class="goods-and-collection">
+<view class="mine">
   <view class="goods" bindtap="goToGoodsDetail">
-    <i class="iconfont icon-shangpin"></i>
     <view class="text">
-      <text>我的宝贝</text>
-      <text>0 件</text>
+      <i class="iconfont icon-shangpin"></i>
+      <text style="margin-left: 10rpx;">我的宝贝</text>
     </view>
+    <text>{{goodsNum}}</text>
   </view>
   <view class="collection" bindtap="goToCollectionDetail">
-    <i class="iconfont icon-collection-b"></i>
     <view class="text">
-      <text>我的收藏</text>
-      <text>1 件</text>
+      <i class="iconfont icon-collection-b"></i>
+      <text style="margin-left: 10rpx;">我的收藏</text>
     </view>
+    <text>{{collectionNum}}</text>
   </view>
-</view>
-
-<view class="buy-and-evaluate">
   <view class="buy" bindtap="goToBuyDetail">
-    <i class="iconfont icon-gouwujianying"></i>
     <view class="text">
-      <text>我的购买</text>
-      <text>0 件</text>
+      <i class="iconfont icon-gouwujianying"></i>
+      <text style="margin-left: 10rpx;">我的购买</text>
     </view>
+    <text>{{buysNum}}</text>
   </view>
   <view class="evaluate" bindtap="goToEvaluateDetail">
-    <i class="iconfont icon-pingjia"></i>
     <view class="text">
-      <text>我的评价</text>
-      <text>1 次</text>
+      <i class="iconfont icon-pingjia"></i>
+      <text style="margin-left: 10rpx;">我的评价</text>
     </view>
+    <text>{{evaluateNum}}</text>
   </view>
 </view>
 
