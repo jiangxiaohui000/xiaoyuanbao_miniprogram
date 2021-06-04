@@ -25,17 +25,60 @@ Component({
 	},
 	methods: {
 		switchTab(e) {
-			console.log(e, '3333')
+			console.log(e, 'switchTab')
 			const data = e.currentTarget.dataset;
-			if(data.index === 1) {
-				console.log(11111)
-			} else {
+			this.setData({
+				selected: data.index
+			});
+			if(data.index === 1) { // 发布
+				this.doUpload();
+			} else { // 首页、消息tab
 				const url = data.path
 				wx.switchTab({ url })
 			}
-			this.setData({
-				selected: data.index
+		},
+		// 上传图片
+		doUpload: function () {
+			// 选择图片
+			wx.chooseImage({
+				count: 9,
+				sizeType: ['compressed'],
+				sourceType: ['album', 'camera'],
+				success: function (res) {
+					wx.showLoading({
+						title: '上传中',
+					});
+					const filePath = res.tempFilePaths[0]
+					// 上传图片
+					const cloudPath = 'my-image' + filePath.match(/\.[^.]+?$/)[0]
+					wx.cloud.uploadFile({
+						cloudPath,
+						filePath,
+						success: res => {
+							console.log('[上传文件] 成功：', res)
+							app.globalData.fileID = res.fileID
+							app.globalData.cloudPath = cloudPath
+							app.globalData.imagePath = filePath
+							wx.navigateTo({
+								url: '../storageConsole/storageConsole'
+							})
+						},
+						fail: e => {
+							console.error('[上传文件] 失败：', e)
+							wx.showToast({
+								icon: 'none',
+								title: '上传失败',
+							})
+						},
+						complete: () => {
+							wx.hideLoading()
+						}
+					})
+				},
+				fail: e => {
+					console.error(e)
+				}
 			})
-		}
+		},
 	},
 })
