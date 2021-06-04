@@ -3,8 +3,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 48rpx;
-  background: white;
+  height: 100rpx;
+  background-color: #fff;
   display: flex;
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -28,11 +28,11 @@
   flex-direction: column;
 }
 
-.tab-bar-item cover-image {
+.tab-bar-item .tab-bar-item-image {
   width: 27px;
   height: 27px;
 }
 
-.tab-bar-item cover-view {
+.tab-bar-item .tab-bar-item-view {
   font-size: 10px;
 }
