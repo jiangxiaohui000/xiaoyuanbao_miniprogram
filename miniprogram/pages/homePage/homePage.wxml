@@ -1,6 +1,8 @@
 <!--homePage.wxml-->
 <scroll-view class="container" scroll-y="true" enable-flex="true">
-  <view class="search-box">
+  <!-- 工具栏 -->
+  <view class="tool-box">
+    <!-- 定位 -->
     <i class="iconfont icon-dingwei {{locationFlash ? 'dingwei' : ''}}" bindtap="goLocationPage"></i>
     <text class="user-address" wx:if="{{locationShow}}">当前位置：{{userAddress}}</text>
     <!-- 搜索框 -->
@@ -8,7 +10,11 @@
       <icon type='search' size="14"></icon>
       <view class="input">{{searchKeyWord}}</view>
       <button type="primary" class="search-button">搜 索</button>
-    </view>  
+    </view>
+    <!-- 我的 -->
+    <view class="mine">
+      <image class="avatar" src="{{avatarUrl}}"></image>
+    </view>
   </view>
   <view
     class="hidden-search"
@@ -105,3 +111,7 @@
     </navigator>
   </view> -->
 </scroll-view>
+
+<view class="bottom-button" bindtap="doUpload">
+ <i class="iconfont icon-maichu"></i>
+</view>

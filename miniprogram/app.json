@@ -20,7 +20,6 @@
     "pages/personalInformation/personalInformation"
   ],
   "tabBar": {
-    "custom": true,
     "color": "#7A7E83",
     "selectedColor": "#07c160",
     "borderStyle": "black",
@@ -31,11 +30,6 @@
       "selectedIconPath": "images/icon_home_selected.png",
       "text": "首页"
     }, {
-      "pagePath": "pages/homePage/homePage",
-			"iconPath": "images/icon_add.png",
-			"selectedIconPath": "images/icon_add.png",
-			"text": ""
-		}, {
       "pagePath": "pages/chat/chat",
       "iconPath": "images/icon_chat.png",
       "selectedIconPath": "images/icon_chat_selected.png",
