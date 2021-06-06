@@ -8,9 +8,6 @@ Page({
 		logged: false,
 		takeSession: false,
 		requestResult: '',
-		collectionNum: 0,
-		buysNum: 0,
-		evaluateNum: 0,
 		goodsList: [{
       id: 1,
       img: '../../images/kouhong.jpg',
@@ -51,7 +48,23 @@ Page({
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '33333',
-    }],
+		}],
+		mineItems: [{
+			value: 'collection',
+			label: '收藏',
+			icon: 'collection-b',
+			num: 0
+		}, {
+			value: 'buy',
+			label: '购买',
+			icon: 'gouwujianying',
+			num: 0
+		}, {
+			value: 'evaluate',
+			label: '评价',
+			icon: 'pingjia',
+			num: 0
+		}],
 	},
 
 	onLoad: function() {
@@ -162,20 +175,8 @@ Page({
 		console.log('me');
 		this.onLoad();
 	},
-	// 我的宝贝
-	goToGoodsDetail: function() {
-		console.log('goods');
+	// 详情
+	toMineItemDetail: function(e) {
+		console.log('e', e);
 	},
-	// 我的收藏
-	goToCollectionDetail: function() {
-		console.log('collection');
-	},
-	// 我的购买
-	goToBuyDetail: () => {
-		console.log('buy');
-	},
-	// 我的评价
-	goToEvaluateDetail: () => {
-		console.log('evaluate');
-	}
 })

@@ -17,31 +17,15 @@
 </view>
 
 <view class="mine">
-  <view class="collection" bindtap="goToCollectionDetail">
-    <view class="text">
-      <i class="iconfont icon-collection-b"></i>
-      <text style="margin-left: 10rpx;">收藏</text>
-    </view>
-    <text>{{collectionNum}}</text>
-  </view>
-  <view class="buy" bindtap="goToBuyDetail">
-    <view class="text">
-      <i class="iconfont icon-gouwujianying"></i>
-      <text style="margin-left: 10rpx;">购买</text>
-    </view>
-    <text>{{buysNum}}</text>
-  </view>
-  <view class="evaluate" bindtap="goToEvaluateDetail">
-    <view class="text">
-      <i class="iconfont icon-pingjia"></i>
-      <text style="margin-left: 10rpx;">评价</text>
-    </view>
-    <text>{{evaluateNum}}</text>
+  <view class="mine-item" wx:for="{{mineItems}}" wx:key="item" data-item="{{item}}" bindtap="toMineItemDetail">
+    <i class="iconfont icon-{{item.icon}}"></i>
+    <text style="margin-left: 10rpx;">{{item.label}}</text>
+    <text style="margin-left: 10rpx;">{{item.num}}</text>
   </view>
 </view>
 
 <view class="goods-container">
-  <view class="goods-title">我发布的{{goodsList.length}}</view>
+  <view class="goods-title">我发布的  {{goodsList.length}}</view>
   <view
     class="goods-item"
     wx:for="{{goodsList}}"
