@@ -80,7 +80,6 @@ Page({
     locationShow: false,
     timer: null,
     avatarUrl: '',
-    userInfo: '',
   },
 
   onLoad: function() {
@@ -90,135 +89,188 @@ Page({
       });
       return;
     }
+    const _this = this;
     wx.getSetting({
       success: res => {
         console.log(res, 'getSetting');
-        // 账户信息
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          this.getUserInfo();
-        }
+        // 用户信息
+        this.getUserInfo(res);
         // 位置信息
-        if(res.authSetting['scope.userLocation']) {
-          // 用户同意授权位置信息
-          wx.getLocation({
-            type: 'wgs84',
-            success: (res) => { // 先获取到经纬度
-              console.log(res, 'userLocation');
-              const latitude = res.latitude;
-              const longitude = res.longitude;
-              const qqmapsdk = new QQMapWX({
-                key: 'A4BBZ-RMHYU-LDQVQ-BZDUV-EOPZO-5BFWK'
-              });
-              qqmapsdk.reverseGeocoder({
-                location: {latitude, longitude},
-                success: res => { // 再通过腾讯位置服务获取到地理位置
-                  console.log('success', res);
-                  this.setData({
-                    userAddress: res.result.formatted_addresses.recommend,
-                    userAddressLatitude: res.result.location.lat,
-                    userAddressLongitude: res.result.location.lng,
-                    locationFlash: false,
-                    locationShow: true,
-                  });
-                  this.data.timer = setTimeout(() => {
-                    this.setData({
-                      locationShow: false
-                    });
-                    clearTimeout(this.data.timer);
-                  }, 3000);
-                },
-                fail: e => {
-                  console.log(e, 'fail')
-                }
-              });
-            },
-            fail () {
-              // wx.showModal({
-              //   title: '提示',
-              //   content: '请自行输入您的位置',
-              //   success (res) {
-              //     if (res.confirm) {
-              //       console.log('用户点击确定')
-              //     } else if (res.cancel) {
-              //       console.log('用户点击取消')
-              //     }
-              //   }
-              // })    
-            }
-          })
-        } else {
-          // 用户未同意授权位置信息
-          wx.authorize({
-            scope: 'scope.userLocation',  
-            success() {
-              wx.chooseLocation({
-                success: res => {
-                  this.setData({
-                    userAddress: `${res.address}${res.name}`,
-                    userAddressLatitude: res.latitude,
-                    userAddressLongitude: res.longitude,
-                  });
-                },
-                fail: res => {
-                  console.log('打开地图选择位置取消', res);
-                }
-              })
-            },
-            fail() {
-              console.log('用户未同意授权位置信息');
-              wx.showModal({
-                title: '是否授权当前位置',
-                content: '需要获取您的地理位置，请确认授权，否则地图功能将无法使用',
-                success: (tip) => {
-                  if (tip.confirm) {
-                    wx.openSetting({
-                      success: (data) => {
-                        if (data.authSetting["scope.userLocation"] === true) {
-                          wx.showToast({
-                            title: '授权成功',
-                            icon: 'success',
-                            duration: 1000
-                          })
-                          wx.chooseLocation({
-                            success: res => {
-                              this.setData({
-                                userAddress: `${res.address}${res.name}`,
-                                userAddressLatitude: res.latitude,
-                                userAddressLongitude: res.longitude,
-                              });
-                            }
-                          })
-                        } else {
-                          wx.showToast({
-                            title: '授权失败',
-                            icon: 'fail',
-                            duration: 1000
-                          })
-                        }
-                      },
-                      fail: () => {},
-                      complete: () => {}
-                    });
-                  }
-                }
-              });
-            }
-          })
-        }
+        this.getUserLocation(res);
       }
     });
   },
   // 获取用户信息
-  getUserInfo: function() {
-    wx.getUserInfo({
-      success: res => {
-        this.setData({
-          avatarUrl: res.userInfo.avatarUrl,
-          userInfo: res.userInfo
+  getUserInfo: function(res) {
+    if (res.authSetting['scope.userInfo']) { // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+      wx.getUserInfo({
+        success: res => {
+          this.setData({
+            avatarUrl: res.userInfo.avatarUrl,
+            userInfo: res.userInfo
+          })
+        }
+      })      
+    } else {
+      wx.login({
+        timeout: 1000,
+        success: res => {
+          console.log('login seccess', res)
+        }
+      })
+    }
+  },
+  // 获取用户位置
+  getUserLocation: function(res) {
+    if(res.authSetting['scope.userLocation']) { // 用户默认同意授权位置信息
+      wx.getLocation({
+        type: 'wgs84',
+        success: (res) => { // 先获取到经纬度
+          console.log(res, 'userLocation');
+          const latitude = res.latitude;
+          const longitude = res.longitude;
+          const qqmapsdk = new QQMapWX({
+            key: 'A4BBZ-RMHYU-LDQVQ-BZDUV-EOPZO-5BFWK'
+          });
+          qqmapsdk.reverseGeocoder({
+            location: {latitude, longitude},
+            success: res => { // 再通过腾讯位置服务获取到地理位置
+              console.log('location service', res);
+              this.setData({
+                userAddress: res.result.formatted_addresses.recommend,
+                userAddressLatitude: res.result.location.lat,
+                userAddressLongitude: res.result.location.lng,
+                locationFlash: false,
+                locationShow: true,
+              });
+              this.data.timer = setTimeout(() => {
+                this.setData({
+                  locationShow: false
+                });
+                clearTimeout(this.data.timer);
+              }, 3000);
+            },
+            fail: e => { // 腾讯位置服务出错
+              console.log(e, 'fail')
+              wx.showToast({
+                title: '服务出错误啦，请到设置中重新开启~',
+              });
+              this.setData({
+                locationFlash: false
+              });
+            }
+          });
+        },
+        fail (e) { // 未获取到经纬度
+          console.log(e, 'fail')
+          wx.showModal({
+            title: '提示',
+            content: '出错啦，让小宝休息一下下',
+            showCancel: false,
+            confirmText: '我知道啦'
+          })   
+        }
+      })
+    } else { // 用户未同意授权位置信息
+      wx.authorize({
+        scope: 'scope.userLocation',  
+        success() { // 用户同意授权位置信息
+          wx.chooseLocation({
+            success: res => {
+              this.setData({
+                userAddress: `${res.address}${res.name}`,
+                userAddressLatitude: res.latitude,
+                userAddressLongitude: res.longitude,
+                locationFlash: false,
+                locationShow: true,
+              });
+            },
+            fail: res => {
+              console.log('打开地图选择位置取消', res);
+            }
+          })
+        },
+        fail() { // 用户未同意授权位置信息
+          console.log('用户未同意授权位置信息');
+          wx.showModal({
+            title: '是否授权当前位置',
+            content: '糟糕...我不知道您在哪儿，请授权给我位置信息，小宝会为您提供更好的服务',
+            success: (tip) => {
+              if (tip.confirm) {
+                wx.openSetting({
+                  success: (data) => {
+                    if (data.authSetting["scope.userLocation"]) {
+                      wx.chooseLocation({
+                        success: res => {
+                          _this.setData({
+                            userAddress: `${res.address}${res.name}`,
+                            userAddressLatitude: res.latitude,
+                            userAddressLongitude: res.longitude,
+                            locationFlash: false,
+                            locationShow: true,
+                          });
+                        }
+                      })
+                    } else {
+                      wx.showModal({
+                        title: '提示',
+                        content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
+                        showCancel: false,
+                        confirmText: '我知道啦'
+                      })
+                    }
+                  },
+                  fail: () => {},
+                });
+              } else {
+                wx.showModal({
+                  title: '您拒绝了我...',
+                  content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
+                  showCancel: false,
+                  confirmText: '我知道啦'
+                })
+              }
+            }
+          });
+        }
+      })
+    }
+  },
+  // 去往定位页面
+  goLocationPage() {
+    const _this = this;
+    wx.openSetting({
+      success: (data) => {
+        if (data.authSetting["scope.userLocation"]) {
+          wx.chooseLocation({
+            success: res => {
+              _this.setData({
+                userAddress: `${res.address}${res.name}`,
+                userAddressLatitude: res.latitude,
+                userAddressLongitude: res.longitude,
+                locationFlash: false,
+                locationShow: true,
+              });
+            }
+          })
+        } else {
+          wx.showModal({
+            title: '提示',
+            content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
+            showCancel: false,
+            confirmText: '我知道啦'
+          })
+        }
+      },
+      fail: () => {
+        wx.showModal({
+          title: '提示',
+          content: '出错啦，让小宝休息一下下',
+          showCancel: false,
+          confirmText: '我知道啦'
         })
-      }
-    })
+      },
+    });
   },
   // 下拉刷新
 	onPullDownRefresh: function() {
@@ -274,11 +326,7 @@ Page({
       currentIndex: e.target.dataset.index
     });
   },
-  // 去往定位页面
-  goLocationPage() {
-    //
-  },
-  // 上传图片
+  // 上传图片，发布宝贝
   doUpload: function () {
     // 选择图片
     wx.chooseImage({
