@@ -7,60 +7,66 @@
     class="user-info-avatar"
     style="background-image: url({{avatarUrl}})"
   ></button>
-	<view class="user-detail-container">
-    <!-- 用户昵称 -->
-	  <view class="user-name">{{userInfo.nickName}}</view>
-		<view
-      class="user-info-button"
-      bindtap="gotoUserDetail">
-      <span>个人信息</span>
-      <i class="iconfont icon-arrow-right arrow"></i>
-    </view>
-	</view>
+  <!-- 用户昵称 -->
+	<view class="user-name">{{userInfo.nickName}}</view>
   <!-- <view>
     <button class="userinfo-nickname" bindtap="onGetOpenid">点击获取 openid</button>
   </view> -->
   <!-- 扫一扫 -->
-  <i class="scan iconfont icon-saoyisao" bindtap="onScan"></i>
+  <!-- <i class="scan iconfont icon-saoyisao" bindtap="onScan"></i> -->
 </view>
 
 <view class="mine">
-  <view class="goods" bindtap="goToGoodsDetail">
-    <view class="text">
-      <i class="iconfont icon-shangpin"></i>
-      <text style="margin-left: 10rpx;">我的宝贝</text>
-    </view>
-    <text>{{goodsNum}}</text>
-  </view>
   <view class="collection" bindtap="goToCollectionDetail">
     <view class="text">
       <i class="iconfont icon-collection-b"></i>
-      <text style="margin-left: 10rpx;">我的收藏</text>
+      <text style="margin-left: 10rpx;">收藏</text>
     </view>
     <text>{{collectionNum}}</text>
   </view>
   <view class="buy" bindtap="goToBuyDetail">
     <view class="text">
       <i class="iconfont icon-gouwujianying"></i>
-      <text style="margin-left: 10rpx;">我的购买</text>
+      <text style="margin-left: 10rpx;">购买</text>
     </view>
     <text>{{buysNum}}</text>
   </view>
   <view class="evaluate" bindtap="goToEvaluateDetail">
     <view class="text">
       <i class="iconfont icon-pingjia"></i>
-      <text style="margin-left: 10rpx;">我的评价</text>
+      <text style="margin-left: 10rpx;">评价</text>
     </view>
     <text>{{evaluateNum}}</text>
   </view>
 </view>
 
-<!-- 上传图片 -->
-<view class="uploader">
-  <view class="uploader-text" bindtap="doUpload">
-    <text>发布</text>
+<view class="goods-container">
+  <view class="goods-title">我发布的{{goodsList.length}}</view>
+  <view
+    class="goods-item"
+    wx:for="{{goodsList}}"
+    wx:key="id"
+    data-id="{{item.id}}"
+    catchtap="goToGoodsDetail">
+    <!-- 图片 -->
+    <view class="img-container">
+      <image class="img" src="{{item.img}}" alt=""></image>
+    </view>
+    <!-- 描述 -->
+    <view class="text-container">
+      <view class="goods-desc">{{item.desc}}</view>
+      <view class="goods-price">
+        <text class="goods-current-price">￥{{item.currentPrice}}</text>
+        <view class="operate-button-group">
+          <view class="operate-button" data-id="{{item.id}}" catchtap="editGood">编辑</view>
+          <view class="operate-button" data-id="{{item.id}}" catchtap="priceReduction">降价</view>
+          <view class="operate-button" data-id="{{item.id}}" catchtap="more">更多</view>
+        </view>  
+        </view>
+    </view>
   </view>
-  <view class="uploader-container" wx:if="{{imgUrl}}">
-    <image class="uploader-image" src="{{imgUrl}}" mode="aspectFit" bindtap="previewImg"></image>
-  </view>
+</view>
+
+<view class="bottom-button" bindtap="doUpload">
+ <i class="iconfont icon-maichu"></i>
 </view>

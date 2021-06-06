@@ -111,7 +111,3 @@
     </navigator>
   </view> -->
 </scroll-view>
-
-<view class="bottom-button" bindtap="doUpload">
- <i class="iconfont icon-maichu"></i>
-</view>

@@ -2,14 +2,56 @@ const app = getApp()
 Page({
 	data: {
 		avatarUrl: '../../images/user-unlogin.png',
-		userInfo: {},
+		userInfo: {
+			nickName: '未登录'
+		},
 		logged: false,
 		takeSession: false,
 		requestResult: '',
-		goodsNum: 0,
 		collectionNum: 0,
 		buysNum: 0,
 		evaluateNum: 0,
+		goodsList: [{
+      id: 1,
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
+      currentPrice: '111',
+    }, {
+      id: 2,
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
+      currentPrice: '33333',
+    }, {
+      id: 3,
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
+      currentPrice: '111',
+    }, {
+      id: 4,
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
+      currentPrice: '33333',
+    }, {
+      id: 5,
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
+      currentPrice: '111',
+    }, {
+      id: 6,
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
+      currentPrice: '33333',
+    }, {
+      id: 7,
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
+      currentPrice: '111',
+    }, {
+      id: 8,
+      img: '../../images/kouhong.jpg',
+      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
+      currentPrice: '33333',
+    }],
 	},
 
 	onLoad: function() {
@@ -48,7 +90,6 @@ Page({
 			})
 		}
 	},
-
 	onGetOpenid: function () {
 		wx.showLoading({
 			title: '请稍后...',
@@ -73,7 +114,6 @@ Page({
 			}
 		})
 	},
-
 	// 上传图片
 	doUpload: function () {
 		// 选择图片
@@ -121,20 +161,6 @@ Page({
 	onPullDownRefresh: function() {
 		console.log('me');
 		this.onLoad();
-	},
-	// 扫一扫
-	onScan: function() {
-		wx.scanCode({
-			success: function(res) {
-				console.log(res.result);
-			}
-		})
-	},
-	// 前往个人信息页面
-	gotoUserDetail: function() {
-		wx.navigateTo({
-			url: '../personalInformation/personalInformation',
-		})
 	},
 	// 我的宝贝
 	goToGoodsDetail: function() {

@@ -94,18 +94,18 @@ Page({
       success: res => {
         console.log(res, 'getSetting');
         // 用户信息
-        this.getUserInfo(res);
+        this.getUserInfo(res, _this);
         // 位置信息
-        this.getUserLocation(res);
+        this.getUserLocation(res, _this);
       }
     });
   },
   // 获取用户信息
-  getUserInfo: function(res) {
+  getUserInfo: function(res, _this) {
     if (res.authSetting['scope.userInfo']) { // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
       wx.getUserInfo({
         success: res => {
-          this.setData({
+          _this.setData({
             avatarUrl: res.userInfo.avatarUrl,
             userInfo: res.userInfo
           })
@@ -121,7 +121,7 @@ Page({
     }
   },
   // 获取用户位置
-  getUserLocation: function(res) {
+  getUserLocation: (res, _this) => {
     if(res.authSetting['scope.userLocation']) { // 用户默认同意授权位置信息
       wx.getLocation({
         type: 'wgs84',
@@ -136,18 +136,18 @@ Page({
             location: {latitude, longitude},
             success: res => { // 再通过腾讯位置服务获取到地理位置
               console.log('location service', res);
-              this.setData({
+              _this.setData({
                 userAddress: res.result.formatted_addresses.recommend,
                 userAddressLatitude: res.result.location.lat,
                 userAddressLongitude: res.result.location.lng,
                 locationFlash: false,
                 locationShow: true,
               });
-              this.data.timer = setTimeout(() => {
-                this.setData({
+              _this.data.timer = setTimeout(() => {
+                _this.setData({
                   locationShow: false
                 });
-                clearTimeout(this.data.timer);
+                clearTimeout(_this.data.timer);
               }, 3000);
             },
             fail: e => { // 腾讯位置服务出错
@@ -155,7 +155,7 @@ Page({
               wx.showToast({
                 title: '服务出错误啦，请到设置中重新开启~',
               });
-              this.setData({
+              _this.setData({
                 locationFlash: false
               });
             }
@@ -172,12 +172,13 @@ Page({
         }
       })
     } else { // 用户未同意授权位置信息
+      // const _this = this;
       wx.authorize({
         scope: 'scope.userLocation',  
-        success() { // 用户同意授权位置信息
+        success: () => { // 用户同意授权位置信息
           wx.chooseLocation({
             success: res => {
-              this.setData({
+              _this.setData({
                 userAddress: `${res.address}${res.name}`,
                 userAddressLatitude: res.latitude,
                 userAddressLongitude: res.longitude,
@@ -190,7 +191,8 @@ Page({
             }
           })
         },
-        fail() { // 用户未同意授权位置信息
+        fail: () => { // 用户未同意授权位置信息
+          // const _this = this;
           console.log('用户未同意授权位置信息');
           wx.showModal({
             title: '是否授权当前位置',

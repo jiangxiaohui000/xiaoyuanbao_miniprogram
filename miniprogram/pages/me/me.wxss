@@ -1,43 +1,28 @@
 page {
-  background-color: #ffffff;
+  background-color: #eee;
   position: relative;
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .user-info {
   height: 160rpx;
   width: 100%;
   margin-top: 0;
-  background-color: #ffffff;
+  background-color: #07c160;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-}
-.user-detail-container {
-  width: 160rpx;
-  overflow: hidden;
+  border-bottom-right-radius: 50rpx;
+  border-bottom-left-radius: 50rpx;
 }
 .user-name {
   font-size: 36rpx;
-  height: 50rpx;
   margin-bottom: 16rpx;
-}
-.user-info-button {
-  padding: 6rpx 0;
-  background-color: #fff;
-  font-size: 24rpx;
-  border-radius: 10px;
-  width: 100%;
-  height: 20rpx;
-  line-height: 20rpx;
-  color: #999;
 }
 .scan {
   margin: 0 50rpx 0 auto;
-}
-.arrow {
-  font-size: 24rpx;
-  margin-left: 6rpx;
 }
 .user-info-avatar {
   width: 100rpx;
@@ -50,43 +35,12 @@ page {
 .user-info-avatar:after {
   border: none;
 }
-.uploader {
-  height: 100rpx;
-  width: 100rpx;
-  border-radius: 50%;
-  position: absolute;
-  bottom: 50rpx;
-  right: 50%;
-  margin-right: -50rpx;
-  box-shadow: 0 0 20rpx #aaa;
-}
-.uploader-text {
-  width: 100%;
-  line-height: 52px;
-  font-size: 34rpx;
-  color: #ffffff;
-  text-align: center;
-}
-.uploader-container {
-  width: 100%;
-  height: 400rpx;
-  padding: 20rpx 20rpx 20rpx 0;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  box-sizing: border-box;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-.uploader-image {
-  width: 100%;
-  height: 360rpx;
-}
 .mine {
-  width: 100%;
+  width: 95%;
   display: flex;
   justify-content: space-between;
   margin-top: 20rpx;
-  background-color: #eee;
+  background-color: #fff;
   padding: 10rpx 0;
   border-radius: 15rpx;
 }
@@ -101,4 +55,90 @@ page {
   justify-content: center;
   align-items: center;
   font-size: 26rpx;
+}
+.goods-container {
+  margin-top: 20rpx;
+  width: 95%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color: #fff;
+  border-radius: 15rpx;
+}
+.goods-title {
+  width: 100%;
+  height: 60rpx;
+  line-height: 65rpx;
+  font-size: 30rpx;
+  padding-left: 20rpx;
+  border-bottom: 1px solid #ddd;
+}
+.goods-item {
+  height: 180rpx;
+  overflow: hidden;
+  padding-right: 15rpx;
+  display: flex;
+  margin-bottom: 10rpx;
+  border-bottom: 1px solid #eee;
+}
+.goods-item:last-child {
+  border-bottom: none;
+}
+.goods-item .img-container {
+  flex: 1;
+}
+.goods-item .img-container .img {
+  background-size: cover;
+  border-radius: 20rpx;
+  width: 180rpx;
+  height: 180rpx;
+}
+.goods-item .text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 3;
+  padding-left: 14rpx;
+}
+.goods-item .text-container .goods-desc {
+  font-size: 24rpx;
+  color: #333;
+  overflow: hidden;
+  line-height: 30rpx;
+  height: 60rpx;
+}
+.goods-item .text-container .goods-price {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.goods-item .text-container .goods-price .goods-current-price {
+  font-size: 34rpx;
+  color: red;
+  margin-right: 16rpx;
+}
+.goods-item .text-container .goods-price .operate-button-group {
+  display: flex;
+}
+.goods-item .text-container .goods-price .operate-button {
+  width: 50rpx;
+  height: 50rpx;
+  text-align: center;
+  line-height: 50rpx;
+  border-radius: 50%;
+  border: 1px solid #aaa;
+  font-size: 20rpx;
+  margin-left: 10rpx;
+}
+.bottom-button {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 50%;
+  margin-left: -50rpx;
+  bottom: 20rpx;
+  background-color: #07c160;
 }

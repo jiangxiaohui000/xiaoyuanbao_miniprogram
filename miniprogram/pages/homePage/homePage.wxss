@@ -209,16 +209,3 @@ page {
     transform: scale(1);
   }
 }
-.bottom-button {
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  left: 50%;
-  margin-left: -25rpx;
-  bottom: 20rpx;
-  background-color: #07c160;
-}
