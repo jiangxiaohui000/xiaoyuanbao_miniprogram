@@ -65,6 +65,9 @@ Page({
 			icon: 'pingjia',
 			num: 0
 		}],
+		dialogShow: false,
+		dialogData: {},
+		modifiedPrice: '',
 	},
 
 	onLoad: function() {
@@ -197,6 +200,10 @@ Page({
 	// 编辑
 	editGood(e) {
 		console.log(e, 'edit')
+		this.setData({
+			dialogData: e.currentTarget.dataset.item,
+			dialogShow: true,
+		})
 	},
 	// 降价
 	priceReduction(e) {
@@ -206,4 +213,13 @@ Page({
 	more(e) {
 		console.log(e, 'more')
 	},
+	// 弹窗
+	tapDialogButton(e) {
+		if(e.detail.index) {
+			console.log(this.data.modifiedPrice)
+		}
+		this.setData({
+			dialogShow: false
+		});
+	}
 })

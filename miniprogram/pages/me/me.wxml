@@ -23,7 +23,7 @@
     <button class="userinfo-nickname" bindtap="onGetOpenid">点击获取 openid</button>
   </view> -->
 </view>
-
+<!-- 收藏购买评价 -->
 <view class="mine">
   <view class="mine-item" wx:for="{{mineItems}}" wx:key="item" data-item="{{item}}" bindtap="toMineItemDetail">
     <i class="iconfont icon-{{item.icon}}"></i>
@@ -31,7 +31,7 @@
     <text style="margin-left: 10rpx;">{{item.num}}</text>
   </view>
 </view>
-
+<!-- 我发布的 -->
 <view class="products-container">
   <view class="products-title">我发布的  {{productsList.length}}</view>
   <view
@@ -50,11 +50,28 @@
       <view class="products-price">
         <text class="products-current-price">￥{{item.currentPrice}}</text>
         <view class="operate-button-group">
-          <view class="operate-button" catchtap="editGood">编辑</view>
-          <view class="operate-button" catchtap="priceReduction">降价</view>
-          <view class="operate-button" catchtap="more">更多</view>
+          <view class="operate-button" data-item="{{item}}" catchtap="editGood">编辑</view>
+          <view class="operate-button" data-item="{{item}}" catchtap="priceReduction">降价</view>
+          <view class="operate-button" data-item="{{item}}" catchtap="more">更多</view>
         </view>  
         </view>
     </view>
   </view>
 </view>
+<!-- 弹窗 -->
+<mp-dialog
+  title=""
+  show="{{dialogShow}}"
+  bindbuttontap="tapDialogButton"
+  buttons="{{[{text: '取消'}, {text: '确认'}]}}"
+>
+  <view class="dialog-box">
+    <image src="{{dailogData.img}}"></image>
+    <view class="dialog-box-inner">
+      <view>当前价格：{{dailogData.currentPrice}}</view>
+      <view>修改价格：
+        <input type="text" value="{{modifiedPrice}}" />
+      </view>
+    </view>
+  </view>
+</mp-dialog>

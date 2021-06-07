@@ -140,3 +140,10 @@ page {
   font-size: 20rpx;
   margin-left: 20rpx;
 }
+.dialog-box {
+  display: flex;
+}
+.dialog-box-inner {
+  display: flex;
+  flex-direction: column;
+}
