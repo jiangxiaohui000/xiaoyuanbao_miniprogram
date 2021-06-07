@@ -80,7 +80,7 @@ Page({
 
 	},
 
-	collectGoods() {
+	collectProducts() {
 		if (this.data.collectedStatus === '收藏') {
 			this.setData({
 				collectedStatus: '已收藏',

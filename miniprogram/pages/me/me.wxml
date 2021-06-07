@@ -32,11 +32,11 @@
   </view>
 </view>
 
-<view class="goods-container">
-  <view class="goods-title">我发布的  {{goodsList.length}}</view>
+<view class="products-container">
+  <view class="products-title">我发布的  {{productsList.length}}</view>
   <view
-    class="goods-item"
-    wx:for="{{goodsList}}"
+    class="products-item"
+    wx:for="{{productsList}}"
     wx:key="item"
     data-item="{{item}}"
     catchtap="preview">
@@ -46,9 +46,9 @@
     </view>
     <!-- 描述 -->
     <view class="text-container">
-      <view class="goods-desc">{{item.desc}}</view>
-      <view class="goods-price">
-        <text class="goods-current-price">￥{{item.currentPrice}}</text>
+      <view class="products-desc">{{item.desc}}</view>
+      <view class="products-price">
+        <text class="products-current-price">￥{{item.currentPrice}}</text>
         <view class="operate-button-group">
           <view class="operate-button" catchtap="editGood">编辑</view>
           <view class="operate-button" catchtap="priceReduction">降价</view>

@@ -8,7 +8,7 @@ Page({
 		logged: false,
 		takeSession: false,
 		requestResult: '',
-		goodsList: [{
+		productsList: [{
       id: 1,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
@@ -140,7 +140,7 @@ Page({
 				});
 				const filePath = res.tempFilePaths[0]
 				// 上传图片
-				const cloudPath = 'my-image' + filePath.match(/\.[^.]+?$/)[0]
+				const cloudPath = 'product-image' + filePath.match(/\.[^.]+?$/)[0]
 				wx.cloud.uploadFile({
 					cloudPath,
 					filePath,

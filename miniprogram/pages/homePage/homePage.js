@@ -9,8 +9,8 @@ Page({
     takeSession: false,
     requestResult: '',
     searchValue: '',
-    goodsCategory: ['精选', '手机', '男装', '女装', '数码', '日用', '图书', '饰品', '美妆', '百货', '箱包', '运动'],
-    goodsList: [{
+    productsCategory: ['精选', '手机', '男装', '女装', '数码', '日用', '图书', '饰品', '美妆', '百货', '箱包', '运动'],
+    productsList: [{
       id: 1,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
@@ -291,7 +291,7 @@ Page({
     })
   },
   // 前往商品详情页面
-  gotoGoodsDetail(e) {
+  toProductsDetail(e) {
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {
@@ -312,8 +312,8 @@ Page({
   // 选择商品分类
   chooseCategory: function(e) {
     // const query = wx.createSelectorQuery();
-    // query.selectAll('.goods-category-item').boundingClientRect();
-    // query.select('.goods-category-item').boundingClientRect();
+    // query.selectAll('.products-category-item').boundingClientRect();
+    // query.select('.products-category-item').boundingClientRect();
     // query.exec(res => {
     //   console.log(res);
     //   const selectedItemLeft = res[0][e.target.dataset.index].left;

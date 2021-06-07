@@ -102,7 +102,7 @@ page {
   width: 100%;
   height: 100%;
 }
-.goods-category-container {
+.products-category-container {
   overflow: hidden;
   width: 100%;
   height: 50rpx;
@@ -111,10 +111,10 @@ page {
   position: relative;
   overflow-x: scroll;
 }
-.goods-category-container::-webkit-scrollbar {
+.products-category-container::-webkit-scrollbar {
   display: none;
 }
-.goods-category {
+.products-category {
   height: 100%;
   width: 1050rpx;
   color: #fff;
@@ -123,22 +123,22 @@ page {
   top: 0;
   left: 0;
 }
-.goods-category-item {
+.products-category-item {
   margin-right: 30rpx;
   float: left;
 }
-.goods-category-item:last-child {
+.products-category-item:last-child {
   margin-right: 0;
 }
 .active {
   color: #FF0033;
 }
-.goods-container {
+.products-container {
   margin-top: 20rpx;
   width: 100%;
   overflow: hidden;
 }
-.goods-item {
+.products-item {
   height: 180rpx;
   background-color: #fff;
   border-radius: 20rpx;
@@ -147,44 +147,44 @@ page {
   display: flex;
   margin-bottom: 22rpx;
 }
-.goods-item .img-container {
+.products-item .img-container {
   height: 100%;
   flex: 1;
 }
-.goods-item .img-container .img {
+.products-item .img-container .img {
   background-size: cover;
   border-radius: 20rpx;
 }
-.goods-item .text-container {
+.products-item .text-container {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   flex: 3;
   padding-left: 14rpx;
 }
-.goods-item .text-container .goods-desc {
+.products-item .text-container .products-desc {
   font-size: 24rpx;
   color: #333;
   overflow: hidden;
   line-height: 30rpx;
   height: 60rpx;
 }
-.goods-item .text-container .goods-price {
+.products-item .text-container .products-price {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
 }
-.goods-item .text-container .goods-price button {
+.products-item .text-container .products-price button {
   margin: 0;
   margin-right: 10rpx;
   padding: 0 50rpx;
 }
-.goods-item .text-container .goods-price .goods-current-price {
+.products-item .text-container .products-price .products-current-price {
   font-size: 34rpx;
   color: red;
   margin-right: 16rpx;
 }
-.goods-item .text-container .goods-price .goods-origin-price {
+.products-item .text-container .products-price .products-origin-price {
   font-size: 22rpx;
   color: #aaa;
   text-decoration: line-through;
