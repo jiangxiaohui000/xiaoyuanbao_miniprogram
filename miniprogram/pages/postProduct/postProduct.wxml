@@ -1,0 +1,43 @@
+<!--pages/postProduct/postProduct.wxml-->
+<view class="container">
+  <!-- 商品描述 -->
+  <view class="title">
+    <i class="iconfont icon-miaoshu"></i>
+    <text>商品描述</text>
+  </view>
+  <view class="text-area-box">
+    <textarea
+      class="text-area"
+      cols="30"
+      rows="10"
+      value="{{productDesc}}"
+      maxlength="20"
+      confirm-type="done"
+      placeholder="商品描述的越详细，潜在买家越多哦~"
+      bindconfirm="inputConfirm"
+    ></textarea>
+  </view>
+  <!-- 商品图片 -->
+  <view class="title">
+    <i class="iconfont icon-tupian"></i>
+    <text>商品图片</text>
+  </view>
+  <view class="img-box">
+    <view class="img-box-inner" wx:for="{{imageList}}" wx:key="item">
+      <image class="img" mode="aspectFit" src="{{item}}" data-item="{{item}}" bindtap="imgPreview"></image>
+      <i class="iconfont icon-gary guanbi" data-index="{{index}}" bindtap="deleteImg"></i>
+    </view>
+    <i class="iconfont icon-tabAdd add" wx:if="{{imageList.length < 9}}" bindtap="addImage"></i>
+  </view>
+  <!-- 发布 -->
+  <view style="padding-bottom: env(safe-area-inset-bottom);">
+    <button type="primary" disabled="{{releaseDisabled}}" class="release-button" bindtap="releaseProduct">发布</button>
+  </view>
+  <!-- 图片预览 -->
+  <view class="img-preview-box" wx:if="{{largeImgShow}}">
+    <image class="img-preview" mode="aspectFit" src="{{largeImg}}"></image>
+    <view class="close-preview" bindtap="closePreview">
+      <i class="iconfont icon-guanbi"></i>关闭
+    </view>
+  </view>
+</view>

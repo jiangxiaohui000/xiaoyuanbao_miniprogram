@@ -17,29 +17,34 @@
     "pages/im/room/room",
     "pages/productDetail/productDetail",
     "pages/search/search",
-    "pages/personalInformation/personalInformation"
+    "pages/personalInformation/personalInformation",
+    "pages/postProduct/postProduct"
   ],
   "tabBar": {
     "color": "#7A7E83",
     "selectedColor": "#07c160",
     "borderStyle": "black",
     "backgroundColor": "#ffffff",
-    "list": [{
-      "pagePath": "pages/homePage/homePage",
-      "iconPath": "images/icon_home.png",
-      "selectedIconPath": "images/icon_home_selected.png",
-      "text": "首页"
-    }, {
-      "pagePath": "pages/message/message",
-      "iconPath": "images/icon_message.png",
-      "selectedIconPath": "images/icon_message_selected.png",
-      "text": "消息"
-    }, {
-      "pagePath": "pages/me/me",
-      "iconPath": "images/icon_me.png",
-      "selectedIconPath": "images/icon_me_selected.png",
-      "text": "我的"
-    }]
+    "list": [
+      {
+        "pagePath": "pages/homePage/homePage",
+        "iconPath": "images/icon_home.png",
+        "selectedIconPath": "images/icon_home_selected.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/message/message",
+        "iconPath": "images/icon_message.png",
+        "selectedIconPath": "images/icon_message_selected.png",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "iconPath": "images/icon_me.png",
+        "selectedIconPath": "images/icon_me_selected.png",
+        "text": "我的"
+      }
+    ]
   },
   "usingComponents": {},
   "window": {
@@ -56,7 +61,9 @@
     "uploadFile": 15000,
     "downloadFile": 15000
   },
-  "requiredBackgroundModes": ["location"],
+  "requiredBackgroundModes": [
+    "location"
+  ],
   "permission": {
     "scope.userLocation": {
       "desc": "您的位置信息将用于校园宝为您提供更优质的服务，建议开启。"
