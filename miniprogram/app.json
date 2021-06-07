@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/homePage/homePage",
-    "pages/chat/chat",
+    "pages/message/message",
     "pages/me/me",
     "pages/userConsole/userConsole",
     "pages/storageConsole/storageConsole",
@@ -30,9 +30,9 @@
       "selectedIconPath": "images/icon_home_selected.png",
       "text": "首页"
     }, {
-      "pagePath": "pages/chat/chat",
-      "iconPath": "images/icon_chat.png",
-      "selectedIconPath": "images/icon_chat_selected.png",
+      "pagePath": "pages/message/message",
+      "iconPath": "images/icon_message.png",
+      "selectedIconPath": "images/icon_message_selected.png",
       "text": "消息"
     }, {
       "pagePath": "pages/me/me",

@@ -13,16 +13,29 @@ page {
   margin-top: 0;
   background-color: #07c160;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   border-bottom-right-radius: 50rpx;
   border-bottom-left-radius: 50rpx;
 }
+.user-info-left {
+  display: flex;
+  align-items: center;
+}
+.sole-button {
+  width: 200rpx;
+  border-radius: 27rpx;
+  display: flex;
+  align-items: center;
+  background-color: #07c160;
+  justify-content: space-around;
+  margin-right: 20rpx;
+  border: 2px solid #fff;
+  color: #fff;
+}
 .user-name {
   font-size: 36rpx;
   margin-bottom: 16rpx;
-}
-.scan {
-  margin: 0 50rpx 0 auto;
 }
 .user-info-avatar {
   width: 100rpx;
@@ -118,25 +131,12 @@ page {
   display: flex;
 }
 .goods-item .text-container .goods-price .operate-button {
-  width: 50rpx;
+  width: 70rpx;
   height: 50rpx;
   text-align: center;
   line-height: 50rpx;
-  border-radius: 50%;
+  border-radius: 30rpx;
   border: 1px solid #aaa;
   font-size: 20rpx;
-  margin-left: 10rpx;
-}
-.bottom-button {
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  left: 50%;
-  margin-left: -50rpx;
-  bottom: 20rpx;
-  background-color: #07c160;
+  margin-left: 20rpx;
 }

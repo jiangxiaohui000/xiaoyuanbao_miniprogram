@@ -15,7 +15,7 @@
 
 .icon-maichu:before {
   content: "\e62c";
-  font-size: 60rpx;
+  font-size: 45rpx;
   color: #fff;
 }
 
@@ -44,7 +44,7 @@
 
 .icon-shoucang1:before {
   content: "\e636";
-  color: #f96;
+  color: #07c160;
 }
 
 .icon-shoucang:before {

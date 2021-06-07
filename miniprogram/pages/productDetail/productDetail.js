@@ -85,11 +85,17 @@ Page({
 			this.setData({
 				collectedStatus: '已收藏',
 				collectedIcon: 'icon-shoucang1'
+			});
+			wx.showToast({
+				title: '已收藏',
 			})
 		} else {
 			this.setData({
 				collectedStatus: '收藏',
 				collectedIcon: 'icon-shoucang'
+			})
+			wx.showToast({
+				title: '已取消',
 			})
 		}
 	},

@@ -301,7 +301,7 @@ Page({
   },
   // 前往聊天页面
   gotoCurrentChat(e) {
-    console.log('chat', e.currentTarget.dataset);
+    console.log('message', e.currentTarget.dataset);
   },
   // 前往搜索页
   gotoSearch() {

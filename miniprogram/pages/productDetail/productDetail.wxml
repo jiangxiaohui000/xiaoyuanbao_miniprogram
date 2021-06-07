@@ -27,6 +27,6 @@
 </view>
 <!-- 聊一聊 -->
 <view class="chat">
-  <view class="chat-collection" bindtap="collectGoods"><i class="iconfont {{collectedIcon}}"></i> {{collectedStatus}}</view>
+  <view class="chat-collection" bindtap="collectGoods"><i class="iconfont {{collectedIcon}}"></i>{{collectedStatus}}</view>
   <view style="width: 50%; display: flex;"><button class="chat-button" size="mini" bindtap="gotoChatRoom">聊一聊</button></view>
 </view>

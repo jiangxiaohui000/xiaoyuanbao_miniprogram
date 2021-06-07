@@ -1,4 +1,4 @@
-<view class="chat-container">
+<view class="message-container">
   <!-- 系统信息 -->
   <view class="sys-message">
     <view class="sys-message-icon"><i class="iconfont icon-xitongxiaoxi"></i></view>
@@ -17,31 +17,31 @@
   <view
     wx:for="{{chatList}}"
     wx:key="id"
-    class="chat-item"
+    class="message-item"
     data-id="{{item.id}}"
     bindtap="gotoChatItem"
   >
     <view>
       <!-- 头像 -->
       <image
-        class="chat-head-portrait"
+        class="message-head-portrait"
         src="{{item.img}}"
         mode="center"
         lazy-load="false"
       ></image>
     </view>
-    <view class="chat-right-info">
+    <view class="message-right-info">
       <!-- 昵称 -->
-      <view class="chat-right-info-top">
-        <view class="chat-name">{{item.name}}</view>
-        <view class="chat-time">{{item.time}}</view>
+      <view class="message-right-info-top">
+        <view class="message-name">{{item.name}}</view>
+        <view class="message-time">{{item.time}}</view>
       </view>
       <!-- 消息 -->
-      <view class="chat-info">{{item.info}}</view>
+      <view class="message-info">{{item.info}}</view>
     </view>
     <!-- 未读 -->
-    <view class="chat-unread" wx:if="{{item.hasUnreadMessage}}">
-      <view class="chat-unread-inner"></view>
+    <view class="message-unread" wx:if="{{item.hasUnreadMessage}}">
+      <view class="message-unread-inner"></view>
     </view>
   </view>
 </view>

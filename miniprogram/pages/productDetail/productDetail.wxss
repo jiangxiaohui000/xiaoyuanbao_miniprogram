@@ -9,7 +9,7 @@ page {
   justify-content: space-between;
   border-bottom-right-radius: 20rpx;
   border-bottom-left-radius: 20rpx;
-  background-color: #f96;
+  background-color: #07c160;
 }
 .left-info {
   display: flex;
@@ -77,7 +77,7 @@ page {
 }
 .product-description {
   padding: 0 20rpx 150rpx;
-  margin-top: 40rpx;
+  margin-top: 30rpx;
   font-size: 28rpx;
   line-height: 1.5em;
   letter-spacing: 2rpx;
@@ -86,7 +86,7 @@ page {
 .product-detail-img-container {
   width: 710rpx;
   height: 710rpx;
-  margin-top: 40rpx;
+  margin-top: 30rpx;
   border-radius: 40rpx;
   overflow: hidden;
 }
@@ -110,15 +110,17 @@ page {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding-bottom: 40rpx;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .chat-collection {
   width: 50%;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 26rpx;
 }
 .chat-button {
   color: #fff;
-  background-color: #f96;
+  background-color: #07c160;
   border-radius: 40rpx;
 }

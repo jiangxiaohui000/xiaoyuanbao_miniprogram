@@ -1,19 +1,27 @@
 <!-- 我的 -->
 <view class="user-info">
-  <!-- 用户头像 -->
-  <button
-    open-type="getUserInfo"
-    bindgetuserinfo="onGetUserInfo"
-    class="user-info-avatar"
-    style="background-image: url({{avatarUrl}})"
-  ></button>
-  <!-- 用户昵称 -->
-	<view class="user-name">{{userInfo.nickName}}</view>
+  <view class="user-info-left">
+    <!-- 用户头像 -->
+    <button
+      open-type="getUserInfo"
+      bindgetuserinfo="onGetUserInfo"
+      class="user-info-avatar"
+      style="background-image: url({{avatarUrl}})"
+    ></button>
+    <!-- 用户昵称 -->
+    <view class="user-name">{{userInfo.nickName}}</view>  
+  </view>
+  <view class="user-info-right">
+    <!-- 点我速卖 -->
+    <view class="sole-button" bindtap="doUpload">
+      <i class="iconfont icon-maichu"></i>
+      <text>点我速卖</text>
+    </view>
+  </view>
+  
   <!-- <view>
     <button class="userinfo-nickname" bindtap="onGetOpenid">点击获取 openid</button>
   </view> -->
-  <!-- 扫一扫 -->
-  <!-- <i class="scan iconfont icon-saoyisao" bindtap="onScan"></i> -->
 </view>
 
 <view class="mine">
@@ -29,9 +37,9 @@
   <view
     class="goods-item"
     wx:for="{{goodsList}}"
-    wx:key="id"
-    data-id="{{item.id}}"
-    catchtap="goToGoodsDetail">
+    wx:key="item"
+    data-item="{{item}}"
+    catchtap="preview">
     <!-- 图片 -->
     <view class="img-container">
       <image class="img" src="{{item.img}}" alt=""></image>
@@ -42,15 +50,11 @@
       <view class="goods-price">
         <text class="goods-current-price">￥{{item.currentPrice}}</text>
         <view class="operate-button-group">
-          <view class="operate-button" data-id="{{item.id}}" catchtap="editGood">编辑</view>
-          <view class="operate-button" data-id="{{item.id}}" catchtap="priceReduction">降价</view>
-          <view class="operate-button" data-id="{{item.id}}" catchtap="more">更多</view>
+          <view class="operate-button" catchtap="editGood">编辑</view>
+          <view class="operate-button" catchtap="priceReduction">降价</view>
+          <view class="operate-button" catchtap="more">更多</view>
         </view>  
         </view>
     </view>
   </view>
-</view>
-
-<view class="bottom-button" bindtap="doUpload">
- <i class="iconfont icon-maichu"></i>
 </view>

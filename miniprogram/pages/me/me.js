@@ -179,4 +179,20 @@ Page({
 	toMineItemDetail: function(e) {
 		console.log('e', e);
 	},
+	// 商品预览
+	preview(e) {
+		console.log(e, 'preview')
+	},
+	// 编辑
+	editGood(e) {
+		console.log(e, 'edit')
+	},
+	// 降价
+	priceReduction(e) {
+		console.log(e, 'priceReduction')
+	},
+	// 更多
+	more(e) {
+		console.log(e, 'more')
+	},
 })

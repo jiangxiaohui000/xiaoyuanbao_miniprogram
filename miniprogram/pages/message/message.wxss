@@ -1,4 +1,4 @@
-.chat-container {
+.message-container {
 	overflow: hidden;
 	padding: 0 40rpx;
 }
@@ -58,7 +58,7 @@
 	align-items: center;
 }
 
-.sys-message-unread-inner, .chat-unread-inner {
+.sys-message-unread-inner, .message-unread-inner {
 	width: 16rpx;
 	height: 16rpx;
 	border-radius: 50%;
@@ -66,12 +66,12 @@
 }
 
 .sys-message-time,
-.chat-time {
+.message-time {
 	color: #aaa;
 	font-size: 24rpx;
 }
 
-.chat-item {
+.message-item {
 	padding: 20rpx 0;
 	height: 100rpx;
 	border-bottom: 1rpx solid #ccc;
@@ -79,32 +79,32 @@
 	display: flex;
 }
 
-.chat-head-portrait {
+.message-head-portrait {
 	width: 100rpx;
 	height: 100rpx;
 	margin-right: 20rpx;
 	border-radius: 50%;
 }
 
-.chat-right-info {
+.message-right-info {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	width: calc(100% - 120rpx);
 }
 
-.chat-right-info-top {
+.message-right-info-top {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
-.chat-name {
+.message-name {
 	font-weight: 400;
 	font-size: 30rpx;
 }
 
-.chat-info {
+.message-info {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -113,7 +113,7 @@
 	color: #666;
 }
 
-.chat-unread {
+.message-unread {
 	width: 20rpx;
 	height: 20rpx;
 	background-color: #fff;
