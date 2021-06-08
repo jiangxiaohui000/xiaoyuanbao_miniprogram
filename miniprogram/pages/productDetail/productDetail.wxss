@@ -76,7 +76,7 @@ page {
   margin-left: 10rpx;
 }
 .product-description {
-  padding: 0 20rpx 150rpx;
+  padding: 0 20rpx 200rpx;
   margin-top: 30rpx;
   font-size: 28rpx;
   line-height: 1.5em;
@@ -98,7 +98,7 @@ page {
   top: 50%;
   transform: translate(-50%, -50%);
 }
-.chat {
+.capability {
   height: 100rpx;
   width: 100%;
   background-color: #fff;
@@ -107,12 +107,19 @@ page {
   position: fixed;
   bottom: 0;
   left: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.capability-chat-collection, .capability-edit-delete {
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding-bottom: env(safe-area-inset-bottom);
 }
-.chat-collection {
+.capability-edit-delete {
+  justify-content: flex-end;
+}
+.collection {
   width: 50%;
   display: flex;
   justify-content: center;
@@ -123,4 +130,14 @@ page {
   color: #fff;
   background-color: #07c160;
   border-radius: 40rpx;
+}
+.edit-product, .delete-product {
+  width: 110rpx;
+  height: 59rpx;
+  line-height: 61rpx;
+  text-align: center;
+  border-radius: 30rpx;
+  border: 1px solid #eee;
+  font-size: 26rpx;
+  margin-right: 20rpx;
 }

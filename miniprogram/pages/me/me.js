@@ -66,7 +66,8 @@ Page({
 			num: 0
 		}],
 		dialogShow: false,
-		dialogData: {},
+		dialogImg: '',
+		currentPrice: '',
 		modifiedPrice: '',
 	},
 
@@ -99,7 +100,6 @@ Page({
 			})
 		}
 	},
-
 	onGetUserInfo: function(e) {
 		if (!this.logged && e.detail.userInfo) {
 			this.setData({
@@ -196,23 +196,30 @@ Page({
 	// 商品预览
 	preview(e) {
 		console.log(e, 'preview')
+		wx.navigateTo({
+      url: '../productDetail/productDetail',
+      success: function(res) {
+        res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.item.id, from: 'me'})
+      }
+    });
 	},
 	// 编辑
-	editGood(e) {
-		console.log(e, 'edit')
-		this.setData({
-			dialogData: e.currentTarget.dataset.item,
-			dialogShow: true,
-		})
-	},
+	// editGood(e) {
+	// 	console.log(e, 'edit')
+	// },
 	// 降价
 	priceReduction(e) {
 		console.log(e, 'priceReduction')
+		this.setData({
+			dialogImg: e.currentTarget.dataset.item.img,
+			currentPrice: e.currentTarget.dataset.item.currentPrice,
+			dialogShow: true,
+		});
 	},
 	// 更多
-	more(e) {
-		console.log(e, 'more')
-	},
+	// more(e) {
+	// 	console.log(e, 'more')
+	// },
 	// 弹窗
 	tapDialogButton(e) {
 		if(e.detail.index) {
@@ -221,5 +228,10 @@ Page({
 		this.setData({
 			dialogShow: false
 		});
-	}
+	},
+	dialogInput(e) {
+		this.setData({
+			modifiedPrice: e.detail.value
+		})
+	},
 })

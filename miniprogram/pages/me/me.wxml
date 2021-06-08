@@ -50,9 +50,9 @@
       <view class="products-price">
         <text class="products-current-price">￥{{item.currentPrice}}</text>
         <view class="operate-button-group">
-          <view class="operate-button" data-item="{{item}}" catchtap="editGood">编辑</view>
+          <!-- <view class="operate-button" data-item="{{item}}" catchtap="editGood">编辑</view> -->
           <view class="operate-button" data-item="{{item}}" catchtap="priceReduction">降价</view>
-          <view class="operate-button" data-item="{{item}}" catchtap="more">更多</view>
+          <!-- <view class="operate-button" data-item="{{item}}" catchtap="more">更多</view> -->
         </view>  
         </view>
     </view>
@@ -66,12 +66,10 @@
   buttons="{{[{text: '取消'}, {text: '确认'}]}}"
 >
   <view class="dialog-box">
-    <image src="{{dailogData.img}}"></image>
+    <image src="{{dialogImg}}"></image>
     <view class="dialog-box-inner">
-      <view>当前价格：{{dailogData.currentPrice}}</view>
-      <view>修改价格：
-        <input type="text" value="{{modifiedPrice}}" />
-      </view>
+      <view>当前价格：￥{{currentPrice}}</view>
+      <view style="display: flex; align-items: center;">修改价格：￥<input type="number" value="{{modifiedPrice}}" bindinput="dialogInput" /></view>
     </view>
   </view>
 </mp-dialog>

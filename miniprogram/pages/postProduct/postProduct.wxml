@@ -3,7 +3,7 @@
   <!-- 商品描述 -->
   <view class="title">
     <i class="iconfont icon-miaoshu"></i>
-    <text>商品描述</text>
+    <text>添加描述</text>
   </view>
   <view class="text-area-box">
     <textarea
@@ -11,7 +11,7 @@
       cols="30"
       rows="10"
       value="{{productDesc}}"
-      maxlength="20"
+      maxlength="200"
       confirm-type="done"
       placeholder="商品描述的越详细，潜在买家越多哦~"
       bindconfirm="inputConfirm"
@@ -20,7 +20,7 @@
   <!-- 商品图片 -->
   <view class="title">
     <i class="iconfont icon-tupian"></i>
-    <text>商品图片</text>
+    <text>宝贝美照</text>
   </view>
   <view class="img-box">
     <view class="img-box-inner" wx:for="{{imageList}}" wx:key="item">
@@ -28,6 +28,11 @@
       <i class="iconfont icon-gary guanbi" data-index="{{index}}" bindtap="deleteImg"></i>
     </view>
     <i class="iconfont icon-tabAdd add" wx:if="{{imageList.length < 9}}" bindtap="addImage"></i>
+  </view>
+  <!-- 价格 -->
+  <view class="price">
+    <i class="iconfont icon-jiage"></i>价格：￥
+    <input class="price-input" type="number" value="{{price}}" bindinput="priceInput" placeholder="合适的价格更容易卖出哦~" />
   </view>
   <!-- 发布 -->
   <view style="padding-bottom: env(safe-area-inset-bottom);">
@@ -41,3 +46,4 @@
     </view>
   </view>
 </view>
+<mp-toptips msg="{{resultText}}" type="error" show="{{toptipsShow}}"></mp-toptips>

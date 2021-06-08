@@ -295,7 +295,7 @@ Page({
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {
-        res.eventChannel.emit('sendProductDetailID', {id: e.currentTarget.dataset.id})
+        res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.id, from: 'homePage'})
       }
     });
   },

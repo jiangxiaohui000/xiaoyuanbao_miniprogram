@@ -12,6 +12,8 @@ Page({
 			collected: 30
 		},
 		productInfo: {
+			_id: 'adcb22dsldvklkasdfvkdsaf',
+			uid: '1',
 			price: 233,
 			tags: ['全新', '不讲价'],
 			text: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品: 菁纯丝绒柔雾唇釉产地: 法国颜色分类: 888（粉金管 196（金管滋润） 06（2020春季balm小姐） 07（2020春季balm小姐） 274金管滋润 417 168金管 金管274 02（黑管 82 03（黑管 274（宝石黑管） 金管196滋润 皮革包装196 01（黑管 507现货黑管 473（黑管 481（黑管 505 196哑光黑管 274皮革 525皮革 粉金管278 粉金管颜色备注保质期: 3年适合肤质: 任何肤质上市时间: 2015年功效: 遮瑕 滋润 保湿规格类型: 正常规格是否为特殊用',
@@ -19,6 +21,7 @@ Page({
 		},
 		collectedStatus: '收藏',
 		collectedIcon: 'icon-shoucang',
+		from: '',
 	},
 
 	/**
@@ -26,11 +29,59 @@ Page({
 	 */
 	onLoad: function (options) {
 		let eventChannel = this.getOpenerEventChannel();
-		eventChannel.on('sendProductDetailID', function(data) {
-			console.log(data);
+		eventChannel.on('toProductDetail', (data) => {
+			if(data && data.from) {
+				this.setData({
+					from: data.from
+				});
+			}
 		});
 	},
-
+	// 收藏
+	collectProducts() {
+		if (this.data.collectedStatus === '收藏') {
+			this.setData({
+				collectedStatus: '已收藏',
+				collectedIcon: 'icon-shoucang1'
+			});
+			wx.showToast({
+				title: '已收藏',
+			})
+		} else {
+			this.setData({
+				collectedStatus: '收藏',
+				collectedIcon: 'icon-shoucang'
+			})
+			wx.showToast({
+				title: '已取消',
+			})
+		}
+	},
+	// 聊一聊
+	gotoChatRoom() {
+		console.log('chat');
+	},
+	// 编辑
+	edit() {
+		wx.navigateTo({
+			url: '../postProduct/postProduct',
+			success: res => {
+				res.eventChannel.emit('toEdit', {productDesc: this.data.productInfo.text, imageList: this.data.productInfo.img});
+			}
+		})
+	},
+	// 删除
+	delete() {
+		wx.showModal({
+			title: '提示',
+			content: '确定要删除吗?',
+			success (res) {
+				if (res.confirm) {
+					console.log('用户点击确定')
+				}
+			}
+		})		
+	},
 	/**
 	 * 生命周期函数--监听页面初次渲染完成
 	 */
@@ -79,28 +130,4 @@ Page({
 	onShareAppMessage: function () {
 
 	},
-
-	collectProducts() {
-		if (this.data.collectedStatus === '收藏') {
-			this.setData({
-				collectedStatus: '已收藏',
-				collectedIcon: 'icon-shoucang1'
-			});
-			wx.showToast({
-				title: '已收藏',
-			})
-		} else {
-			this.setData({
-				collectedStatus: '收藏',
-				collectedIcon: 'icon-shoucang'
-			})
-			wx.showToast({
-				title: '已取消',
-			})
-		}
-	},
-
-	gotoChatRoom() {
-		console.log('chat');
-	}
 })

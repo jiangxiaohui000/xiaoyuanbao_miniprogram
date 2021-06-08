@@ -131,19 +131,49 @@ page {
   display: flex;
 }
 .products-item .text-container .products-price .operate-button {
-  width: 70rpx;
+  width: 100rpx;
   height: 50rpx;
   text-align: center;
   line-height: 50rpx;
-  border-radius: 30rpx;
+  border-radius: 25rpx;
   border: 1px solid #aaa;
-  font-size: 20rpx;
+  font-size: 24rpx;
   margin-left: 20rpx;
 }
 .dialog-box {
   display: flex;
+  align-items: center;
+  width: 100%;
+  height: 200rpx;
+}
+.dialog-box image {
+  width: 150rpx;
+  height: 150rpx;
+  margin-right: 20rpx;
 }
 .dialog-box-inner {
+  height: 80%;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  flex: 1;
+}
+.dialog-box-inner input {
+  flex: 1;
+  text-align: left;
+  color: #07c160;
+  border: 1px solid #eee;
+  border-radius: 10rpx;
+  padding: 5rpx;
+}
+.weui-dialog {
+  top: 40%;
+}
+.weui-dialog .weui-dialog__hd {
+  display:  none;
+}
+.weui-dialog .weui-dialog__bd {
+  margin-bottom: 0;
+  padding: 10rpx 20rpx;
 }

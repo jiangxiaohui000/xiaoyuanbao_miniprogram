@@ -10,6 +10,9 @@ Page({
     largeImg: '',
     largeImgShow: false,
     releaseDisabled: true,
+    price: '',
+    resultText: '',
+    toptipsShow: false,
   },
 
   /**
@@ -17,13 +20,28 @@ Page({
    */
   onLoad: function (options) {
     let eventChannel = this.getOpenerEventChannel();
-    eventChannel.on('sendImage', (res) => {
+    eventChannel.on('sendImage', res => {
       if(res && res.filePath) {
         this.setData({
           imageList: res.filePath
         });
       }
     });
+    eventChannel.on('toEdit', res => {
+      console.log(res, '898989')
+      if(res && res.productDesc) {
+        this.data.productDesc = res.productDesc;
+      }
+      if(res && res.imageList) {
+        this.data.imageList = res.imageList;
+      }
+      this.setData({
+        productDesc: this.data.productDesc,
+        imageList: this.data.imageList,
+        releaseDisabled: !this.data.productDesc || !this.data.imageList.length,
+      })
+    });
+
   },
   // 上传图片
 	addImage: function () {
@@ -34,17 +52,47 @@ Page({
 			sourceType: ['album', 'camera'],
 			success: (res) => {
 				if(res && res.tempFilePaths) {
+          const tempFilePaths = res.tempFilePaths;
+          const overSizeData = tempFilePaths.filter(item => item.size > 1 * 1024 * 1024);
+          if(overSizeData.length) {
+            wx.showToast({
+              icon: 'error',
+              title: '上传的单张图片大小不可以超过 1MB',
+              duration: 2000
+            });
+            return;
+          }
 					wx.showLoading({
 						title: '上传中',
 					});
 					const promiseArr = [];
 					const filePathArr = [];
-					res.tempFilePaths.forEach(item => {
-						const filePath = item;
-						// 上传图片
-						const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
-						promiseArr.push(this.uploadFile(cloudPath, filePath));
-						filePathArr.push(filePath);
+					tempFilePaths.forEach(item => {
+            // 将图片转成buffer后请求云函数
+            wx.getFileSystemManager().readFile({
+              filePath: item,
+              success: res => {
+                wx.cloud.callFunction({
+                  name: 'imgSecCheck', // 图片审核
+                  data: {img: res.data}
+                });
+              }
+            }).then(res => {
+              let { errorCode } = res.result.data;
+              if(errorCode === 87014) {
+                this.setData({
+                  resultText: '内容含有违法违规内容',
+                  toptipsShow: true,
+                });
+                return;
+              } else if(errorCode === 0) {
+                const filePath = item;
+                // 上传图片
+                const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
+                promiseArr.push(this.uploadFile(cloudPath, filePath));
+                filePathArr.push(filePath);
+              }
+            });
 					});
 					Promise.all(promiseArr).then(() => {
             this.data.imageList.push(...filePathArr);
@@ -103,11 +151,18 @@ Page({
       console.log(this.data.productDesc, this.data.imageList)
     }
   },
+  // 确认输入
   inputConfirm(e) {
     console.log(e, '676767')
     this.setData({
       productDesc: e.detail.value,
       releaseDisabled: !e.detail.value
+    })
+  },
+  // 输入价格
+  priceInput(e) {
+    this.setData({
+      price: e.detail.value
     })
   },
   /**
