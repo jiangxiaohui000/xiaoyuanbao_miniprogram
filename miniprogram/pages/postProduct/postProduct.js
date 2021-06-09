@@ -62,9 +62,7 @@ Page({
             });
             return;
           }
-					wx.showLoading({
-						title: '上传中',
-					});
+					wx.showLoading({ title: '上传中' });
 					const promiseArr = [];
 					const filePathArr = [];
 					tempFilePaths.forEach(item => {
@@ -72,27 +70,31 @@ Page({
             wx.getFileSystemManager().readFile({
               filePath: item,
               success: res => {
+                console.log(res, '101010')
                 wx.cloud.callFunction({
                   name: 'imgSecCheck', // 图片审核
                   data: {img: res.data}
+                }).then(res => {
+                  console.log(res, '999')
+                  // let { errCode } = res.result.data;
+                  // if(errCode == 87014) {
+                  //   this.setData({
+                  //     resultText: '内容含有违法违规内容',
+                  //     toptipsShow: true,
+                  //   });
+                  //   return;
+                  // } else if(errCode == 0) {
+                  //   const filePath = item;
+                  //   // 上传图片
+                  //   const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
+                  //   promiseArr.push(this.uploadFile(cloudPath, filePath));
+                  //   filePathArr.push(filePath);
+                  // }
+                }).catch(e => {
+                  console.log(e, 'error');
                 });
               }
-            }).then(res => {
-              let { errorCode } = res.result.data;
-              if(errorCode === 87014) {
-                this.setData({
-                  resultText: '内容含有违法违规内容',
-                  toptipsShow: true,
-                });
-                return;
-              } else if(errorCode === 0) {
-                const filePath = item;
-                // 上传图片
-                const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
-                promiseArr.push(this.uploadFile(cloudPath, filePath));
-                filePathArr.push(filePath);
-              }
-            });
+            })
 					});
 					Promise.all(promiseArr).then(() => {
             this.data.imageList.push(...filePathArr);
