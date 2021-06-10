@@ -69,6 +69,8 @@ Page({
 		dialogImg: '',
 		currentPrice: '',
 		modifiedPrice: '',
+		toptipsShow: false,
+		resultText: '',
 	},
 
 	onLoad: function() {
@@ -78,7 +80,6 @@ Page({
 			})
 			return;
 		}
-		
 		wx.getSetting({
 			success: res => {
 				this.getUserInfo(res); // 获取用户信息
@@ -91,7 +92,7 @@ Page({
 		if (res.authSetting['scope.userInfo']) { // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
 			wx.getUserInfo({
 				success: res => {
-					console.log(res, 'me')
+					// console.log(res, 'me')
 					this.setData({
 						avatarUrl: res.userInfo.avatarUrl,
 						userInfo: res.userInfo
@@ -165,7 +166,7 @@ Page({
 					}).catch(e => {
 						console.error('[上传文件] 失败：', e)
 						wx.showToast({
-							icon: 'none',
+							icon: 'error',
 							title: '上传失败',
 						});
 						wx.hideLoading();
@@ -186,7 +187,6 @@ Page({
 	},
 	// 下拉刷新
 	onPullDownRefresh: function() {
-		console.log('me');
 		this.onLoad();
 	},
 	// 详情
@@ -222,11 +222,18 @@ Page({
 	// },
 	// 弹窗
 	tapDialogButton(e) {
-		if(e.detail.index) {
-			console.log(this.data.modifiedPrice)
+		if(e.detail.index) { // 确认
+			if(+this.data.modifiedPrice > +this.data.currentPrice) {
+				this.setData({
+					toptipsShow: true,
+					resultText: '新的价格要小于原价格哦~'
+				});
+				return;
+			}
 		}
 		this.setData({
-			dialogShow: false
+			dialogShow: false,
+			modifiedPrice: '',
 		});
 	},
 	dialogInput(e) {

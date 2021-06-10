@@ -21,24 +21,18 @@ Page({
   onLoad: function (options) {
     let eventChannel = this.getOpenerEventChannel();
     eventChannel.on('sendImage', res => {
-      if(res && res.filePath) {
-        this.setData({
-          imageList: res.filePath
-        });
-      }
+      res && res.filePath && this.setData({ imageList: res.filePath });
     });
     eventChannel.on('toEdit', res => {
-      console.log(res, '898989')
-      if(res && res.productDesc) {
-        this.data.productDesc = res.productDesc;
-      }
-      if(res && res.imageList) {
-        this.data.imageList = res.imageList;
-      }
+      // console.log(res, '898989')
+      res && res.productDesc && (this.data.productDesc = res.productDesc);
+      res && res.imageList && (this.data.imageList = res.imageList);
+      res && res.price && (this.data.price = res.price);
       this.setData({
         productDesc: this.data.productDesc,
         imageList: this.data.imageList,
-        releaseDisabled: !this.data.productDesc || !this.data.imageList.length,
+        price: this.data.price,
+        releaseDisabled: !this.data.productDesc || !this.data.imageList.length || !this.data.price,
       })
     });
 
@@ -51,12 +45,12 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
+        console.log(res, '88888999999')
 				if(res && res.tempFilePaths) {
-          const tempFilePaths = res.tempFilePaths;
-          const overSizeData = tempFilePaths.filter(item => item.size > 1 * 1024 * 1024);
+          const tempFiles = res.tempFiles;
+          const overSizeData = tempFiles.filter(item => item.size > 1 * 1024 * 1024);
           if(overSizeData.length) {
             wx.showToast({
-              icon: 'error',
               title: '上传的单张图片大小不可以超过 1MB',
               duration: 2000
             });
@@ -65,14 +59,14 @@ Page({
 					wx.showLoading({ title: '上传中' });
 					const promiseArr = [];
 					const filePathArr = [];
-					tempFilePaths.forEach(item => {
+					tempFiles.forEach(item => {
             // 将图片转成buffer后请求云函数
             wx.getFileSystemManager().readFile({
-              filePath: item,
+              filePath: item.path,
               success: res => {
                 console.log(res, '101010')
                 wx.cloud.callFunction({
-                  name: 'imgSecCheck', // 图片审核
+                  name: 'imgSecCheck', // 图片安全检查
                   data: {img: res.data}
                 }).then(res => {
                   console.log(res, '999')
@@ -106,7 +100,7 @@ Page({
 					}).catch(e => {
 						console.error('[上传文件] 失败：', e)
 						wx.showToast({
-							icon: 'none',
+							icon: 'error',
 							title: '上传失败',
 						});
 						wx.hideLoading();
@@ -153,18 +147,27 @@ Page({
       console.log(this.data.productDesc, this.data.imageList)
     }
   },
-  // 确认输入
-  inputConfirm(e) {
-    console.log(e, '676767')
+  // 商品描述--确认输入
+  textareaConfirm(e) {
     this.setData({
       productDesc: e.detail.value,
       releaseDisabled: !e.detail.value
     })
   },
+  // 商品描述--输入中
+  textareaInput(e) {
+    if(e.detail.value.length == 300) {
+      this.setData({
+        toptipsShow: true,
+        resultText: '已经到达输入字数限制！'
+      })
+    }
+  },
   // 输入价格
   priceInput(e) {
     this.setData({
-      price: e.detail.value
+      price: e.detail.value,
+      releaseDisabled: !e.detail.value,
     })
   },
   /**

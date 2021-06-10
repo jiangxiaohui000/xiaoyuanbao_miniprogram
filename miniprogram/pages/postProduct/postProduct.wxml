@@ -11,10 +11,11 @@
       cols="30"
       rows="10"
       value="{{productDesc}}"
-      maxlength="200"
+      maxlength="300"
       confirm-type="done"
       placeholder="商品描述的越详细，潜在买家越多哦~"
-      bindconfirm="inputConfirm"
+      bindconfirm="textareaConfirm"
+      bindinput="textareaInput"
     ></textarea>
   </view>
   <!-- 商品图片 -->
@@ -32,10 +33,10 @@
   <!-- 价格 -->
   <view class="price">
     <i class="iconfont icon-jiage"></i>价格：￥
-    <input class="price-input" type="number" value="{{price}}" bindinput="priceInput" placeholder="合适的价格更容易卖出哦~" />
+    <input class="price-input" type="digit" value="{{price}}" bindinput="priceInput" placeholder="合适的价格更容易卖出哦~" />
   </view>
-  <!-- 发布 -->
-  <view style="padding-bottom: env(safe-area-inset-bottom);">
+  <!-- 发布按钮 -->
+  <view>
     <button type="primary" disabled="{{releaseDisabled}}" class="release-button" bindtap="releaseProduct">发布</button>
   </view>
   <!-- 图片预览 -->
@@ -46,4 +47,5 @@
     </view>
   </view>
 </view>
+<!-- 提示tips -->
 <mp-toptips msg="{{resultText}}" type="error" show="{{toptipsShow}}"></mp-toptips>

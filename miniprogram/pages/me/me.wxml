@@ -69,7 +69,8 @@
     <image src="{{dialogImg}}"></image>
     <view class="dialog-box-inner">
       <view>当前价格：￥{{currentPrice}}</view>
-      <view style="display: flex; align-items: center;">修改价格：￥<input type="number" value="{{modifiedPrice}}" bindinput="dialogInput" /></view>
+      <view style="display: flex; align-items: center;">修改价格：￥<input type="digit" value="{{modifiedPrice}}" bindinput="dialogInput" /></view>
     </view>
   </view>
 </mp-dialog>
+<mp-toptips msg="{{resultText}}" type="error" show="{{toptipsShow}}" delay="3000"></mp-toptips>

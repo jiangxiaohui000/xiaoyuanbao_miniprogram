@@ -12,7 +12,7 @@ exports.main = async (event, context) => {
   try {
     const result = await cloud.openapi.security.imgSecCheck({
       media: {
-        contentType: 'image/png',
+        contentType: 'image/jpg',
         value: Buffer.from(event.img)
       }
     });
@@ -24,6 +24,7 @@ exports.main = async (event, context) => {
     //   return {code: 200, msg: '成功', data: result};
     // }
   } catch (error) {
+    console.log(error, 'cloud error')
     // if(error.errCode == 87014) {
     //   return {code: 500, msg: '内容含有违法违规内容', data: result};
     // }
