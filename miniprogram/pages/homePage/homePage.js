@@ -92,7 +92,7 @@ Page({
     const _this = this;
     wx.getSetting({
       success: res => {
-        console.log(res, 'getSetting');
+        // console.log(res, 'getSetting');
         // 用户信息
         this.getUserInfo(res, _this);
         // 位置信息
@@ -126,7 +126,7 @@ Page({
       wx.getLocation({
         type: 'wgs84',
         success: (res) => { // 先获取到经纬度
-          console.log(res, 'userLocation');
+          // console.log(res, 'userLocation');
           const latitude = res.latitude;
           const longitude = res.longitude;
           const qqmapsdk = new QQMapWX({
@@ -135,7 +135,7 @@ Page({
           qqmapsdk.reverseGeocoder({
             location: {latitude, longitude},
             success: res => { // 再通过腾讯位置服务获取到地理位置
-              console.log('location service', res);
+              // console.log('location service', res);
               _this.setData({
                 userAddress: res.result.formatted_addresses.recommend,
                 userAddressLatitude: res.result.location.lat,

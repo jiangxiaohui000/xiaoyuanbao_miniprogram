@@ -143,34 +143,73 @@ Page({
 			sourceType: ['album', 'camera'],
 			success: (res) => {
 				if(res && res.tempFilePaths) {
-					wx.showLoading({
-						title: '上传中',
-					});
+          const tempFiles = res.tempFiles;
+          const overSizeData = tempFiles.filter(item => item.size > 1 * 1024 * 1024);
+          if(overSizeData.length) {
+						this.setData({
+							toptipsShow: true,
+							resultText: '上传的单张图片大小不可以超过 1MB',
+						})
+            return;
+          }
+					wx.showLoading({ title: '上传中' });
 					const promiseArr = [];
 					const filePathArr = [];
-					res.tempFilePaths.forEach(item => {
-						const filePath = item;
-						// 上传图片
-						const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
-						promiseArr.push(this.uploadFile(cloudPath, filePath));
-						filePathArr.push(filePath);
-					});
-					Promise.all(promiseArr).then(() => {
-						wx.navigateTo({
-							url: '../postProduct/postProduct',
-							success: function(result) {
-								result.eventChannel.emit('sendImage', {filePath: filePathArr})
-							}
-						});
-						wx.hideLoading();
-					}).catch(e => {
-						console.error('[上传文件] 失败：', e)
-						wx.showToast({
-							icon: 'error',
-							title: '上传失败',
-						});
-						wx.hideLoading();
-					});
+					const len = tempFiles.length;
+					tempFiles.forEach((item, index) => {
+            // 将图片转成buffer后请求云函数
+            wx.getFileSystemManager().readFile({
+              filePath: item.path,
+              success: res => {
+                if(res) {
+                  wx.cloud.callFunction({
+                    name: 'imgSecCheck', // 图片安全检查
+                    data: {img: res.data}
+                  }).then(res => {
+                    console.log(res, 'image check ok')
+                    if(res) {
+                      let { errCode } = res.result;
+                      if(errCode == 87014) {
+                        this.setData({
+                          resultText: '宝贝美照含有违法违规内容',
+                          toptipsShow: true,
+                        });
+                        wx.hideLoading();
+                        return;
+                      } else if(errCode == 0) {
+                        const filePath = item.path;
+                        // 上传图片
+                        const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
+                        promiseArr.push(this.uploadFile(cloudPath, filePath));
+												filePathArr.push(filePath);
+												if(index + 1 === len) {
+													Promise.all(promiseArr).then(() => {
+														wx.navigateTo({
+															url: '../postProduct/postProduct',
+															success: function(result) {
+																result.eventChannel.emit('sendImage', {filePath: filePathArr})
+															}
+														});
+														wx.hideLoading();
+													}).catch(e => {
+														console.error('[上传文件] 失败：', e)
+														wx.showToast({
+															icon: 'error',
+															title: '上传失败',
+														});
+														wx.hideLoading();
+													});
+												}
+                      }
+                    }
+                  }).catch(e => {
+                    console.log(e, 'image check error');
+										wx.hideLoading();
+                  });  
+                }
+              }
+            })
+          });
 				}
 			},
 			fail: e => {

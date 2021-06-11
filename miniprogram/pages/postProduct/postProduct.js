@@ -1,4 +1,5 @@
 // pages/postProduct/postProduct.js
+const {money} = require('../../utils/moneyInputLimit')
 Page({
 
   /**
@@ -14,7 +15,6 @@ Page({
     resultText: '',
     toptipsShow: false,
   },
-
   /**
    * 生命周期函数--监听页面加载
    */
@@ -24,7 +24,6 @@ Page({
       res && res.filePath && this.setData({ imageList: res.filePath });
     });
     eventChannel.on('toEdit', res => {
-      // console.log(res, '898989')
       res && res.productDesc && (this.data.productDesc = res.productDesc);
       res && res.imageList && (this.data.imageList = res.imageList);
       res && res.price && (this.data.price = res.price);
@@ -32,7 +31,7 @@ Page({
         productDesc: this.data.productDesc,
         imageList: this.data.imageList,
         price: this.data.price,
-        releaseDisabled: !this.data.productDesc || !this.data.imageList.length || !this.data.price,
+        releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
       })
     });
 
@@ -45,8 +44,7 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
-        console.log(res, '88888999999')
-				if(res && res.tempFilePaths) {
+				if(res && res.tempFiles) {
           const tempFiles = res.tempFiles;
           const overSizeData = tempFiles.filter(item => item.size > 1 * 1024 * 1024);
           if(overSizeData.length) {
@@ -64,47 +62,51 @@ Page({
             wx.getFileSystemManager().readFile({
               filePath: item.path,
               success: res => {
-                console.log(res, '101010')
-                wx.cloud.callFunction({
-                  name: 'imgSecCheck', // 图片安全检查
-                  data: {img: res.data}
-                }).then(res => {
-                  console.log(res, '999')
-                  // let { errCode } = res.result.data;
-                  // if(errCode == 87014) {
-                  //   this.setData({
-                  //     resultText: '内容含有违法违规内容',
-                  //     toptipsShow: true,
-                  //   });
-                  //   return;
-                  // } else if(errCode == 0) {
-                  //   const filePath = item;
-                  //   // 上传图片
-                  //   const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
-                  //   promiseArr.push(this.uploadFile(cloudPath, filePath));
-                  //   filePathArr.push(filePath);
-                  // }
-                }).catch(e => {
-                  console.log(e, 'error');
-                });
+                if(res) {
+                  wx.cloud.callFunction({
+                    name: 'imgSecCheck', // 图片安全检查
+                    data: {img: res.data}
+                  }).then(res => {
+                    console.log(res, 'image check ok')
+                    if(res) {
+                      let { errCode } = res.result;
+                      if(errCode == 87014) {
+                        this.setData({
+                          resultText: '宝贝美照含有违法违规内容',
+                          toptipsShow: true,
+                        });
+                        wx.hideLoading();
+                        return;
+                      } else if(errCode == 0) {
+                        const filePath = item.path;
+                        // 上传图片
+                        const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
+                        promiseArr.push(this.uploadFile(cloudPath, filePath));
+                        filePathArr.push(filePath);
+                        Promise.all(promiseArr).then(() => {
+                          this.data.imageList.push(...filePathArr);
+                          this.setData({
+                            imageList: this.data.imageList,
+                            releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
+                          });
+                          wx.hideLoading();
+                        }).catch(e => {
+                          console.error('[上传文件] 失败：', e)
+                          wx.showToast({
+                            icon: 'error',
+                            title: '上传失败',
+                          });
+                          wx.hideLoading();
+                        });
+                      }
+                    }
+                  }).catch(e => {
+                    console.log(e, 'image check error');
+                  });  
+                }
               }
             })
-					});
-					Promise.all(promiseArr).then(() => {
-            this.data.imageList.push(...filePathArr);
-            this.setData({
-              imageList: this.data.imageList,
-              releaseDisabled: !this.data.imageList.length,
-            });
-						wx.hideLoading();
-					}).catch(e => {
-						console.error('[上传文件] 失败：', e)
-						wx.showToast({
-							icon: 'error',
-							title: '上传失败',
-						});
-						wx.hideLoading();
-					});
+          });
 				}
 			},
 			fail: e => {
@@ -138,20 +140,14 @@ Page({
     this.data.imageList.splice(e.currentTarget.dataset.index, 1);
     this.setData({
       imageList: this.data.imageList,
-      releaseDisabled: !this.data.imageList.length,
+      releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
     });
-  },
-  // 发布
-  releaseProduct() {
-    if(this.data.productDesc && this.data.imageList.length) {
-      console.log(this.data.productDesc, this.data.imageList)
-    }
   },
   // 商品描述--确认输入
   textareaConfirm(e) {
     this.setData({
       productDesc: e.detail.value,
-      releaseDisabled: !e.detail.value
+      releaseDisabled: !(e.detail.value && this.data.imageList.length && this.data.price),
     })
   },
   // 商品描述--输入中
@@ -166,9 +162,15 @@ Page({
   // 输入价格
   priceInput(e) {
     this.setData({
-      price: e.detail.value,
-      releaseDisabled: !e.detail.value,
+      price: money(e.detail.value),
+      releaseDisabled: !(this.data.productDesc && this.data.imageList.length && money(e.detail.value)),
     })
+  },
+  // 发布
+  releaseProduct() {
+    if(this.data.productDesc && this.data.imageList.length && this.data.price) {
+      console.log(this.data.productDesc, this.data.imageList, this.data.price)
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
