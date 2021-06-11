@@ -50,7 +50,6 @@
       <view class="products-price">
         <text class="products-current-price">￥{{item.currentPrice}}</text>
         <view class="operate-button-group">
-          <!-- <view class="operate-button" data-item="{{item}}" catchtap="editGood">编辑</view> -->
           <view class="operate-button" data-item="{{item}}" catchtap="priceReduction">降价</view>
           <!-- <view class="operate-button" data-item="{{item}}" catchtap="more">更多</view> -->
         </view>  

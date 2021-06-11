@@ -142,10 +142,11 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
-				if(res && res.tempFilePaths) {
-          const tempFiles = res.tempFiles;
-          const overSizeData = tempFiles.filter(item => item.size > 1 * 1024 * 1024);
-          if(overSizeData.length) {
+				if(res && res.tempFiles) {
+					const tempFiles = res.tempFiles;
+					console.log(tempFiles, 'tempppppppp')
+          const hasOverSizeData = tempFiles.some(item => item.size > 1 * 1024 * 1024);
+          if(hasOverSizeData) {
 						this.setData({
 							toptipsShow: true,
 							resultText: '上传的单张图片大小不可以超过 1MB',
@@ -169,18 +170,17 @@ Page({
                     console.log(res, 'image check ok')
                     if(res) {
                       let { errCode } = res.result;
-                      if(errCode == 87014) {
+                      if(errCode == 87014) { // 不合法
                         this.setData({
-                          resultText: '宝贝美照含有违法违规内容',
+                          resultText: '不得上传违法违规内容，请重新选择',
                           toptipsShow: true,
                         });
                         wx.hideLoading();
                         return;
-                      } else if(errCode == 0) {
+                      } else if(errCode == 0) { // 通过
                         const filePath = item.path;
-                        // 上传图片
                         const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
-                        promiseArr.push(this.uploadFile(cloudPath, filePath));
+                        promiseArr.push(this.uploadFile(cloudPath, filePath)); // 上传图片
 												filePathArr.push(filePath);
 												if(index + 1 === len) {
 													Promise.all(promiseArr).then(() => {
@@ -207,7 +207,10 @@ Page({
 										wx.hideLoading();
                   });  
                 }
-              }
+							},
+							fail: e => {
+								console.log(e, 'readfile error');
+							}
             })
           });
 				}
@@ -242,10 +245,6 @@ Page({
       }
     });
 	},
-	// 编辑
-	// editGood(e) {
-	// 	console.log(e, 'edit')
-	// },
 	// 降价
 	priceReduction(e) {
 		console.log(e, 'priceReduction')
@@ -259,7 +258,7 @@ Page({
 	// more(e) {
 	// 	console.log(e, 'more')
 	// },
-	// 弹窗
+	// 弹窗 -- 降价
 	tapDialogButton(e) {
 		if(e.detail.index) { // 确认
 			if(+this.data.modifiedPrice > +this.data.currentPrice) {
@@ -275,6 +274,7 @@ Page({
 			modifiedPrice: '',
 		});
 	},
+	// input -- 输入降价后的金额
 	dialogInput(e) {
 		this.setData({
 			modifiedPrice: e.detail.value

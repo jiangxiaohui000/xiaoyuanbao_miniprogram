@@ -46,12 +46,12 @@ Page({
 			success: (res) => {
 				if(res && res.tempFiles) {
           const tempFiles = res.tempFiles;
-          const overSizeData = tempFiles.filter(item => item.size > 1 * 1024 * 1024);
-          if(overSizeData.length) {
-            wx.showToast({
-              title: '上传的单张图片大小不可以超过 1MB',
-              duration: 2000
-            });
+          const hasOverSizeData = tempFiles.some(item => item.size > 1 * 1024 * 1024);
+          if(hasOverSizeData) {
+            this.setData({
+							toptipsShow: true,
+							resultText: '上传的单张图片大小不可以超过 1MB',
+						})
             return;
           }
 					wx.showLoading({ title: '上传中' });
@@ -72,16 +72,15 @@ Page({
                       let { errCode } = res.result;
                       if(errCode == 87014) {
                         this.setData({
-                          resultText: '宝贝美照含有违法违规内容',
+                          resultText: '不得上传违法违规内容，请重新选择',
                           toptipsShow: true,
                         });
                         wx.hideLoading();
                         return;
                       } else if(errCode == 0) {
                         const filePath = item.path;
-                        // 上传图片
                         const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
-                        promiseArr.push(this.uploadFile(cloudPath, filePath));
+                        promiseArr.push(this.uploadFile(cloudPath, filePath)); // 上传图片
                         filePathArr.push(filePath);
                         Promise.all(promiseArr).then(() => {
                           this.data.imageList.push(...filePathArr);

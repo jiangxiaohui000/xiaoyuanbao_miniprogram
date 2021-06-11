@@ -48,4 +48,4 @@
   </view>
 </view>
 <!-- 提示tips -->
-<mp-toptips msg="{{resultText}}" type="error" show="{{toptipsShow}}"></mp-toptips>
+<mp-toptips msg="{{resultText}}" type="error" show="{{toptipsShow}}" delay="3000"></mp-toptips>
