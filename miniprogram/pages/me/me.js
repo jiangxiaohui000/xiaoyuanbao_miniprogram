@@ -136,95 +136,64 @@ Page({
 	},
 	// 上传图片
 	doUpload: function () {
-		// 选择图片
-		wx.chooseImage({
+		wx.chooseImage({ // 选择图片
 			count: 9,
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
-				if(res && res.tempFiles) {
-					const tempFiles = res.tempFiles;
-					console.log(tempFiles, 'tempppppppp')
-          const hasOverSizeData = tempFiles.some(item => item.size > 1 * 1024 * 1024);
-          if(hasOverSizeData) {
-						this.setData({
-							toptipsShow: true,
-							resultText: '上传的单张图片大小不可以超过 1MB',
-						})
-            return;
-          }
-					wx.showLoading({ title: '上传中' });
-					const promiseArr = [];
-					const filePathArr = [];
-					const len = tempFiles.length;
-					tempFiles.forEach((item, index) => {
-            // 将图片转成buffer后请求云函数
-            wx.getFileSystemManager().readFile({
-              filePath: item.path,
-              success: res => {
-                if(res) {
-                  wx.cloud.callFunction({
-                    name: 'imgSecCheck', // 图片安全检查
-                    data: {img: res.data}
-                  }).then(res => {
-                    console.log(res, 'image check ok')
-                    if(res) {
-                      let { errCode } = res.result;
-                      if(errCode == 87014) { // 不合法
-                        this.setData({
-                          resultText: '不得上传违法违规内容，请重新选择',
-                          toptipsShow: true,
-                        });
-                        wx.hideLoading();
-                        return;
-                      } else if(errCode == 0) { // 通过
-                        const filePath = item.path;
-                        const cloudPath = 'produce-image' + filePath.match(/\.[^.]+?$/)[0];
-                        promiseArr.push(this.uploadFile(cloudPath, filePath)); // 上传图片
-												filePathArr.push(filePath);
-												if(index + 1 === len) {
-													Promise.all(promiseArr).then(() => {
-														wx.navigateTo({
-															url: '../postProduct/postProduct',
-															success: function(result) {
-																result.eventChannel.emit('sendImage', {filePath: filePathArr})
-															}
-														});
-														wx.hideLoading();
-													}).catch(e => {
-														console.error('[上传文件] 失败：', e)
-														wx.showToast({
-															icon: 'error',
-															title: '上传失败',
-														});
-														wx.hideLoading();
-													});
-												}
-                      }
-                    }
-                  }).catch(e => {
-                    console.log(e, 'image check error');
+				wx.showLoading({ title: '上传中' });
+				const filePathArr = []; // 传给下一个页面的文件路径
+				const imgSecCheckArr = [];
+				const len = res.tempFilePaths.length;
+				res.tempFilePaths.forEach((item, index) => {
+					filePathArr.push(item);
+					wx.cloud.uploadFile({ // 上传文件
+						cloudPath: 'temp/' + new Date().getTime() + "-" + Math.floor(Math.random() * 1000),
+						filePath: item,
+						success: res => {
+							const fileID = res.fileID;
+							wx.cloud.callFunction({ // 图片安全检查
+								name: 'imgSecCheck',
+								data: { img: fileID },
+							}).then(res => {
+								console.log(res, 'img check')
+								imgSecCheckArr.push(res);
+								if(len == index + 1) {
+									if(imgSecCheckArr.every(item => item.result.errCode == 0)) { // 通过
 										wx.hideLoading();
-                  });  
-                }
-							},
-							fail: e => {
-								console.log(e, 'readfile error');
-							}
-            })
-          });
-				}
+										wx.navigateTo({
+											url: '../postProduct/postProduct',
+											success: function(result) {
+												result.eventChannel.emit('sendImage', {filePath: filePathArr})
+											}
+										});
+									} else { // 未通过
+										wx.hideLoading();
+										this.setData({
+											resultText: '不得上传违法违规内容，请重新选择',
+											toptipsShow: true,
+										});
+									}
+								}
+							}).catch(e => {
+								console.log(e, 'imgSecCheck fail');
+								wx.hideLoading();
+							})
+						},
+						fail: e => {
+							console.log(e, 'uploadfile fail');
+							wx.hideLoading();
+							wx.showToast({
+								title: '上传失败',
+								icon: 'error'
+							});
+						}
+					})
+				});
 			},
 			fail: e => {
 				console.error(e)
 			}
-		})
-	},
-	// 上传文件
-	uploadFile(cloudPath, filePath) {
-		wx.cloud.uploadFile({
-			cloudPath,
-			filePath
 		})
 	},
 	// 下拉刷新
