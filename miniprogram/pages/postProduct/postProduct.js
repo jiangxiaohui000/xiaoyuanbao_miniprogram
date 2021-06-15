@@ -51,7 +51,7 @@ Page({
 				res.tempFilePaths.forEach((item, index) => {
 					filePathArr.push(item);
 					wx.cloud.uploadFile({ // 上传文件
-						cloudPath: 'temp/' + new Date().getTime() + "-" + Math.floor(Math.random() * 1000),
+						cloudPath: 'temp/' + new Date().getTime() + "-post-" + Math.floor(Math.random() * 1000),
 						filePath: item,
 						success: res => {
 							const fileID = res.fileID;
@@ -94,7 +94,7 @@ Page({
 				});
 			},
 			fail: e => {
-				console.error(e)
+				console.error(e, 'choose img fail');
 			}
 		})
 	},
@@ -128,6 +128,9 @@ Page({
   },
   // 商品描述--输入中
   textareaInput(e) {
+    this.setData({
+      productDesc: e.detail.value,
+    });
     if(e.detail.value.length == 300) {
       this.setData({
         toptipsShow: true,
@@ -145,7 +148,27 @@ Page({
   // 发布
   releaseProduct() {
     if(this.data.productDesc && this.data.imageList.length && this.data.price) {
-      console.log(this.data.productDesc, this.data.imageList, this.data.price)
+      wx.showLoading({ title: '发布中' });
+      wx.cloud.callFunction({
+        name: 'msgSecCheck',
+        data: { content: this.data.productDesc }
+      }).then(res => {
+        wx.hideLoading();
+        const { errCode } = res.result;
+        if(errCode == 0) {
+          wx.showToast({
+            title: '发布成功',
+          })
+        } else if(errCode == 87014) {
+          this.setData({
+            resultText: '不得发布违法违规内容，请重新输入',
+            toptipsShow: true,
+          });
+        }
+      }).catch(e => {
+        console.log(e, 'msgSecCheck fail')
+        wx.hideLoading();
+      })
     }
   },
   /**

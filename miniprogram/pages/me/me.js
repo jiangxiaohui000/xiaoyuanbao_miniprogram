@@ -148,7 +148,7 @@ Page({
 				res.tempFilePaths.forEach((item, index) => {
 					filePathArr.push(item);
 					wx.cloud.uploadFile({ // 上传文件
-						cloudPath: 'temp/' + new Date().getTime() + "-" + Math.floor(Math.random() * 1000),
+						cloudPath: 'temp/' + new Date().getTime() + "-me-" + Math.floor(Math.random() * 1000),
 						filePath: item,
 						success: res => {
 							const fileID = res.fileID;
