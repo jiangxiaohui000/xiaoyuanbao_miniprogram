@@ -282,7 +282,7 @@ Page({
   },
   // 触底操作
   onReachBottom: function() {
-    console.log('bbbbb');
+    console.log('到底了');
   },
   // 页面滚动
   onPageScroll(e) {
@@ -308,6 +308,10 @@ Page({
     wx.navigateTo({
       url: '../search/search',
     })
+  },
+  // 点击轮播图
+  bannerClick(e) {
+    console.log(e.currentTarget.dataset.item)
   },
   // 选择商品分类
   chooseCategory: function(e) {

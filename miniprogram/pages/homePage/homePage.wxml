@@ -34,7 +34,7 @@
       duration="400"
       circular="true">
       <swiper-item wx:for="{{swiperImgs}}" wx:key="id">
-        <image src="{{item.img}}" mode="scaleToFill" ></image>
+        <image src="{{item.img}}" mode="scaleToFill" data-item="{{item}}" bindtap="bannerClick"></image>
       </swiper-item>
     </swiper>
   </view>
