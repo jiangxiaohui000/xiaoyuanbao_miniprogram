@@ -1,51 +1,54 @@
 <!--pages/postProduct/postProduct.wxml-->
 <view class="container">
   <!-- 商品描述 -->
-  <view class="title">
-    <i class="iconfont icon-miaoshu"></i>
-    <text>添加描述</text>
-  </view>
   <view class="text-area-box">
     <textarea
       class="text-area"
       cols="30"
-      rows="10"
+      rows="20"
       value="{{productDesc}}"
       maxlength="300"
       confirm-type="done"
-      placeholder="商品描述的越详细，潜在买家越多哦~"
+      placeholder="好好介绍一下你的宝贝吧~"
       bindconfirm="textareaConfirm"
       bindinput="textareaInput"
     ></textarea>
   </view>
   <!-- 商品图片 -->
-  <view class="title">
-    <i class="iconfont icon-tupian"></i>
-    <text>宝贝美照</text>
-  </view>
   <view class="img-box">
     <view class="img-box-inner" wx:for="{{imageList}}" wx:key="item">
-      <image class="img" mode="aspectFit" src="{{item}}" data-item="{{item}}" bindtap="imgPreview"></image>
+      <image class="img" mode="aspectFit" src="{{item}}" data-item="{{item}}" data-index="{{index}}" bindtap="imgPreview"></image>
       <i class="iconfont icon-gary guanbi" data-index="{{index}}" bindtap="deleteImg"></i>
     </view>
     <i class="iconfont icon-tabAdd add" wx:if="{{imageList.length < 9}}" bindtap="addImage"></i>
   </view>
   <!-- 价格 -->
-  <view class="price">
-    <i class="iconfont icon-jiage"></i>价格：￥
+  <view class="price" style="margin-top: 20rpx;">
+    <i class="iconfont icon-jiage1" style="margin-right: 5rpx;"></i>价格：￥
     <input class="price-input" type="digit" value="{{price}}" bindinput="priceInput" placeholder="合适的价格更容易卖出哦~" />
+  </view>
+  <view class="price">
+    <i class="iconfont icon-jiage1" style="margin-right: 5rpx;"></i>入手价格：￥
+    <input class="price-input" type="digit" value="{{originPrice}}" bindinput="originPriceInput" placeholder="选填" />
   </view>
   <!-- 发布按钮 -->
   <view>
     <button type="primary" disabled="{{releaseDisabled}}" class="release-button" bindtap="releaseProduct">发布</button>
   </view>
   <!-- 图片预览 -->
-  <view class="img-preview-box" wx:if="{{largeImgShow}}">
+  <!-- <view class="img-preview-box">
     <image class="img-preview" mode="aspectFit" src="{{largeImg}}"></image>
     <view class="close-preview" bindtap="closePreview">
       <i class="iconfont icon-guanbi"></i>关闭
     </view>
-  </view>
+  </view> -->
+  <mp-gallery
+    show="{{galleryShow}}"
+    showDelete="{{false}}"
+    img-urls="{{imgUrls}}"
+    hide-on-click="{{true}}"
+    current="{{currentImgIndex}}"
+  ></mp-gallery>
+  <!-- 提示tips -->
+  <mp-toptips msg="{{resultText}}" type="error" show="{{toptipsShow}}" delay="3000"></mp-toptips>
 </view>
-<!-- 提示tips -->
-<mp-toptips msg="{{resultText}}" type="error" show="{{toptipsShow}}" delay="3000"></mp-toptips>

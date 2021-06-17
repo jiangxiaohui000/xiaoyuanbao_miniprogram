@@ -80,6 +80,8 @@ Page({
     locationShow: false,
     timer: null,
     avatarUrl: '',
+    heatIconList: [1,2,3],
+    notHeatIconList: [1,2],
   },
 
   onLoad: function() {
@@ -93,12 +95,29 @@ Page({
     wx.getSetting({
       success: res => {
         // console.log(res, 'getSetting');
-        // 用户信息
-        this.getUserInfo(res, _this);
-        // 位置信息
-        this.getUserLocation(res, _this);
+        this.getUserInfo(res, _this); // 用户信息
+        this.getUserLocation(res, _this); // 位置信息
       }
     });
+    this.data.productsList.forEach(item => {
+      if(item.currentPrice < 10000) return;
+      if(item.currentPrice >= 10000) {
+        item.currentPrice = `${(item.currentPrice / 10000).toFixed(2)}万`;
+      }
+      if(item.currentPrice > 100000000) {
+        item.currentPrice = `${(item.currentPrice / 100000000).toFixed(2)}亿`;
+      }
+      if(item.originPrice < 10000) return;
+      if(item.originPrice >= 10000) {
+        item.originPrice = `${(item.originPrice / 10000).toFixed(2)}万`;
+      }
+      if(item.originPrice > 100000000) {
+        item.originPrice = `${(item.originPrice / 100000000).toFixed(2)}亿`;
+      }
+    });
+    this.setData({
+      productsList: this.data.productsList
+    })
   },
   // 获取用户信息
   getUserInfo: function(res, _this) {

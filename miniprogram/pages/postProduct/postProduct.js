@@ -12,8 +12,12 @@ Page({
     largeImgShow: false,
     releaseDisabled: true,
     price: '',
+    originPrice: '',
     resultText: '',
     toptipsShow: false,
+    galleryShow: false,
+    imgUrls: [],
+    currentImgIndex: 0,
   },
   /**
    * 生命周期函数--监听页面加载
@@ -21,7 +25,12 @@ Page({
   onLoad: function (options) {
     let eventChannel = this.getOpenerEventChannel();
     eventChannel.on('sendImage', res => {
-      res && res.filePath && this.setData({ imageList: res.filePath });
+      if(res && res.filePath) {
+        this.setData({
+          imageList: res.filePath,
+          imgUrls: res.filePath,
+        });
+      }
     });
     eventChannel.on('toEdit', res => {
       res && res.productDesc && (this.data.productDesc = res.productDesc);
@@ -30,6 +39,7 @@ Page({
       this.setData({
         productDesc: this.data.productDesc,
         imageList: this.data.imageList,
+        imgUrls: this.data.imageList,
         price: this.data.price,
         releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
       })
@@ -67,6 +77,7 @@ Page({
                     this.data.imageList.push(...filePathArr);
                     this.setData({
                       imageList: this.data.imageList,
+                      imgUrls: this.data.imageList,
                       releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
                     })
 									} else { // 未通过
@@ -102,15 +113,17 @@ Page({
   imgPreview(e) {
     this.setData({
       largeImg: e.currentTarget.dataset.item,
-      largeImgShow: true,
+      currentImgIndex: e.currentTarget.dataset.index,
+      galleryShow: true,
+      // largeImgShow: true,
     })
   },
   // 关闭图片预览
-  closePreview() {
-    this.setData({
-      largeImgShow: false
-    })
-  },
+  // closePreview() {
+  //   this.setData({
+  //     galleryShow: false
+  //   })
+  // },
   // 删除图片
   deleteImg(e) {
     this.data.imageList.splice(e.currentTarget.dataset.index, 1);
@@ -145,6 +158,12 @@ Page({
       releaseDisabled: !(this.data.productDesc && this.data.imageList.length && money(e.detail.value)),
     })
   },
+  // 输入入手价格
+  originPriceInput(e) {
+    this.setData({
+      originPrice: money(e.detail.value),
+    })
+  },
   // 发布
   releaseProduct() {
     if(this.data.productDesc && this.data.imageList.length && this.data.price) {
@@ -156,6 +175,12 @@ Page({
         wx.hideLoading();
         const { errCode } = res.result;
         if(errCode == 0) {
+          const params = {
+            productDesc: this.data.productDesc,
+            imageList: this.data.imageList,
+            price: this.data.price,
+            originPrice: this.data.originPrice,
+          }
           wx.showToast({
             title: '发布成功',
           })

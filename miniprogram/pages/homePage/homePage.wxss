@@ -189,6 +189,12 @@ page {
   color: #aaa;
   text-decoration: line-through;
 }
+.heat-container {
+  display: flex;
+  align-items: center;
+  font-size: 20rpx;
+  color: #999;
+}
 .dingwei {
   animation: 2s linear 2s infinite running dingwei;
 }

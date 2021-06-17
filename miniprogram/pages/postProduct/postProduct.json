@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "mp-toptips": "weui-miniprogram/toptips/toptips"
+    "mp-toptips": "weui-miniprogram/toptips/toptips",
+    "mp-gallery": "weui-miniprogram/gallery/gallery"
   },
   "navigationBarTitleText": "发布商品",
   "enablePullDownRefresh": false

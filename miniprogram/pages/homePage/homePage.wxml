@@ -68,14 +68,13 @@
         <view class="products-price">
           <view>
             <text class="products-current-price">￥{{item.currentPrice}}</text>
-            <text class="products-origin-price">￥{{item.originPrice}}</text>
+            <text class="products-origin-price" wx:if="item.originPrice">￥{{item.originPrice}}</text>
           </view>
-          <button
-            size="mini"
-            type="primary"
-            data-id="{{item.id}}"
-            catchtap="gotoCurrentChat"
-          >想要</button>
+          <view class="heat-container">
+            热度：
+            <i wx:for="{{heatIconList}}" wx:key="index" class="iconfont icon-ziyuan" style="color: red;"></i>
+            <i wx:for="{{notHeatIconList}}" wx:key="index" class="iconfont icon-ziyuan"></i>
+          </view>
         </view>
       </view>
     </view>
