@@ -70,6 +70,7 @@ Page({
 		currentPrice: '',
 		modifiedPrice: '',
 		toptipsShow: false,
+		toptipsType: '',
 		resultText: '',
 	},
 
@@ -167,11 +168,19 @@ Page({
 												result.eventChannel.emit('sendImage', {filePath: filePathArr})
 											}
 										});
-									} else { // 未通过
+									} else if(imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 未通过
 										wx.hideLoading();
 										this.setData({
-											resultText: '不得上传违法违规内容，请重新选择',
+											resultText: '不得上传违法违规内容，请重新选择！',
 											toptipsShow: true,
+											toptipsType: 'error',
+										});
+									} else {
+										wx.hideLoading();
+										this.setData({
+											resultText: '上传失败，请稍后再试！',
+                      toptipsShow: true,
+                      toptipsType: 'info',
 										});
 									}
 								}
@@ -233,7 +242,8 @@ Page({
 			if(+this.data.modifiedPrice > +this.data.currentPrice) {
 				this.setData({
 					toptipsShow: true,
-					resultText: '新的价格要小于原价格哦~'
+					resultText: '新的价格要小于原价格哦~',
+					toptipsType: 'info',
 				});
 				return;
 			}

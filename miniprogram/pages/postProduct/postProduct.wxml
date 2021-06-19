@@ -25,15 +25,46 @@
   <!-- 价格 -->
   <view class="price" style="margin-top: 20rpx;">
     <i class="iconfont icon-jiage1" style="margin-right: 5rpx;"></i>价格：￥
-    <input class="price-input" type="digit" value="{{price}}" bindinput="priceInput" placeholder="合适的价格更容易卖出哦~" />
+    <input
+      class="price-input"
+      type="digit"
+      value="{{price}}"
+      bindinput="priceInput"
+      placeholder="合适的价格更容易卖出哦~"
+    />
   </view>
   <view class="price">
     <i class="iconfont icon-jiage1" style="margin-right: 5rpx;"></i>入手价格：￥
-    <input class="price-input" type="digit" value="{{originPrice}}" bindinput="originPriceInput" placeholder="选填" />
+    <input
+      class="price-input"
+      type="digit"
+      value="{{originPrice}}"
+      bindinput="originPriceInput"
+      placeholder="选填"
+    />
+  </view>
+  <!-- 分类 -->
+  <view class="classify">
+    <i class="iconfont icon-leibie"></i>
+    <view>分类：</view>
+    <view class="classify-item-container">
+      <view
+        wx:for="classifyList"
+        wx:key="item"
+        class="classify-item {{index === selectedClassify ? 'classify-item-active' : 'classify-item-inactive'}}"
+        data-item="item"
+        bindtap="chooseClassify"
+      >{{item.label}}</view>  
+    </view>
   </view>
   <!-- 发布按钮 -->
   <view>
-    <button type="primary" disabled="{{releaseDisabled}}" class="release-button" bindtap="releaseProduct">发布</button>
+    <button
+      type="primary"
+      disabled="{{releaseDisabled}}"
+      class="release-button"
+      bindtap="releaseProduct"
+    >发布</button>
   </view>
   <!-- 图片预览 -->
   <!-- <view class="img-preview-box">
@@ -50,5 +81,5 @@
     current="{{currentImgIndex}}"
   ></mp-gallery>
   <!-- 提示tips -->
-  <mp-toptips msg="{{resultText}}" type="error" show="{{toptipsShow}}" delay="3000"></mp-toptips>
+  <mp-toptips msg="{{resultText}}" type="{{toptipsType}}" show="{{toptipsShow}}" delay="3000"></mp-toptips>
 </view>

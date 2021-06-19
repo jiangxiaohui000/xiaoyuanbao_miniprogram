@@ -72,4 +72,4 @@
     </view>
   </view>
 </mp-dialog>
-<mp-toptips msg="{{resultText}}" type="error" show="{{toptipsShow}}" delay="3000"></mp-toptips>
+<mp-toptips msg="{{resultText}}" type="{{toptipsType}}" show="{{toptipsShow}}" delay="3000"></mp-toptips>

@@ -14,10 +14,34 @@ Page({
     price: '',
     originPrice: '',
     resultText: '',
+    toptipsType: '',
     toptipsShow: false,
     galleryShow: false,
     imgUrls: [],
     currentImgIndex: 0,
+    classifyList: [{
+      value: 0,
+      label: '手机电脑'
+    }, {
+      value: 1,
+      label: '数码3C'
+    }, {
+      value: 2,
+      label: '运动户外'
+    }, {
+      value: 3,
+      label: '服饰鞋帽'
+    }, {
+      value: 4,
+      label: '美妆护肤'
+    }, {
+      value: 5,
+      label: '生活百货'
+    }, {
+      value: 6,
+      label: '其他'
+    }],
+    selectedClassify: '',
   },
   /**
    * 生命周期函数--监听页面加载
@@ -80,13 +104,21 @@ Page({
                       imgUrls: this.data.imageList,
                       releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
                     })
-									} else { // 未通过
+									} else if(imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 未通过
 										wx.hideLoading();
 										this.setData({
-											resultText: '不得上传违法违规内容，请重新选择',
-											toptipsShow: true,
+											resultText: '不得上传违法违规内容，请重新选择！',
+                      toptipsShow: true,
+                      toptipsType: 'error',
 										});
-									}
+									} else {
+                    wx.hideLoading();
+                    this.setData({
+                      resultText: '上传失败，请稍后再试！',
+                      toptipsShow: true,
+                      toptipsType: 'info',
+                    });
+                  }
 								}
 							}).catch(e => {
 								console.log(e, 'imgSecCheck fail');
@@ -147,7 +179,8 @@ Page({
     if(e.detail.value.length == 300) {
       this.setData({
         toptipsShow: true,
-        resultText: '已经到达输入字数限制！'
+        resultText: '已经到达输入字数限制！',
+        toptipsType: 'info',
       })
     }
   },
@@ -162,6 +195,12 @@ Page({
   originPriceInput(e) {
     this.setData({
       originPrice: money(e.detail.value),
+    })
+  },
+  // 选择分类
+  chooseClassify(e) {
+    this.setData({
+      selectedClassify: e.currentTarget.dataset.item.value
     })
   },
   // 发布
@@ -186,8 +225,9 @@ Page({
           })
         } else if(errCode == 87014) {
           this.setData({
-            resultText: '不得发布违法违规内容，请重新输入',
+            resultText: '不得发布违法违规内容，请重新输入！',
             toptipsShow: true,
+            toptipsType: 'error',
           });
         }
       }).catch(e => {
