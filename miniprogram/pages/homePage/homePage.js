@@ -272,6 +272,12 @@ Page({
                 locationFlash: false,
                 locationShow: true,
               });
+              _this.data.timer = setTimeout(() => {
+                _this.setData({
+                  locationShow: false
+                });
+                clearTimeout(_this.data.timer);
+              }, 3000);
             }
           })
         } else {

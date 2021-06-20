@@ -42,6 +42,17 @@ Page({
       label: '其他'
     }],
     selectedClassify: '',
+    tagList: [{
+      value: 0,
+      label: '全新'
+    }, {
+      value: 1,
+      label: '不讲价'
+    }, {
+      value: 2,
+      label: '价格可谈'
+    }],
+    selectedTag: '',
   },
   /**
    * 生命周期函数--监听页面加载
@@ -78,7 +89,7 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
-				wx.showLoading({ title: '上传中' });
+				wx.showLoading({ title: '努力传输中' });
 				const filePathArr = [];
 				const imgSecCheckArr = [];
 				const len = res.tempFilePaths.length;
@@ -201,6 +212,12 @@ Page({
   chooseClassify(e) {
     this.setData({
       selectedClassify: e.currentTarget.dataset.item.value
+    })
+  },
+  // 选择标签
+  chooseTag(e) {
+    this.setData({
+      selectedTag: e.currentTarget.dataset.item.value
     })
   },
   // 发布

@@ -142,7 +142,7 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
-				wx.showLoading({ title: '上传中' });
+				wx.showLoading({ title: '努力传输中' });
 				const filePathArr = []; // 传给下一个页面的文件路径
 				const imgSecCheckArr = [];
 				const len = res.tempFilePaths.length;

@@ -24,7 +24,7 @@
   </view>
   <!-- 价格 -->
   <view class="price" style="margin-top: 20rpx;">
-    <i class="iconfont icon-jiage1" style="margin-right: 5rpx;"></i>价格：￥
+    <i class="iconfont icon-jiage1" style="margin-right: 6rpx;"></i>价格：￥
     <input
       class="price-input"
       type="digit"
@@ -34,7 +34,7 @@
     />
   </view>
   <view class="price">
-    <i class="iconfont icon-jiage1" style="margin-right: 5rpx;"></i>入手价格：￥
+    <i class="iconfont icon-jiage1" style="margin-right: 6rpx;"></i>入手价格：￥
     <input
       class="price-input"
       type="digit"
@@ -45,16 +45,32 @@
   </view>
   <!-- 分类 -->
   <view class="classify">
-    <i class="iconfont icon-leibie"></i>
-    <view>分类：</view>
+    <view class="classify-title">
+      <i class="iconfont icon-leibie" style="margin: 0 10rpx 0 4rpx;"></i>分类：
+    </view>
     <view class="classify-item-container">
-      <view
-        wx:for="classifyList"
-        wx:key="item"
-        class="classify-item {{index === selectedClassify ? 'classify-item-active' : 'classify-item-inactive'}}"
-        data-item="item"
-        bindtap="chooseClassify"
-      >{{item.label}}</view>  
+        <view
+          wx:for="{{classifyList}}"
+          wx:key="item"
+          class="classify-item {{index === selectedClassify ? 'classify-item-active' : ''}}"
+          data-item="{{item}}"
+          bindtap="chooseClassify"
+        >{{item.label}}</view>
+    </view>
+  </view>
+  <!-- 标签 -->
+  <view class="classify">
+    <view class="classify-title">
+      <i class="iconfont icon-icontag" style="margin-right: 6rpx;"></i>标签：
+    </view>
+    <view class="classify-item-container">
+        <view
+          wx:for="{{tagList}}"
+          wx:key="item"
+          class="classify-item {{index === selectedTag ? 'classify-item-active' : ''}}"
+          data-item="{{item}}"
+          bindtap="chooseTag"
+        >{{item.label}}</view>
     </view>
   </view>
   <!-- 发布按钮 -->
@@ -67,12 +83,6 @@
     >发布</button>
   </view>
   <!-- 图片预览 -->
-  <!-- <view class="img-preview-box">
-    <image class="img-preview" mode="aspectFit" src="{{largeImg}}"></image>
-    <view class="close-preview" bindtap="closePreview">
-      <i class="iconfont icon-guanbi"></i>关闭
-    </view>
-  </view> -->
   <mp-gallery
     show="{{galleryShow}}"
     showDelete="{{false}}"
