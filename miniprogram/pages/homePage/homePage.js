@@ -135,6 +135,16 @@ Page({
         timeout: 1000,
         success: res => {
           console.log('login seccess', res)
+          if (res.authSetting['scope.userInfo']) {
+            wx.getUserInfo({
+              success: res => {
+                _this.setData({
+                  avatarUrl: res.userInfo.avatarUrl,
+                  userInfo: res.userInfo
+                })
+              }
+            })      
+          }
         }
       })
     }
@@ -187,7 +197,7 @@ Page({
             content: '出错啦，让小宝休息一下下',
             showCancel: false,
             confirmText: '我知道啦'
-          })   
+          }) 
         }
       })
     } else { // 用户未同意授权位置信息
@@ -214,7 +224,7 @@ Page({
           // const _this = this;
           console.log('用户未同意授权位置信息');
           wx.showModal({
-            title: '是否授权当前位置',
+            title: '',
             content: '糟糕...我不知道您在哪儿，请授权给我位置信息，小宝会为您提供更好的服务',
             success: (tip) => {
               if (tip.confirm) {
@@ -260,9 +270,9 @@ Page({
   // 去往定位页面
   goLocationPage() {
     const _this = this;
-    wx.openSetting({
-      success: (data) => {
-        if (data.authSetting["scope.userLocation"]) {
+    wx.getSetting({
+      success: res => {
+        if(res.authSetting['scope.userLocation']) {
           wx.chooseLocation({
             success: res => {
               _this.setData({
@@ -281,23 +291,47 @@ Page({
             }
           })
         } else {
-          wx.showModal({
-            title: '提示',
-            content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
-            showCancel: false,
-            confirmText: '我知道啦'
-          })
+          wx.openSetting({
+            success: (data) => {
+              if (data.authSetting["scope.userLocation"]) {
+                wx.chooseLocation({
+                  success: res => {
+                    _this.setData({
+                      userAddress: `${res.address}${res.name}`,
+                      userAddressLatitude: res.latitude,
+                      userAddressLongitude: res.longitude,
+                      locationFlash: false,
+                      locationShow: true,
+                    });
+                    _this.data.timer = setTimeout(() => {
+                      _this.setData({
+                        locationShow: false
+                      });
+                      clearTimeout(_this.data.timer);
+                    }, 3000);
+                  }
+                })
+              } else {
+                wx.showModal({
+                  title: '提示',
+                  content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
+                  showCancel: false,
+                  confirmText: '我知道啦'
+                })
+              }
+            },
+            fail: () => {
+              wx.showModal({
+                title: '提示',
+                content: '出错啦，让小宝休息一下下',
+                showCancel: false,
+                confirmText: '我知道啦'
+              })
+            },
+          });
         }
-      },
-      fail: () => {
-        wx.showModal({
-          title: '提示',
-          content: '出错啦，让小宝休息一下下',
-          showCancel: false,
-          confirmText: '我知道啦'
-        })
-      },
-    });
+      }
+    })
   },
   // 下拉刷新
 	onPullDownRefresh: function() {

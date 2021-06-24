@@ -95,6 +95,7 @@ Page({
 				success: res => {
 					// console.log(res, 'me')
 					this.setData({
+						logged: true,
 						avatarUrl: res.userInfo.avatarUrl,
 						userInfo: res.userInfo
 					})
@@ -102,41 +103,58 @@ Page({
 			})
 		}
 	},
+	// 点击头像获取用户信息
 	onGetUserInfo: function(e) {
-		if (!this.logged && e.detail.userInfo) {
+		if (!this.data.logged && e.detail.userInfo) {
 			this.setData({
 				logged: true,
 				avatarUrl: e.detail.userInfo.avatarUrl,
 				userInfo: e.detail.userInfo
 			})
+			wx.showModal({
+				title: '',
+				content: `欢迎您，${e.detail.userInfo.nickName}`,
+				showCancel: false,
+				confirmText: '退下~'
+			});
 		}
 	},
-	onGetOpenid: function () {
-		wx.showLoading({
-			title: '请稍后...',
-		})
-		// 调用云函数
-		wx.cloud.callFunction({
-			name: 'login',
-			data: {},
-			success: res => {
-				wx.hideLoading();
-				console.log('[云函数] [login] user openid: ', res.result.openid)
-				app.globalData.openid = res.result.openid
-				wx.navigateTo({
-					url: '../userConsole/userConsole',
-				})
-			},
-			fail: err => {
-				console.error('[云函数] [login] 调用失败', err)
-				wx.navigateTo({
-					url: '../deployFunctions/deployFunctions',
-				})
-			}
-		})
-	},
+	// 获取用户openid
+	// onGetOpenid: function () {
+	// 	wx.showLoading({
+	// 		title: '请稍后...',
+	// 	})
+	// 	// 调用云函数
+	// 	wx.cloud.callFunction({
+	// 		name: 'login',
+	// 		data: {},
+	// 		success: res => {
+	// 			wx.hideLoading();
+	// 			console.log('[云函数] [login] user openid: ', res.result.openid)
+	// 			app.globalData.openid = res.result.openid
+	// 			wx.navigateTo({
+	// 				url: '../userConsole/userConsole',
+	// 			})
+	// 		},
+	// 		fail: err => {
+	// 			console.error('[云函数] [login] 调用失败', err)
+	// 			wx.navigateTo({
+	// 				url: '../deployFunctions/deployFunctions',
+	// 			})
+	// 		}
+	// 	})
+	// },
 	// 上传图片
 	doUpload: function () {
+		if(!this.data.logged) { // 未登录
+			wx.showModal({
+				title: '提示',
+				content: '您未登录，请点击头像进行登录',
+				showCancel: false,
+				confirmText: '我知道啦'
+			});
+			return;
+		}
 		wx.chooseImage({ // 选择图片
 			count: 9,
 			sizeType: ['compressed'],
