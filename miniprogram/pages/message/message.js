@@ -82,4 +82,11 @@ Page({
     const index = e.currentTarget.dataset.chatindex;
     this.setXMove(index, 0);
   },
+	// 下拉刷新
+	onPullDownRefresh() {
+    console.log(3333)
+    wx.stopPullDownRefresh({
+      success: (res) => {},
+    })
+	},
 })

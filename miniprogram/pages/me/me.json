@@ -3,5 +3,6 @@
 	"usingComponents": {
 		"mp-dialog": "weui-miniprogram/dialog/dialog",
 		"mp-toptips": "weui-miniprogram/toptips/toptips"
-	}
+	},
+	"backgroundTextStyle": "dark"
 }

@@ -198,7 +198,6 @@ Page({
         }
       })
     } else { // 用户未同意授权位置信息
-      // const _this = this;
       wx.authorize({
         scope: 'scope.userLocation',  
         success: () => { // 用户同意授权位置信息
@@ -218,7 +217,6 @@ Page({
           })
         },
         fail: () => { // 用户未同意授权位置信息
-          // const _this = this;
           console.log('用户未同意授权位置信息');
           wx.showModal({
             title: '',
@@ -332,6 +330,7 @@ Page({
   },
   // 下拉刷新
 	onPullDownRefresh: function() {
+    console.log(111111)
     setTimeout(() => {
       wx.stopPullDownRefresh()
     }, 1000);

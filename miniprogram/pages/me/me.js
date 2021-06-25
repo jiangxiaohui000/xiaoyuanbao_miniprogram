@@ -226,6 +226,7 @@ Page({
 	// 下拉刷新
 	onPullDownRefresh: function() {
 		this.onLoad();
+		console.log(2222)
 	},
 	// 详情
 	toMineItemDetail: function(e) {
