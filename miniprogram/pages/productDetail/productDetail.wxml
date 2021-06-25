@@ -22,16 +22,16 @@
 <view class="product-description">
   <view class="product-desc-text">{{productInfo.text}}</view>
   <view wx:for="{{productInfo.img}}" wx:key="index" class="product-detail-img-container">
-    <image src="{{item}}" class="product-detail-img"></image>
+    <image src="{{item}}" class="product-detail-img" data-img="{{item}}" bindtap="imgPreview"></image>
   </view>
 </view>
 <!-- 聊一聊、收藏 | 编辑、删除 -->
-<view class="capability">
-  <view class="capability-chat-collection" wx:if="{{from == 'homePage'}}">
-    <view class="collection" bindtap="collectProducts"><i class="iconfont {{collectedIcon}}"></i>{{collectedStatus}}</view>
-    <view style="width: 50%; display: flex;"><button class="chat-button" size="mini" bindtap="gotoChatRoom">聊一聊</button></view>  
+<view class="features">
+  <view class="features-item" wx:if="{{from == 'homePage'}}">
+    <view class="collection" bindtap="collectProducts"><i class="iconfont {{collectedIcon}}"></i> {{collectedStatus}}</view>
+    <button class="chat-button" size="mini" bindtap="gotoChatRoom">聊一聊</button>
   </view>
-  <view class="capability-edit-delete" wx:if="{{from == 'me'}}">
+  <view class="features-item" wx:if="{{from == 'me'}}" style="justify-content: flex-end;">
     <view class="edit-product" bindtap="edit">编辑</view>
     <view class="delete-product" bindtap="delete">删除</view>
   </view>

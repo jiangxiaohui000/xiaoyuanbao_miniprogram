@@ -87,7 +87,21 @@ Page({
 					console.log('用户点击确定')
 				}
 			}
-		})		
+		});
+	},
+	// 图片预览
+	imgPreview(e) {
+		console.log(e)
+		wx.previewImage({
+			urls: this.data.productInfo.img,
+			current: e.currentTarget.dataset.img,
+			success: res => {
+				console.log(res, 'success')
+			},
+			fail: e => {
+				console.log(e, 'error')
+			}
+		})
 	},
 	/**
 	 * 生命周期函数--监听页面初次渲染完成
