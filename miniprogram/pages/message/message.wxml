@@ -21,27 +21,34 @@
     data-id="{{item.id}}"
     bindtap="gotoChatItem"
   >
-    <view>
-      <!-- 头像 -->
-      <image
-        class="message-head-portrait"
-        src="{{item.img}}"
-        mode="center"
-        lazy-load="false"
-      ></image>
-    </view>
-    <view class="message-right-info">
-      <!-- 昵称 -->
-      <view class="message-right-info-top">
-        <view class="message-name">{{item.name}}</view>
-        <view class="message-time">{{item.time}}</view>
-      </view>
-      <!-- 消息 -->
-      <view class="message-info">{{item.info}}</view>
-    </view>
-    <!-- 未读 -->
-    <view class="message-unread" wx:if="{{item.hasUnreadMessage}}">
-      <view class="message-unread-inner"></view>
-    </view>
+    <movable-area class="movable-area">
+      <movable-view
+        class="movable-view"
+        direction="horizontal"
+        out-of-bounds="true"
+        x="{{item.xmove}}"
+        inertia="true"
+        data-chatIndex="{{index}}"
+        bindtouchstart="handleTouchStart"
+        bindtouchend="handleTouchEnd"
+        bindchange="handleMovableChange"
+      >
+        <!-- 头像 -->
+        <image class="message-head-portrait" src="{{item.img}}" mode="center" lazy-load="false"></image>
+        <!-- 昵称 消息 -->
+        <view class="message-right-info">
+          <view class="message-right-info-top">
+            <view class="message-name">{{item.name}}</view>
+            <view class="message-time">{{item.time}}</view>
+          </view>
+          <view class="message-info">{{item.info}}</view>
+        </view>
+        <!-- 未读 -->
+        <view class="message-unread" wx:if="{{item.hasUnreadMessage}}">
+          <view class="message-unread-inner"></view>
+        </view>
+      </movable-view>
+    </movable-area>
+    <view class="slide-delete" data-id="{{item.id}}" catchtap="slideDelete">删除</view>
   </view>
 </view>

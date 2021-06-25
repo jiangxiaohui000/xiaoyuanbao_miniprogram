@@ -75,6 +75,9 @@ page {
   background-color: #fff;
   border-radius: 15rpx;
 }
+.products-container::-webkit-scrollbar {
+  display: none;
+}
 .products-title {
   width: 100%;
   height: 70rpx;

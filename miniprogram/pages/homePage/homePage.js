@@ -181,9 +181,6 @@ Page({
             },
             fail: e => { // 腾讯位置服务出错
               console.log(e, 'fail')
-              wx.showToast({
-                title: '服务出错误啦，请到设置中重新开启~',
-              });
               _this.setData({
                 locationFlash: false
               });
@@ -293,7 +290,7 @@ Page({
         } else {
           wx.openSetting({
             success: (data) => {
-              if (data.authSetting["scope.userLocation"]) {
+              if (data.authSetting["scope.userLocation"]) { // 已授权位置信息
                 wx.chooseLocation({
                   success: res => {
                     _this.setData({

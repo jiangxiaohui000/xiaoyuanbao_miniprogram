@@ -1,16 +1,16 @@
 .message-container {
 	overflow: hidden;
-	padding: 0 40rpx;
+	/* padding: 0 40rpx; */
 }
 
 .sys-message {
 	overflow: hidden;
 	height: 118rpx;
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1rpx solid #ccc;
 	display: flex;
 	align-items: center;
 	position: relative;
-	padding: 10rpx 0;
+	padding: 10rpx 20rpx;
 }
 
 .sys-message-icon {
@@ -51,7 +51,7 @@
 	background-color: #fff;
 	border-radius: 50%;
 	position: absolute;
-	left: 74rpx;
+	left: 90rpx;
 	bottom: 18rpx;
 	display: flex;
 	justify-content: center;
@@ -65,18 +65,47 @@
 	background-color: #07c160;
 }
 
-.sys-message-time,
-.message-time {
+.sys-message-time, .message-time {
 	color: #aaa;
 	font-size: 24rpx;
 }
 
 .message-item {
-	padding: 20rpx 0;
-	height: 100rpx;
+	height: 140rpx;
+	width: 100vw;
 	border-bottom: 1rpx solid #ccc;
 	position: relative;
 	display: flex;
+	z-index: 999;
+}
+
+.movable-area {
+	width: calc(100vw - 100rpx);
+	height: 100rpx;
+	padding: 20rpx 0;
+}
+
+.movable-view {
+	width: 95vw;
+	height: 100rpx;
+	padding: 20rpx;
+	display: flex;
+	z-index: 999;
+	background-color: #fff;
+}
+
+.slide-delete {
+	position: absolute;
+	top: 50%;
+	margin-top: -68rpx;
+	right: 0;
+	width: 100rpx;
+	height: 136rpx;
+	line-height: 136rpx;
+	text-align: center;
+	color: #fff;
+	background-color: #f00;
+	font-size: 24rpx;
 }
 
 .message-head-portrait {
@@ -119,7 +148,7 @@
 	background-color: #fff;
 	border-radius: 50%;
 	position: absolute;
-	left: 76rpx;
+	left: 92rpx;
 	bottom: 22rpx;
 	display: flex;
 	justify-content: center;
