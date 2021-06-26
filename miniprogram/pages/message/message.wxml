@@ -1,6 +1,6 @@
 <view class="message-container">
   <!-- 系统信息 -->
-  <view class="sys-message">
+  <!-- <view class="sys-message">
     <view class="sys-message-icon"><i class="iconfont icon-xitongxiaoxi"></i></view>
     <view class="sys-message-unread" wx:if="{{sysMessageUnRead}}">
       <view class="sys-message-unread-inner"></view>
@@ -12,13 +12,13 @@
       </view>
       <view class="sys-message-detail-info">{{sysMessage}}</view>
     </view>
-  </view>
+  </view> -->
   <!-- 聊天列表 -->
   <view
     wx:for="{{chatList}}"
     wx:key="id"
     class="message-item"
-    data-id="{{item.id}}"
+    data-item="{{item}}"
     bindtap="gotoChatItem"
   >
     <movable-area class="movable-area">
@@ -34,15 +34,14 @@
         bindchange="handleMovableChange"
       >
         <!-- 头像 -->
-        <image class="message-head-portrait" src="{{item.img}}" mode="center" lazy-load="false"></image>
+        <image class="message-head-portrait" src="{{item.logo}}" mode="aspectFill" lazy-load="false"></image>
         <!-- 昵称 消息 -->
-        <view class="message-right-info">
-          <view class="message-right-info-top">
-            <view class="message-name">{{item.name}}</view>
-            <view class="message-time">{{item.time}}</view>
-          </view>
+        <view class="message-content">
+          <view class="message-name">{{item.name}}</view>
           <view class="message-info">{{item.info}}</view>
+          <view class="message-time">{{item.time}}</view>
         </view>
+        <image class="message-product-img" src="{{item.img}}" mode="aspectFill" lazy-load="false"></image>
         <!-- 未读 -->
         <view class="message-unread" wx:if="{{item.hasUnreadMessage}}">
           <view class="message-unread-inner"></view>

@@ -9,7 +9,7 @@ Component({
     envId: String,
     collection: String,
     groupId: String,
-    groupName: String,
+    chatInfo: Object,
     userInfo: Object,
     onGetUserInfo: {
       type: Function,
@@ -329,8 +329,11 @@ Component({
   },
 
   ready() {
-    global.chatroom = this
-    this.initRoom()
-    this.fatalRebuildCount = 0
+    global.chatroom = this;
+    this.initRoom();
+    this.fatalRebuildCount = 0;
+    wx.setNavigationBarTitle({
+      title: this.data.chatInfo.name
+    })
   },
 })

@@ -10,14 +10,18 @@ Page({
     // chatRoomEnvId: 'release-f8415a',
     chatRoomCollection: 'chatroom',
     chatRoomGroupId: 'demo',
-    chatRoomGroupName: '聊天室',
+    chatInfo: '',
 
     // functions for used in chatroom components
     onGetUserInfo: null,
     getOpenID: null,
   },
 
-  onLoad: function() {
+  onLoad: function(options) {
+    console.log(options, 'room options')
+    this.setData({
+      chatInfo: {name: options.name, img: options.img, price: options.price}
+    });
     // 获取用户信息
     wx.getSetting({
       success: res => {
@@ -46,7 +50,8 @@ Page({
         if (res.safeArea) {
           const { top, bottom } = res.safeArea
           this.setData({
-            containerStyle: `padding-top: ${(/ios/i.test(res.system) ? 10 : 20) + top}px; padding-bottom: ${20 + res.windowHeight - bottom}px`,
+            // containerStyle: `padding-top: ${(/ios/i.test(res.system) ? 10 : 20) + top}px; padding-bottom: ${20 + res.windowHeight - bottom}px`,
+            containerStyle: `padding-bottom: ${20 + res.windowHeight - bottom}px`,
           })
         }
       },

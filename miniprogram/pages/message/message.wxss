@@ -1,6 +1,5 @@
 .message-container {
 	overflow: hidden;
-	/* padding: 0 40rpx; */
 }
 
 .sys-message {
@@ -71,7 +70,7 @@
 }
 
 .message-item {
-	height: 140rpx;
+	height: 160rpx;
 	width: 100vw;
 	border-bottom: 1rpx solid #ccc;
 	position: relative;
@@ -81,15 +80,17 @@
 
 .movable-area {
 	width: calc(100vw - 100rpx);
-	height: 100rpx;
+	height: 120rpx;
 	padding: 20rpx 0;
 }
 
 .movable-view {
 	width: 95vw;
-	height: 100rpx;
+	height: 120rpx;
 	padding: 20rpx;
 	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	z-index: 999;
 	background-color: #fff;
 }
@@ -97,11 +98,11 @@
 .slide-delete {
 	position: absolute;
 	top: 50%;
-	margin-top: -68rpx;
+	margin-top: -78rpx;
 	right: 0;
 	width: 100rpx;
-	height: 136rpx;
-	line-height: 136rpx;
+	height: 156rpx;
+	line-height: 156rpx;
 	text-align: center;
 	color: #fff;
 	background-color: #f00;
@@ -115,22 +116,21 @@
 	border-radius: 50%;
 }
 
-.message-right-info {
+.message-product-img {
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 10rpx;
+}
+
+.message-content {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	width: calc(100% - 120rpx);
-}
-
-.message-right-info-top {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+	width: calc(100% - 240rpx);
 }
 
 .message-name {
-	font-weight: 400;
-	font-size: 30rpx;
+	font-size: 28rpx;
 }
 
 .message-info {
@@ -138,7 +138,7 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	font-size: 24rpx;
-	margin-top: 20rpx;
+	margin-top: 10rpx;
 	color: #666;
 }
 
@@ -148,8 +148,8 @@
 	background-color: #fff;
 	border-radius: 50%;
 	position: absolute;
-	left: 92rpx;
-	bottom: 22rpx;
+	left: 86rpx;
+	bottom: 26rpx;
 	display: flex;
 	justify-content: center;
 	align-items: center;

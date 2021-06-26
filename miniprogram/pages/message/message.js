@@ -10,14 +10,18 @@ Page({
       name: '快乐的小甜甜',
       time: '1-23 11:44',
       info: '便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了',
+      logo: '../../images/touxiang1.jpeg',
       img: '../../images/touxiang1.jpeg',
+      price: '11',
       hasUnreadMessage: false,
     }, {
       id: 2,
       name: '雨中追逐',
       time: '12-23 11:44',
       info: '项目中常常有这种需要我们对溢出文本进行显示的操作，单行多行的情况都有的情况都有的情况都有的情况都有',
+      logo: '../../images/touxiang2.jpeg',
       img: '../../images/touxiang2.jpeg',
+      price: '11',
       hasUnreadMessage: true,
     }],
   },
@@ -30,7 +34,11 @@ Page({
   },
   // 去聊天
   gotoChatItem(e) {
-    console.log(e);
+    console.log(e, 'chatItem');
+    const item = e.currentTarget.dataset.item;
+    wx.navigateTo({
+      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&name=${item.name}`,
+    })
   },
   // 删除聊天
   slideDelete(e) {

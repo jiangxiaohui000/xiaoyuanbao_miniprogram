@@ -1,16 +1,16 @@
 <view class="chatroom">
   <view class="header">
-    <!-- display number of people in the room -->
-    <view class="left"></view>
-    <!-- room name -->
-    <view class="middle">{{groupName}}</view>
-    <!-- reserved -->
-    <view class="right"></view>
+    <image class="product-img" src="{{chatInfo.img}}"></image>
+    <view class="header-right">
+      <view style="color: #000;">￥{{chatInfo.price}}</view>
+      <view>交易前，聊一聊</view>
+    </view>
   </view>
 
   <!-- chats -->
   <scroll-view 
-    class="body" 
+    class="body"
+    enable-flex="true"
     scroll-y 
     scroll-with-animation="{{scrollWithAnimation}}"
     scroll-top="{{scrollTop}}" 
@@ -19,7 +19,7 @@
   >
     <view 
       wx:for="{{chats}}"
-      wx:key="{{item._id}}"
+      wx:key="item"
       id="item-{{index}}"
       class="message {{openId == item._openid ? 'message__self' : ''}}"
     >
@@ -38,7 +38,7 @@
               data-fileid="{{item.tempFilePath || item.imgFileID}}" 
               class="image-content" 
               style="{{item.imgStyle}}"
-              mode="scallToFill" 
+              mode="aspectFit" 
               bindtap="onMessageImageTap"></image>
           </view>
         </block>
