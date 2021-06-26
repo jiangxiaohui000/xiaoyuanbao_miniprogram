@@ -45,7 +45,7 @@
   display: flex;
   flex-direction: column;
   background: rgb(237,237,237);
-  padding-bottom: 16rpx;
+  padding-bottom: 160rpx;
 }
 
 .body .message {
@@ -127,19 +127,22 @@
 }
 
 .chatroom .footer {
+  width: 100%;
   flex-basis: fit-content;
-  display: flex;
-  flex-direction: row;
+  /* display: flex; */
   border-top: 1px solid #ddd;
   font-size: 10rpx;
-  padding: 20rpx 30rpx;
   background: rgb(246,246,246);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .chatroom .footer .message-sender {
-  flex: 1;
+  /* flex: 1; */
   display: flex;
-  flex-direction: row;
+  padding: 20rpx 30rpx;
 }
 
 .message-sender .text-input {

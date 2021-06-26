@@ -1,4 +1,5 @@
 <view class="chatroom">
+  <!-- header -->
   <view class="header">
     <image class="product-img" src="{{chatInfo.img}}"></image>
     <view class="header-right">
@@ -23,11 +24,7 @@
       id="item-{{index}}"
       class="message {{openId == item._openid ? 'message__self' : ''}}"
     >
-      <image 
-        class="avatar"
-        src="{{item.avatar}}"
-        mode="scaleToFill"
-      ></image> 
+      <image class="avatar" src="{{item.avatar}}" mode="scaleToFill"></image>
       <view class="main">
         <view class="nickname">{{item.nickName}}</view>
         <block wx:if="{{item.msgType === 'image'}}">
