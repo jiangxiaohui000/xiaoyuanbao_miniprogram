@@ -117,6 +117,13 @@ Page({
 				showCancel: false,
 				confirmText: '退下~'
 			});
+		} else {
+			wx.showModal({
+				title: '',
+				content: `你好呀，${e.detail.userInfo.nickName}`,
+				showCancel: false,
+				confirmText: '你好~'
+			});
 		}
 	},
 	// 获取用户openid

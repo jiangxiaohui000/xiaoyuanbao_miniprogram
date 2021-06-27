@@ -15,49 +15,57 @@ Page({
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '111',
-      originPrice: '2343'
+      originPrice: '2343',
+      heat: 1,
     }, {
       id: 2,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '33333',
-      originPrice: '23222243'
+      originPrice: '23222243',
+      heat: 2,
     }, {
       id: 3,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '111',
-      originPrice: '2343'
+      originPrice: '2343',
+      heat: 3,
     }, {
       id: 4,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '33333',
-      originPrice: '23222243'
+      originPrice: '23222243',
+      heat: 4,
     }, {
       id: 5,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '111',
-      originPrice: '2343'
+      originPrice: '2343',
+      heat: 5,
     }, {
       id: 6,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '33333',
-      originPrice: '23222243'
+      originPrice: '23222243',
+      heat: 4,
     }, {
       id: 7,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '111',
-      originPrice: '2343'
+      originPrice: '2343',
+      heat: 3,
     }, {
       id: 8,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: '33333',
-      originPrice: '23222243'
+      originPrice: '23222243',
+      heat: 2,
     }],
     swiperImgs: [{
 			id: 1,
@@ -80,11 +88,11 @@ Page({
     locationShow: false,
     timer: null,
     avatarUrl: '',
-    heatIconList: [1,2,3],
-    notHeatIconList: [1,2],
+    heatIconList: [],
+    notHeatIconList: [],
   },
 
-  onLoad: function() {
+  onLoad() {
     if (!wx.cloud) {
       wx.redirectTo({
         url: '../chooseLib/chooseLib',
@@ -100,27 +108,19 @@ Page({
       }
     });
     this.data.productsList.forEach(item => {
-      if(item.currentPrice < 10000) return;
-      if(item.currentPrice >= 10000) {
-        item.currentPrice = `${(item.currentPrice / 10000).toFixed(2)}万`;
-      }
-      if(item.currentPrice > 100000000) {
-        item.currentPrice = `${(item.currentPrice / 100000000).toFixed(2)}亿`;
-      }
-      if(item.originPrice < 10000) return;
-      if(item.originPrice >= 10000) {
-        item.originPrice = `${(item.originPrice / 10000).toFixed(2)}万`;
-      }
-      if(item.originPrice > 100000000) {
-        item.originPrice = `${(item.originPrice / 100000000).toFixed(2)}亿`;
-      }
+      const { heatIconList, notHeatIconList } = this.calculatingHeat(item);
+      const { newCurrentPrice, newOriginPrice } = this.calculatingPrice(item);
+      item.heatIconList = heatIconList;
+      item.notHeatIconList = notHeatIconList;
+      item.currentPrice = newCurrentPrice;
+      item.originPrice = newOriginPrice;
     });
     this.setData({
       productsList: this.data.productsList
-    })
+    });
   },
   // 获取用户信息
-  getUserInfo: function(res, _this) {
+  getUserInfo(res, _this) {
     if (res.authSetting['scope.userInfo']) { // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
       wx.getUserInfo({
         success: res => {
@@ -150,7 +150,7 @@ Page({
     }
   },
   // 获取用户位置
-  getUserLocation: (res, _this) => {
+  getUserLocation(res, _this) {
     if(res.authSetting['scope.userLocation']) { // 用户默认同意授权位置信息
       wx.getLocation({
         type: 'wgs84',
@@ -329,14 +329,14 @@ Page({
     })
   },
   // 下拉刷新
-	onPullDownRefresh: function() {
+	onPullDownRefresh() {
     console.log(111111)
     setTimeout(() => {
       wx.stopPullDownRefresh()
     }, 1000);
   },
   // 触底操作
-  onReachBottom: function() {
+  onReachBottom() {
     console.log('到底了');
   },
   // 页面滚动
@@ -369,7 +369,7 @@ Page({
     console.log(e.currentTarget.dataset.item)
   },
   // 选择商品分类
-  chooseCategory: function(e) {
+  chooseCategory(e) {
     // const query = wx.createSelectorQuery();
     // query.selectAll('.products-category-item').boundingClientRect();
     // query.select('.products-category-item').boundingClientRect();
@@ -386,5 +386,39 @@ Page({
     this.setData({
       currentIndex: e.target.dataset.index
     });
+  },
+  // 计算热度
+  calculatingHeat(item) {
+    const heatIconList = [];
+    const notHeatIconList = [];
+    heatIconList.length = item.heat;
+    notHeatIconList.length = 5 - item.heat;
+    return {
+      heatIconList,
+      notHeatIconList,
+    }
+  },
+  // 计算价格
+  calculatingPrice(item) {
+    let newCurrentPrice = '';
+    let newOriginPrice = '';
+    if(item.currentPrice < 10000) {
+      newCurrentPrice = item.currentPrice;
+    } else if(item.currentPrice >= 10000) {
+      newCurrentPrice = `${(item.currentPrice / 10000).toFixed(2)}万`;
+    } else if(item.currentPrice > 100000000) {
+      newCurrentPrice = `${(item.currentPrice / 100000000).toFixed(2)}亿`;
+    }
+    if(item.originPrice < 10000) {
+      newOriginPrice = item.originPrice;
+    } else if(item.originPrice >= 10000) {
+      newOriginPrice = `${(item.originPrice / 10000).toFixed(2)}万`;
+    } else if(item.originPrice > 100000000) {
+      newOriginPrice = `${(item.originPrice / 100000000).toFixed(2)}亿`;
+    }
+    return {
+      newCurrentPrice,
+      newOriginPrice
+    }
   },
 })

@@ -72,8 +72,8 @@
           </view>
           <view class="heat-container">
             热度：
-            <i wx:for="{{heatIconList}}" wx:key="index" class="iconfont icon-ziyuan" style="color: red;"></i>
-            <i wx:for="{{notHeatIconList}}" wx:key="index" class="iconfont icon-ziyuan"></i>
+            <i wx:for="{{item.heatIconList}}" wx:key="index" class="iconfont icon-ziyuan" style="color: red;"></i>
+            <i wx:for="{{item.notHeatIconList}}" wx:key="index" class="iconfont icon-ziyuan"></i>
           </view>
         </view>
       </view>
