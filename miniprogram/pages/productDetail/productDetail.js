@@ -1,41 +1,65 @@
 // miniprogram/pages/productDetail.js
-Page({
+const dayjs = require('dayjs');
+const { priceConversion } = require('../../utils/priceConversion');
 
-	/**
-	 * 页面的初始数据
-	 */
+Page({
 	data: {
-		userInfo: {
-			avatar: '../../images/touxiang1.jpeg',
-			name: '小脑斧大西吉',
-			releaseTime: '2020-10-10 13:49',
-			collected: 30
-		},
 		productInfo: {
 			_id: 'adcb22dsldvklkasdfvkdsaf',
+			avatar: '../../images/touxiang1.jpeg',
+			name: '小脑斧大西吉',
+			ctime: 1623141369000,
+			favorited: 30,
 			uid: '1',
-			price: 233,
-			tags: ['全新', '不讲价'],
-			text: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:',
+			price: 1234,
+			tags: [0, 1],
+			text: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lanco',
 			img: ['../../images/productDetail2.jpg', '../../images/productDetail3.jpg', '../../images/productDetail4.jpg'],
+			isCollected: false,
 		},
-		collectedStatus: '收藏',
-		collectedIcon: 'icon-shoucang',
+		collectedStatus: '',
+		collectedIcon: '',
+		productTags: [],
 		from: '',
 	},
-
 	/**
 	 * 生命周期函数--监听页面加载
 	 */
 	onLoad: function (options) {
 		let eventChannel = this.getOpenerEventChannel();
 		eventChannel.on('toProductDetail', (data) => {
-			if(data && data.from) {
-				this.setData({
-					from: data.from
-				});
+			data && data.from && this.setData({ from: data.from });
+		});
+		this.initData();
+	},
+	// 数据初始化
+	initData() {
+		this.data.collectedStatus = this.data.productInfo.isCollected ? '已收藏' : '收藏';
+		this.data.collectedIcon = this.data.productInfo.isCollected ? 'icon-shoucang1' : 'icon-shoucang';
+		this.data.productInfo.ctime = dayjs(this.data.productInfo.ctime).format('YYYY-MM-DD HH:mm:ss');
+		this.data.productInfo.price = priceConversion(this.data.productInfo.price);
+		this.data.productTags.length = this.data.productInfo.tags.length;
+		this.data.productInfo.tags.forEach((item, index) => {
+			switch(item) {
+				case 0:
+					this.data.productTags[index] = '全新';
+					break;
+				case 1:
+					this.data.productTags[index] = '不讲价';
+					break;
+				case 2:
+					this.data.productTags[index] = '价格可谈';
+					break;
+				default:
+					break;
 			}
 		});
+		this.setData({
+			collectedStatus: this.data.collectedStatus,
+			collectedIcon: this.data.collectedIcon,
+			productInfo: this.data.productInfo,
+			productTags: this.data.productTags,
+		})
 	},
 	// 收藏
 	collectProducts() {
@@ -61,7 +85,10 @@ Page({
 	},
 	// 聊一聊
 	gotoChatRoom() {
-		console.log('chat');
+		const data = this.data.productInfo;
+		wx.navigateTo({
+      url: `/pages/im/room/room?img=${data.img[0]}&price=${data.price}&name=${data.name}`,
+    })
 	},
 	// 编辑
 	edit() {

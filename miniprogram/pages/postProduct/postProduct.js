@@ -1,10 +1,6 @@
 // pages/postProduct/postProduct.js
-const {money} = require('../../utils/moneyInputLimit')
+const { money } = require('../../utils/moneyInputLimit')
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
     productDesc: '',
     imageList: [],

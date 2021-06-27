@@ -2,21 +2,21 @@
 <!-- 用户信息 -->
 <view class="user-info">
   <view class="left-info">
-    <image class="user-avatar" src="{{userInfo.avatar}}" mode="aspectFit"></image>
+    <image class="user-avatar" src="{{productInfo.avatar}}" mode="aspectFit"></image>
     <view class="user-name">
-      <text class="user-name-name">{{userInfo.name}}</text>
-      <text class="user-name-time">发布时间：{{userInfo.releaseTime}}</text>
+      <text class="user-name-name">{{productInfo.name}}</text>
+      <text class="user-name-time">发布时间：{{productInfo.ctime}}</text>
     </view>
   </view>
   <view class="right-info">
-    <view class="right-info-box">{{userInfo.collected}} 已收藏</view>
+    <view class="right-info-box">{{productInfo.favorited}} 已收藏</view>
   </view>
 </view>
 <!-- 价格 -->
 <view class="product-price">
   <view class="price-symbol">￥</view>
   <view class="price-num">{{productInfo.price}}</view>
-  <view class="product-tag" wx:for="{{productInfo.tags}}" wx:key="index">{{item}}</view>
+  <view class="product-tag" wx:for="{{productTags}}" wx:key="item">{{item}}</view>
 </view>
 <!-- 商品描述 -->
 <view class="product-description">

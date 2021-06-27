@@ -1,6 +1,7 @@
 //homePage.js
 const app = getApp();
 const QQMapWX = require('../../utils/qqmap-wx-jssdk.js'); // 引入腾讯位置服务
+const { priceConversion } = require('../../utils/priceConversion');
 
 Page({
   data: {
@@ -400,22 +401,22 @@ Page({
   },
   // 计算价格
   calculatingPrice(item) {
-    let newCurrentPrice = '';
-    let newOriginPrice = '';
-    if(item.currentPrice < 10000) {
-      newCurrentPrice = item.currentPrice;
-    } else if(item.currentPrice >= 10000) {
-      newCurrentPrice = `${(item.currentPrice / 10000).toFixed(2)}万`;
-    } else if(item.currentPrice > 100000000) {
-      newCurrentPrice = `${(item.currentPrice / 100000000).toFixed(2)}亿`;
-    }
-    if(item.originPrice < 10000) {
-      newOriginPrice = item.originPrice;
-    } else if(item.originPrice >= 10000) {
-      newOriginPrice = `${(item.originPrice / 10000).toFixed(2)}万`;
-    } else if(item.originPrice > 100000000) {
-      newOriginPrice = `${(item.originPrice / 100000000).toFixed(2)}亿`;
-    }
+    let newCurrentPrice = priceConversion(item.currentPrice);
+    let newOriginPrice = priceConversion(item.originPrice);
+    // if(item.currentPrice < 10000) {
+    //   newCurrentPrice = item.currentPrice;
+    // } else if(item.currentPrice >= 10000) {
+    //   newCurrentPrice = `${(item.currentPrice / 10000).toFixed(2)}万`;
+    // } else if(item.currentPrice > 100000000) {
+    //   newCurrentPrice = `${(item.currentPrice / 100000000).toFixed(2)}亿`;
+    // }
+    // if(item.originPrice < 10000) {
+    //   newOriginPrice = item.originPrice;
+    // } else if(item.originPrice >= 10000) {
+    //   newOriginPrice = `${(item.originPrice / 10000).toFixed(2)}万`;
+    // } else if(item.originPrice > 100000000) {
+    //   newOriginPrice = `${(item.originPrice / 100000000).toFixed(2)}亿`;
+    // }
     return {
       newCurrentPrice,
       newOriginPrice
