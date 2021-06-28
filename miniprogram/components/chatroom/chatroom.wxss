@@ -7,38 +7,40 @@
 
 .chatroom .header {
   flex-basis: fit-content;
-  display: flex;
+  /* display: flex; */
   border-bottom: 1px solid #ddd;
   font-size: 24rpx;
   color: #aaa;
   padding: 10rpx;
 }
 
-.product-img {
+.header-img {
   width: 100rpx;
   height: 100rpx;
   border-radius: 6rpx;
   margin-right: 10rpx;
+  float: left;
 }
 
-.header-right {
+.header-price {
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  float: left;
 }
 
-.chatroom .header .left {
-  flex: 1;
-}
-
-.chatroom .header .middle {
-  flex: 2;
+/* .header-contact {
+  height: 40rpx;
+  line-height: 40rpx;
+  overflow: hidden;
+  border: 1px solid #07c160;
+  border-radius: 30rpx;
   text-align: center;
-}
-
-.chatroom .header .right {
-  flex: 1;
-}
+  padding: 4rpx 10rpx;
+  float: right;
+  margin-top: 24rpx;
+} */
 
 .chatroom .body {
   flex: 2;

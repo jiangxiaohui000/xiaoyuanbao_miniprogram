@@ -273,6 +273,11 @@ Component({
       })
     },
 
+    // 交换联系方式
+    exchange() {
+      console.log(111)
+    },
+
     scrollToBottom(force) {
       if (force) {
         console.log('force scroll to bottom')

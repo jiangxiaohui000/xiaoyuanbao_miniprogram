@@ -1,11 +1,12 @@
 <view class="chatroom">
   <!-- header -->
   <view class="header">
-    <image class="product-img" src="{{chatInfo.img}}"></image>
-    <view class="header-right">
+    <image class="header-img" src="{{chatInfo.img}}"></image>
+    <view class="header-price">
       <view style="color: #000;">￥{{chatInfo.price}}</view>
       <view>交易前，聊一聊</view>
     </view>
+    <!-- <view class="header-contact" bindtap="exchange">交换联系方式</view> -->
   </view>
 
   <!-- chats -->
