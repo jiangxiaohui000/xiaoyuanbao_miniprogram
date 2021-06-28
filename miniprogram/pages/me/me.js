@@ -1,4 +1,7 @@
 const app = getApp()
+const { priceConversion } = require('../../utils/priceConversion');
+const { money } = require('../../utils/moneyInputLimit')
+
 Page({
 	data: {
 		avatarUrl: '../../images/user-unlogin.png',
@@ -12,42 +15,42 @@ Page({
       id: 1,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '111',
+      currentPrice: 111,
     }, {
       id: 2,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '33333',
+      currentPrice: 222222,
     }, {
       id: 3,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '111',
+      currentPrice: 3333333,
     }, {
       id: 4,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '33333',
+      currentPrice: 22,
     }, {
       id: 5,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '111',
+      currentPrice: 33,
     }, {
       id: 6,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '33333',
+      currentPrice: 444,
     }, {
       id: 7,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '111',
+      currentPrice: 555,
     }, {
       id: 8,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '33333',
+      currentPrice: 3333,
 		}],
 		mineItems: [{
 			value: 'collection',
@@ -86,7 +89,18 @@ Page({
 				this.getUserInfo(res); // 获取用户信息
 			}
 		});
+		this.initData();
 		wx.stopPullDownRefresh();
+	},
+	// 数据初始化
+	initData() {
+		this.data.productsList.map(item => {
+			item.currentPrice = priceConversion(item.currentPrice);
+			return item;
+		});
+		this.setData({
+			productsList: this.data.productsList
+		})
 	},
 	// 获取用户信息
 	getUserInfo: function(res) {
@@ -265,6 +279,14 @@ Page({
 	// 弹窗 -- 降价
 	tapDialogButton(e) {
 		if(e.detail.index) { // 确认
+			if(+this.data.modifiedPrice >= 100000000) {
+				this.setData({
+					toptipsShow: true,
+					resultText: '商品价格要小于1亿元哦~',
+					toptipsType: 'info',
+				});
+				return;
+			}
 			if(+this.data.modifiedPrice > +this.data.currentPrice) {
 				this.setData({
 					toptipsShow: true,
@@ -281,8 +303,16 @@ Page({
 	},
 	// input -- 输入降价后的金额
 	dialogInput(e) {
+		if(+e.detail.value >= 100000000) {
+			this.setData({
+				toptipsShow: true,
+				resultText: '商品价格要小于1亿元哦~',
+				toptipsType: 'info',
+			});
+			return;
+		}
 		this.setData({
 			modifiedPrice: e.detail.value
-		})
+		});
 	},
 })

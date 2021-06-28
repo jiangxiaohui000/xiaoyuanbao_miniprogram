@@ -191,17 +191,32 @@ Page({
       })
     }
   },
-  // 输入价格
+  // 输入当前价格
   priceInput(e) {
+    if(+e.detail.value >= 100000000) {
+      this.setData({
+        toptipsShow: true,
+        resultText: '商品价格要小于1亿元哦~',
+        toptipsType: 'info',
+      });
+    }
     this.setData({
       price: money(e.detail.value),
-      releaseDisabled: !(this.data.productDesc && this.data.imageList.length && money(e.detail.value)),
+      releaseDisabled: !(this.data.productDesc && this.data.imageList.length && money(e.detail.value)) || e.detail.value >= 100000000,
     })
   },
   // 输入入手价格
   originPriceInput(e) {
+    if(+e.detail.value >= 100000000) {
+      this.setData({
+        toptipsShow: true,
+        resultText: '商品价格要小于1亿元哦~',
+        toptipsType: 'info',
+      });
+    }
     this.setData({
       originPrice: money(e.detail.value),
+      releaseDisabled: !(this.data.productDesc && this.data.imageList.length && money(e.detail.value)) || e.detail.value >= 100000000,
     })
   },
   // 选择分类

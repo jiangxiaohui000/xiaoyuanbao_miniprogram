@@ -403,20 +403,6 @@ Page({
   calculatingPrice(item) {
     let newCurrentPrice = priceConversion(item.currentPrice);
     let newOriginPrice = priceConversion(item.originPrice);
-    // if(item.currentPrice < 10000) {
-    //   newCurrentPrice = item.currentPrice;
-    // } else if(item.currentPrice >= 10000) {
-    //   newCurrentPrice = `${(item.currentPrice / 10000).toFixed(2)}万`;
-    // } else if(item.currentPrice > 100000000) {
-    //   newCurrentPrice = `${(item.currentPrice / 100000000).toFixed(2)}亿`;
-    // }
-    // if(item.originPrice < 10000) {
-    //   newOriginPrice = item.originPrice;
-    // } else if(item.originPrice >= 10000) {
-    //   newOriginPrice = `${(item.originPrice / 10000).toFixed(2)}万`;
-    // } else if(item.originPrice > 100000000) {
-    //   newOriginPrice = `${(item.originPrice / 100000000).toFixed(2)}亿`;
-    // }
     return {
       newCurrentPrice,
       newOriginPrice
