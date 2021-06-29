@@ -34,27 +34,31 @@
 <!-- 我发布的 -->
 <view class="products-container">
   <view class="products-title">我发布的  {{productsList.length}}</view>
+  <!-- 发布商品列表 -->
   <view
     class="products-item"
     wx:for="{{productsList}}"
     wx:key="item"
     data-item="{{item}}"
-    catchtap="preview">
+    catchtap="preview"
+  >
     <!-- 图片 -->
     <view class="img-container">
-      <image class="img" src="{{item.img}}" alt=""></image>
+      <image class="img" src="{{item.img}}" alt="" style="opacity: {{item.isOff ? 0.3: 1}}"></image>
     </view>
     <!-- 描述 -->
-    <view class="text-container">
+    <view class="text-container" style="opacity: {{item.isOff ? 0.3: 1}}">
       <view class="products-desc">{{item.desc}}</view>
       <view class="products-price">
         <text class="products-current-price">￥{{item.currentPrice}}</text>
         <view class="operate-button-group">
           <view class="operate-button" data-item="{{item}}" catchtap="priceReduction">降价</view>
-          <!-- <view class="operate-button" data-item="{{item}}" catchtap="more">更多</view> -->
+          <view class="operate-button" data-item="{{item}}" catchtap="more"><i class="iconfont icon-gengduo"></i></view>
         </view>  
         </view>
     </view>
+    <!-- 下架icon -->
+    <i class="iconfont icon-lianxi-yixiajia" wx:if="{{item.isOff}}"></i>
   </view>
 </view>
 <!-- 弹窗 -->

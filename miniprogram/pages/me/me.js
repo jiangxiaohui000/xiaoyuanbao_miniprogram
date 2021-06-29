@@ -16,42 +16,47 @@ Page({
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: 111,
+      originPrice: 1,
+			heat: 1,
+			isOff: true,
+			isDeleted: false,
     }, {
       id: 2,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: 222222,
+      originPrice: 1,
+      heat: 1,
+			isOff: true,
+			isDeleted: false,
     }, {
       id: 3,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: 3333333,
+      originPrice: 1,
+      heat: 1,
+			isOff: false,
+			isDeleted: false,
     }, {
       id: 4,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: 22,
+      originPrice: 111,
+      heat: 1,
+			isOff: false,
+			isDeleted: false,
     }, {
       id: 5,
       img: '../../images/kouhong.jpg',
       desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
       currentPrice: 33,
-    }, {
-      id: 6,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 444,
-    }, {
-      id: 7,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 555,
-    }, {
-      id: 8,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 3333,
-		}],
+      originPrice: 222,
+      heat: 1,
+			isOff: false,
+			isDeleted: false,
+    }],
 		mineItems: [{
 			value: 'collection',
 			label: '收藏',
@@ -249,40 +254,117 @@ Page({
 		this.onLoad();
 		console.log(2222)
 	},
-	// 详情
+	// 收藏 购买 评价
 	toMineItemDetail: function(e) {
 		console.log('e', e);
 	},
 	// 商品预览
 	preview(e) {
 		console.log(e, 'preview')
-		wx.navigateTo({
-      url: '../productDetail/productDetail',
-      success: function(res) {
-        res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.item.id, from: 'me'})
-      }
-    });
+		if(!e.currentTarget.dataset.item.isOff) {
+			wx.navigateTo({
+				url: '../productDetail/productDetail',
+				success: function(res) {
+					res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.item.id, from: 'me'})
+				}
+			});	
+		} else {
+			wx.showActionSheet({
+				alertText: '商品已下架，您可以重新上架或者删除该商品',
+				itemList: ['重新上架', '删除'],
+				success: res => {
+					console.log(res, '---')
+					if(res.tapIndex === 0) {
+						wx.showModal({
+							title: '',
+							content: '确定重新上架吗？',
+							success: res => {
+								console.log(res, '上架')
+								if(res.confirm) {
+									wx.showToast({
+										title: '上架成功',
+									})
+								}
+							}
+						})
+					} else if(res.tapIndex === 1) {
+						wx.showModal({
+							title: '',
+							content: '确定要删除该商品吗？',
+							confirmText: '删除',
+							confirmColor: '#f00',
+							success: res => {
+								console.log(res)
+								if(res.confirm) {
+									wx.showToast({
+										title: '删除成功',
+									})
+								}
+							}
+						})
+					}
+				}
+			})
+		}
 	},
 	// 降价
 	priceReduction(e) {
 		console.log(e, 'priceReduction')
-		this.setData({
-			dialogImg: e.currentTarget.dataset.item.img,
-			currentPrice: e.currentTarget.dataset.item.currentPrice,
-			dialogShow: true,
-		});
+		if(!e.currentTarget.dataset.item.isOff) {
+			this.setData({
+				dialogImg: e.currentTarget.dataset.item.img,
+				currentPrice: e.currentTarget.dataset.item.currentPrice,
+				dialogShow: true,
+			});	
+		}
 	},
 	// 更多
-	// more(e) {
-	// 	console.log(e, 'more')
-	// },
+	more(e) {
+		console.log(e, 'more')
+		if(!e.currentTarget.dataset.item.isOff) {
+			wx.showActionSheet({
+				itemList: ['下架', '删除'],
+				success: (res) => {
+					console.log(res, 'success')
+					if(res.tapIndex === 0) {
+						wx.showModal({
+							title: '确定要下架吗？',
+							content: '商品下架后可以再次上架！',
+							success: (res) => {
+								console.log(res)
+								if(res.confirm) {
+									wx.showToast({
+										title: '下架成功',
+									})
+								}
+							}
+						})
+					} else if(res.tapIndex === 1) {
+						wx.showModal({
+							title: '确定要删除吗？',
+							content: '商品删除后不可恢复！',
+							confirmColor: '#f00',
+							success: (res) => {
+								console.log(res)
+								if(res.confirm) {
+									wx.showToast({
+										title: '删除成功',
+									})
+								}
+							}
+						})
+					}
+				}
+			})	
+		}
+	},
 	// 弹窗 -- 降价
 	tapDialogButton(e) {
 		if(e.detail.index) { // 确认
 			if(+this.data.modifiedPrice >= 100000000) {
 				this.setData({
 					toptipsShow: true,
-					resultText: '商品价格要小于1亿元哦~',
+					resultText: '商品价格必须在0元与1亿元之间哦~',
 					toptipsType: 'info',
 				});
 				return;
@@ -306,13 +388,12 @@ Page({
 		if(+e.detail.value >= 100000000) {
 			this.setData({
 				toptipsShow: true,
-				resultText: '商品价格要小于1亿元哦~',
+				resultText: '商品价格必须在0元与1亿元之间哦~',
 				toptipsType: 'info',
 			});
-			return;
 		}
 		this.setData({
-			modifiedPrice: e.detail.value
+			modifiedPrice: money(e.detail.value)
 		});
 	},
 })

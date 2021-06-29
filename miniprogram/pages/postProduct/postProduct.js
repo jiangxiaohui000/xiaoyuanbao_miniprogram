@@ -196,7 +196,7 @@ Page({
     if(+e.detail.value >= 100000000) {
       this.setData({
         toptipsShow: true,
-        resultText: '商品价格要小于1亿元哦~',
+        resultText: '商品价格必须在0元与1亿元之间哦~',
         toptipsType: 'info',
       });
     }
@@ -210,7 +210,7 @@ Page({
     if(+e.detail.value >= 100000000) {
       this.setData({
         toptipsShow: true,
-        resultText: '商品价格要小于1亿元哦~',
+        resultText: '商品价格必须在0元与1亿元之间哦~',
         toptipsType: 'info',
       });
     }
@@ -221,14 +221,18 @@ Page({
   },
   // 选择分类
   chooseClassify(e) {
+    const value = e.currentTarget.dataset.item.value;
+    this.data.selectedClassify = this.data.selectedClassify === value ? '' : value; 
     this.setData({
-      selectedClassify: e.currentTarget.dataset.item.value
+      selectedClassify: this.data.selectedClassify
     })
   },
   // 选择标签
   chooseTag(e) {
+    const value = e.currentTarget.dataset.item.value;
+    this.data.selectedTag = this.data.selectedTag === value ? '' : value;
     this.setData({
-      selectedTag: e.currentTarget.dataset.item.value
+      selectedTag: this.data.selectedTag
     })
   },
   // 发布
