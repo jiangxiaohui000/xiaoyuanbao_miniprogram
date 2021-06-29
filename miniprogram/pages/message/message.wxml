@@ -39,7 +39,7 @@
         <view class="message-content">
           <view class="message-name">{{item.name}}</view>
           <view class="message-info">{{item.info}}</view>
-          <view class="message-time">{{item.time}}</view>
+          <view class="message-time">{{item.ctime}}</view>
         </view>
         <image class="message-product-img" src="{{item.img}}" mode="aspectFill" lazy-load="false"></image>
         <!-- 未读 -->

@@ -297,7 +297,7 @@ Page({
 		console.log(e, 'priceReduction')
 		if(!e.currentTarget.dataset.item.isOff) {
 			this.setData({
-				dialogImg: e.currentTarget.dataset.item.img,
+				dialogImg: e.currentTarget.dataset.item.displayImg,
 				currentPrice: e.currentTarget.dataset.item.currentPrice,
 				dialogShow: true,
 			});	
