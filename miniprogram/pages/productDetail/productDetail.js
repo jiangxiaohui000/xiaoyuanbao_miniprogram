@@ -6,16 +6,23 @@ Page({
 	data: {
 		productInfo: {
 			_id: 'adcb22dsldvklkasdfvkdsaf',
+			uid: '1',
 			avatar: '../../images/touxiang1.jpeg',
 			name: '小脑斧大西吉',
 			ctime: 1623141369000,
-			favorited: 30,
-			uid: '1',
-			price: 1234,
-			tags: [0, 1],
-			text: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lanco',
+			favorited: 30, // 被收藏次数
+      currentPrice: 1111,
+      originPrice: 2222,
+			desc: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lanco',
+			displayImg: '../../images/kouhong.jpg',
 			img: ['../../images/productDetail2.jpg', '../../images/productDetail3.jpg', '../../images/productDetail4.jpg'],
+      heat: 3, // 热度
+			isOff: false, // 是否已下架
+			isDeleted: false, // 是否已删除
 			isCollected: false,
+			classify: '', // 类别
+			brand: '', // 品牌
+			fineness: '', // 成色
 		},
 		collectedStatus: '',
 		collectedIcon: '',
@@ -28,6 +35,7 @@ Page({
 	onLoad: function (options) {
 		let eventChannel = this.getOpenerEventChannel();
 		eventChannel.on('toProductDetail', (data) => {
+			console.log(data, 'data');
 			data && data.from && this.setData({ from: data.from });
 		});
 		this.initData();
@@ -37,23 +45,7 @@ Page({
 		this.data.collectedStatus = this.data.productInfo.isCollected ? '已收藏' : '收藏';
 		this.data.collectedIcon = this.data.productInfo.isCollected ? 'icon-shoucang1' : 'icon-shoucang';
 		this.data.productInfo.ctime = dayjs(this.data.productInfo.ctime).format('YYYY-MM-DD HH:mm:ss');
-		this.data.productInfo.price = priceConversion(this.data.productInfo.price);
-		this.data.productTags.length = this.data.productInfo.tags.length;
-		this.data.productInfo.tags.forEach((item, index) => {
-			switch(item) {
-				case 0:
-					this.data.productTags[index] = '全新';
-					break;
-				case 1:
-					this.data.productTags[index] = '不讲价';
-					break;
-				case 2:
-					this.data.productTags[index] = '价格可谈';
-					break;
-				default:
-					break;
-			}
-		});
+		this.data.productInfo.currentPrice = priceConversion(this.data.productInfo.currentPrice);
 		this.setData({
 			collectedStatus: this.data.collectedStatus,
 			collectedIcon: this.data.collectedIcon,
@@ -87,7 +79,7 @@ Page({
 	gotoChatRoom() {
 		const data = this.data.productInfo;
 		wx.navigateTo({
-      url: `/pages/im/room/room?img=${data.img[0]}&price=${data.price}&name=${data.name}`,
+      url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&name=${data.name}`,
     })
 	},
 	// 编辑
@@ -96,9 +88,9 @@ Page({
 			url: '../postProduct/postProduct',
 			success: res => {
 				const params = {
-					productDesc: this.data.productInfo.text,
+					productDesc: this.data.productInfo.desc,
 					imageList: this.data.productInfo.img,
-					price: this.data.productInfo.price,
+					price: this.data.productInfo.currentPrice,
 				}
 				res.eventChannel.emit('toEdit', params);
 			}

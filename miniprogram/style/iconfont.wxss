@@ -45,7 +45,6 @@
 
 .icon-gary:before {
   content: "\e602";
-  color: #000;
 }
 
 .icon-guanbi:before {

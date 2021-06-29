@@ -12,50 +12,24 @@ Page({
 		takeSession: false,
 		requestResult: '',
 		productsList: [{
-      id: 1,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 111,
-      originPrice: 1,
-			heat: 1,
-			isOff: true,
-			isDeleted: false,
-    }, {
-      id: 2,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 222222,
-      originPrice: 1,
-      heat: 1,
-			isOff: true,
-			isDeleted: false,
-    }, {
-      id: 3,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 3333333,
-      originPrice: 1,
-      heat: 1,
-			isOff: false,
-			isDeleted: false,
-    }, {
-      id: 4,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 22,
-      originPrice: 111,
-      heat: 1,
-			isOff: false,
-			isDeleted: false,
-    }, {
-      id: 5,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 33,
-      originPrice: 222,
-      heat: 1,
-			isOff: false,
-			isDeleted: false,
+			_id: 'adcb22dsldvklkasdfvkdsaf',
+			uid: '1',
+			avatar: '../../images/touxiang1.jpeg',
+			name: '小脑斧大西吉',
+			ctime: 1623141369000,
+			favorited: 30, // 被收藏次数
+      currentPrice: 1111,
+      originPrice: 2222,
+			desc: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lanco',
+			displayImg: '../../images/kouhong.jpg',
+			img: ['../../images/productDetail2.jpg', '../../images/productDetail3.jpg', '../../images/productDetail4.jpg'],
+      heat: 3, // 热度
+			isOff: false, // 是否已下架
+			isDeleted: false, // 是否已删除
+			isCollected: false,
+			classify: '', // 类别
+			brand: '', // 品牌
+			fineness: '', // 成色
     }],
 		mineItems: [{
 			value: 'collection',
@@ -265,29 +239,40 @@ Page({
 			wx.navigateTo({
 				url: '../productDetail/productDetail',
 				success: function(res) {
-					res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.item.id, from: 'me'})
+					res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.item._id, from: 'me'})
 				}
 			});	
 		} else {
 			wx.showActionSheet({
-				alertText: '商品已下架，您可以重新上架或者删除该商品',
-				itemList: ['重新上架', '删除'],
+				itemList: ['编辑', '重新上架', '删除'],
 				success: res => {
 					console.log(res, '---')
 					if(res.tapIndex === 0) {
+						const params = JSON.stringify(e.currentTarget.dataset.item);
+						wx.navigateTo({
+							url: '../postProduct/postProduct?params=' + params,
+						});
+					} else if(res.tapIndex === 1) {
 						wx.showModal({
 							title: '',
 							content: '确定重新上架吗？',
 							success: res => {
 								console.log(res, '上架')
 								if(res.confirm) {
+									this.data.productsList.map(item => {
+										item.isOff = !e.currentTarget.dataset.item.isOff;
+										return item;
+									});
+									this.setData({
+										productsList: this.data.productsList
+									})
 									wx.showToast({
 										title: '上架成功',
 									})
 								}
 							}
 						})
-					} else if(res.tapIndex === 1) {
+					} else if(res.tapIndex === 2) {
 						wx.showModal({
 							title: '',
 							content: '确定要删除该商品吗？',
@@ -318,7 +303,7 @@ Page({
 			});	
 		}
 	},
-	// 更多
+	// 更多 -- 删除 下架
 	more(e) {
 		console.log(e, 'more')
 		if(!e.currentTarget.dataset.item.isOff) {
@@ -333,6 +318,13 @@ Page({
 							success: (res) => {
 								console.log(res)
 								if(res.confirm) {
+									this.data.productsList.map(item => {
+										item.isOff = item.id === e.currentTarget.dataset.item.id;
+										return item;
+									});
+									this.setData({
+										productsList: this.data.productsList
+									})
 									wx.showToast({
 										title: '下架成功',
 									})

@@ -17,43 +17,66 @@ Page({
     currentImgIndex: 0,
     classifyList: [{
       value: 0,
-      label: '手机电脑'
-    }, {
-      value: 1,
-      label: '数码3C'
+      label: '手机'
     }, {
       value: 2,
-      label: '运动户外'
+      label: '电脑'
     }, {
       value: 3,
-      label: '服饰鞋帽'
+      label: '数码3C'
     }, {
       value: 4,
-      label: '美妆护肤'
+      label: '运动户外'
     }, {
       value: 5,
-      label: '生活百货'
+      label: '服饰鞋帽'
     }, {
       value: 6,
+      label: '美妆护肤'
+    }, {
+      value: 7,
+      label: '生活百货'
+    }, {
+      value: 8,
       label: '其他'
     }],
     selectedClassify: '',
-    tagList: [{
+    finenessTagList: [{
       value: 0,
       label: '全新'
     }, {
       value: 1,
-      label: '不讲价'
+      label: '几乎全新'
     }, {
       value: 2,
-      label: '价格可谈'
+      label: '轻微使用痕迹'
+    }, {
+      value: 3,
+      label: '明显使用痕迹'
     }],
     selectedTag: '',
+    brandName: '',
+    brandTagShow: false,
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    if(options && options.params) {
+      const params = JSON.parse(options.params);
+      this.data.productDesc = params.desc;
+      this.data.imageList = params.img;
+      this.data.price = params.currentPrice;
+      this.data.originPrice = params.originPrice;
+      this.setData({
+        productDesc: this.data.productDesc,
+        imageList: this.data.imageList,
+        imgUrls: this.data.imageList,
+        price: this.data.price,
+        originPrice: this.data.originPrice,
+        releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
+      })
+    }
     let eventChannel = this.getOpenerEventChannel();
     eventChannel.on('sendImage', res => {
       if(res && res.filePath) {
@@ -267,6 +290,22 @@ Page({
         wx.hideLoading();
       })
     }
+  },
+  // 品牌名称输入失去焦点
+  brandInputBlur(e) {
+    console.log(e, '000')
+    console.log(this.data.brandName, '000')
+    this.setData({
+      brandName: e.detail.value,
+      brandTagShow: true,
+    })
+  },
+  // 删除品牌tag
+  deleteBrandTag() {
+    this.setData({
+      brandTagShow: false,
+      brandName: '',
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
