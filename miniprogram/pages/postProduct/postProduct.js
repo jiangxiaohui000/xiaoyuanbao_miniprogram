@@ -4,8 +4,6 @@ Page({
   data: {
     productDesc: '',
     imageList: [],
-    largeImg: '',
-    largeImgShow: false,
     releaseDisabled: true,
     price: '',
     originPrice: '',
@@ -173,19 +171,18 @@ Page({
 	},
   // 图片预览
   imgPreview(e) {
+    wx.showLoading({title: '正在打开'});
     this.setData({
-      largeImg: e.currentTarget.dataset.item,
       currentImgIndex: e.currentTarget.dataset.index,
-      galleryShow: true,
-      // largeImgShow: true,
-    })
+    });
+    const timer = setTimeout(() => {
+      wx.hideLoading();
+      this.setData({
+        galleryShow: true,
+      });
+      clearTimeout(timer);
+    }, 500);
   },
-  // 关闭图片预览
-  // closePreview() {
-  //   this.setData({
-  //     galleryShow: false
-  //   })
-  // },
   // 删除图片
   deleteImg(e) {
     this.data.imageList.splice(e.currentTarget.dataset.index, 1);
@@ -291,14 +288,16 @@ Page({
       })
     }
   },
-  // 品牌名称输入失去焦点
+  // 品牌名称输入，失去焦点生成tag
   brandInputBlur(e) {
     console.log(e, '000')
     console.log(this.data.brandName, '000')
-    this.setData({
-      brandName: e.detail.value,
-      brandTagShow: true,
-    })
+    if(e.detail.value !== '') {
+      this.setData({
+          brandName: e.detail.value,
+          brandTagShow: true,
+        })   
+    }
   },
   // 删除品牌tag
   deleteBrandTag() {
