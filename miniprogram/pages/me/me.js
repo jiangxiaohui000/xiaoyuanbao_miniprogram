@@ -12,46 +12,25 @@ Page({
 		takeSession: false,
 		requestResult: '',
 		productsList: [{
-      id: 1,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 111,
-    }, {
-      id: 2,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 222222,
-    }, {
-      id: 3,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 3333333,
-    }, {
-      id: 4,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 22,
-    }, {
-      id: 5,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 33,
-    }, {
-      id: 6,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 444,
-    }, {
-      id: 7,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 555,
-    }, {
-      id: 8,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: 3333,
-		}],
+			_id: 'adcb22dsldvklkasdfvkdsaf',
+			uid: '1',
+			avatar: '../../images/touxiang1.jpeg',
+			name: '小脑斧大西吉',
+			ctime: 1623141369000,
+			favorited: 30, // 被收藏次数
+      currentPrice: 1111,
+      originPrice: 2222,
+			desc: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lanco',
+			displayImg: '../../images/kouhong.jpg',
+			img: ['../../images/productDetail2.jpg', '../../images/productDetail3.jpg', '../../images/productDetail4.jpg'],
+      heat: 3, // 热度
+			isOff: false, // 是否已下架
+			isDeleted: false, // 是否已删除
+			isCollected: false,
+			classify: '', // 类别
+			brand: '', // 品牌
+			fineness: '', // 成色
+    }],
 		mineItems: [{
 			value: 'collection',
 			label: '收藏',
@@ -249,40 +228,135 @@ Page({
 		this.onLoad();
 		console.log(2222)
 	},
-	// 详情
+	// 收藏 购买 评价
 	toMineItemDetail: function(e) {
 		console.log('e', e);
 	},
 	// 商品预览
 	preview(e) {
 		console.log(e, 'preview')
-		wx.navigateTo({
-      url: '../productDetail/productDetail',
-      success: function(res) {
-        res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.item.id, from: 'me'})
-      }
-    });
+		if(!e.currentTarget.dataset.item.isOff) {
+			wx.navigateTo({
+				url: '../productDetail/productDetail',
+				success: function(res) {
+					res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.item._id, from: 'me'})
+				}
+			});	
+		} else {
+			wx.showActionSheet({
+				itemList: ['编辑', '重新上架', '删除'],
+				success: res => {
+					console.log(res, '---')
+					if(res.tapIndex === 0) {
+						const params = JSON.stringify(e.currentTarget.dataset.item);
+						wx.navigateTo({
+							url: '../postProduct/postProduct?params=' + params,
+						});
+					} else if(res.tapIndex === 1) {
+						wx.showModal({
+							title: '',
+							content: '确定重新上架吗？',
+							success: res => {
+								console.log(res, '上架')
+								if(res.confirm) {
+									this.data.productsList.map(item => {
+										item.isOff = !e.currentTarget.dataset.item.isOff;
+										return item;
+									});
+									this.setData({
+										productsList: this.data.productsList
+									})
+									wx.showToast({
+										title: '上架成功',
+									})
+								}
+							}
+						})
+					} else if(res.tapIndex === 2) {
+						wx.showModal({
+							title: '',
+							content: '确定要删除该商品吗？',
+							confirmText: '删除',
+							confirmColor: '#f00',
+							success: res => {
+								console.log(res)
+								if(res.confirm) {
+									wx.showToast({
+										title: '删除成功',
+									})
+								}
+							}
+						})
+					}
+				}
+			})
+		}
 	},
 	// 降价
 	priceReduction(e) {
 		console.log(e, 'priceReduction')
-		this.setData({
-			dialogImg: e.currentTarget.dataset.item.img,
-			currentPrice: e.currentTarget.dataset.item.currentPrice,
-			dialogShow: true,
-		});
+		if(!e.currentTarget.dataset.item.isOff) {
+			this.setData({
+				dialogImg: e.currentTarget.dataset.item.img,
+				currentPrice: e.currentTarget.dataset.item.currentPrice,
+				dialogShow: true,
+			});	
+		}
 	},
-	// 更多
-	// more(e) {
-	// 	console.log(e, 'more')
-	// },
+	// 更多 -- 删除 下架
+	more(e) {
+		console.log(e, 'more')
+		if(!e.currentTarget.dataset.item.isOff) {
+			wx.showActionSheet({
+				itemList: ['下架', '删除'],
+				success: (res) => {
+					console.log(res, 'success')
+					if(res.tapIndex === 0) {
+						wx.showModal({
+							title: '确定要下架吗？',
+							content: '商品下架后可以再次上架！',
+							success: (res) => {
+								console.log(res)
+								if(res.confirm) {
+									this.data.productsList.map(item => {
+										item.isOff = item.id === e.currentTarget.dataset.item.id;
+										return item;
+									});
+									this.setData({
+										productsList: this.data.productsList
+									})
+									wx.showToast({
+										title: '下架成功',
+									})
+								}
+							}
+						})
+					} else if(res.tapIndex === 1) {
+						wx.showModal({
+							title: '确定要删除吗？',
+							content: '商品删除后不可恢复！',
+							confirmColor: '#f00',
+							success: (res) => {
+								console.log(res)
+								if(res.confirm) {
+									wx.showToast({
+										title: '删除成功',
+									})
+								}
+							}
+						})
+					}
+				}
+			})	
+		}
+	},
 	// 弹窗 -- 降价
 	tapDialogButton(e) {
 		if(e.detail.index) { // 确认
 			if(+this.data.modifiedPrice >= 100000000) {
 				this.setData({
 					toptipsShow: true,
-					resultText: '商品价格要小于1亿元哦~',
+					resultText: '商品价格必须在0元与1亿元之间哦~',
 					toptipsType: 'info',
 				});
 				return;
@@ -306,13 +380,12 @@ Page({
 		if(+e.detail.value >= 100000000) {
 			this.setData({
 				toptipsShow: true,
-				resultText: '商品价格要小于1亿元哦~',
+				resultText: '商品价格必须在0元与1亿元之间哦~',
 				toptipsType: 'info',
 			});
-			return;
 		}
 		this.setData({
-			modifiedPrice: e.detail.value
+			modifiedPrice: money(e.detail.value)
 		});
 	},
 })

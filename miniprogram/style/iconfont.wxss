@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'iconfont';  /* Project id 1749239 */
-  src: url('//at.alicdn.com/t/font_1749239_ra2gwda3inh.woff2?t=1624179583168') format('woff2'),
-       url('//at.alicdn.com/t/font_1749239_ra2gwda3inh.woff?t=1624179583168') format('woff'),
-       url('//at.alicdn.com/t/font_1749239_ra2gwda3inh.ttf?t=1624179583168') format('truetype');
+  src: url('//at.alicdn.com/t/font_1749239_vn5rzipoayb.woff2?t=1624938819214') format('woff2'),
+       url('//at.alicdn.com/t/font_1749239_vn5rzipoayb.woff?t=1624938819214') format('woff'),
+       url('//at.alicdn.com/t/font_1749239_vn5rzipoayb.ttf?t=1624938819214') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,16 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-lianxi-yixiajia:before {
+  content: "\e6ff";
+  font-size: 100rpx;
+  color: #aaa;
+}
+
+.icon-gengduo:before {
+  content: "\e63f";
 }
 
 .icon-icontag:before {
@@ -35,7 +45,6 @@
 
 .icon-gary:before {
   content: "\e602";
-  color: #000;
 }
 
 .icon-guanbi:before {

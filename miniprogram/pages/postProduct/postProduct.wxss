@@ -7,6 +7,7 @@
   align-items: center;
   position: relative;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 .text-area-box {
   width: 100%;
@@ -31,6 +32,7 @@
   position: absolute;
   right: 20rpx;
   top: 10rpx;
+  color: #000;
 }
 .img {
   width: 225rpx;
@@ -104,6 +106,22 @@
 .classify-item-active {
   background-color: #07c160;
   color: #fff;
+}
+.brand-input {
+  width: 50%;
+  border-bottom: 1px solid #eee;
+}
+.brand-tag {
+  padding: 8rpx 16rpx;
+  height: 34rpx;
+  border-radius: 30rpx;
+  border: 1px solid #eee;
+  text-align: center;
+  color: #000;
+  font-size: 26rpx;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
 }
 .release-button {
   width: 100%;

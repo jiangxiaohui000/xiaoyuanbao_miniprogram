@@ -4,8 +4,6 @@ Page({
   data: {
     productDesc: '',
     imageList: [],
-    largeImg: '',
-    largeImgShow: false,
     releaseDisabled: true,
     price: '',
     originPrice: '',
@@ -17,43 +15,66 @@ Page({
     currentImgIndex: 0,
     classifyList: [{
       value: 0,
-      label: '手机电脑'
-    }, {
-      value: 1,
-      label: '数码3C'
+      label: '手机'
     }, {
       value: 2,
-      label: '运动户外'
+      label: '电脑'
     }, {
       value: 3,
-      label: '服饰鞋帽'
+      label: '数码3C'
     }, {
       value: 4,
-      label: '美妆护肤'
+      label: '运动户外'
     }, {
       value: 5,
-      label: '生活百货'
+      label: '服饰鞋帽'
     }, {
       value: 6,
+      label: '美妆护肤'
+    }, {
+      value: 7,
+      label: '生活百货'
+    }, {
+      value: 8,
       label: '其他'
     }],
     selectedClassify: '',
-    tagList: [{
+    finenessTagList: [{
       value: 0,
       label: '全新'
     }, {
       value: 1,
-      label: '不讲价'
+      label: '几乎全新'
     }, {
       value: 2,
-      label: '价格可谈'
+      label: '轻微使用痕迹'
+    }, {
+      value: 3,
+      label: '明显使用痕迹'
     }],
     selectedTag: '',
+    brandName: '',
+    brandTagShow: false,
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    if(options && options.params) {
+      const params = JSON.parse(options.params);
+      this.data.productDesc = params.desc;
+      this.data.imageList = params.img;
+      this.data.price = params.currentPrice;
+      this.data.originPrice = params.originPrice;
+      this.setData({
+        productDesc: this.data.productDesc,
+        imageList: this.data.imageList,
+        imgUrls: this.data.imageList,
+        price: this.data.price,
+        originPrice: this.data.originPrice,
+        releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
+      })
+    }
     let eventChannel = this.getOpenerEventChannel();
     eventChannel.on('sendImage', res => {
       if(res && res.filePath) {
@@ -150,19 +171,18 @@ Page({
 	},
   // 图片预览
   imgPreview(e) {
+    wx.showLoading({title: '正在打开'});
     this.setData({
-      largeImg: e.currentTarget.dataset.item,
       currentImgIndex: e.currentTarget.dataset.index,
-      galleryShow: true,
-      // largeImgShow: true,
-    })
+    });
+    const timer = setTimeout(() => {
+      wx.hideLoading();
+      this.setData({
+        galleryShow: true,
+      });
+      clearTimeout(timer);
+    }, 500);
   },
-  // 关闭图片预览
-  // closePreview() {
-  //   this.setData({
-  //     galleryShow: false
-  //   })
-  // },
   // 删除图片
   deleteImg(e) {
     this.data.imageList.splice(e.currentTarget.dataset.index, 1);
@@ -196,7 +216,7 @@ Page({
     if(+e.detail.value >= 100000000) {
       this.setData({
         toptipsShow: true,
-        resultText: '商品价格要小于1亿元哦~',
+        resultText: '商品价格必须在0元与1亿元之间哦~',
         toptipsType: 'info',
       });
     }
@@ -210,7 +230,7 @@ Page({
     if(+e.detail.value >= 100000000) {
       this.setData({
         toptipsShow: true,
-        resultText: '商品价格要小于1亿元哦~',
+        resultText: '商品价格必须在0元与1亿元之间哦~',
         toptipsType: 'info',
       });
     }
@@ -221,14 +241,18 @@ Page({
   },
   // 选择分类
   chooseClassify(e) {
+    const value = e.currentTarget.dataset.item.value;
+    this.data.selectedClassify = this.data.selectedClassify === value ? '' : value; 
     this.setData({
-      selectedClassify: e.currentTarget.dataset.item.value
+      selectedClassify: this.data.selectedClassify
     })
   },
   // 选择标签
   chooseTag(e) {
+    const value = e.currentTarget.dataset.item.value;
+    this.data.selectedTag = this.data.selectedTag === value ? '' : value;
     this.setData({
-      selectedTag: e.currentTarget.dataset.item.value
+      selectedTag: this.data.selectedTag
     })
   },
   // 发布
@@ -263,6 +287,24 @@ Page({
         wx.hideLoading();
       })
     }
+  },
+  // 品牌名称输入，失去焦点生成tag
+  brandInputBlur(e) {
+    console.log(e, '000')
+    console.log(this.data.brandName, '000')
+    if(e.detail.value !== '') {
+      this.setData({
+          brandName: e.detail.value,
+          brandTagShow: true,
+        })   
+    }
+  },
+  // 删除品牌tag
+  deleteBrandTag() {
+    this.setData({
+      brandTagShow: false,
+      brandName: '',
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

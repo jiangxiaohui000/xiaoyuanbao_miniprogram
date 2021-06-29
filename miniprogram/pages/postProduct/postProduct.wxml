@@ -24,7 +24,7 @@
   </view>
   <!-- 价格 -->
   <view class="price" style="margin-top: 20rpx;">
-    <i class="iconfont icon-jiage1" style="margin-right: 6rpx;"></i>价格：￥
+    <i class="iconfont icon-jiage1" style="margin-right: 6rpx;"></i>出售价格：￥
     <input
       class="price-input"
       type="digit"
@@ -59,13 +59,19 @@
     </view>
   </view>
   <!-- 标签 -->
-  <view class="classify">
-    <view class="classify-title">
-      <i class="iconfont icon-icontag" style="margin-right: 6rpx;"></i>标签：
-    </view>
+  <view style="width: 100%; height: 80rpx; display: flex; align-items: center;">
+    <i class="iconfont icon-icontag" style="margin-right: 6rpx;"></i>标签：
+  </view>
+  <view class="classify" style="padding-left: 70rpx;">
+    品牌：
+    <input type="text" value="{{brandName}}" placeholder="品牌名称" class="brand-input" bindblur="brandInputBlur" wx:if="{{!brandTagShow}}" />
+    <view wx:if="{{brandTagShow}}" class="brand-tag">{{brandName}} <i class="iconfont icon-guanbi" style="margin-left: 6rpx;" bindtap="deleteBrandTag"></i></view>
+  </view>
+  <view class="classify" style="padding-left: 70rpx;">
+    成色：
     <view class="classify-item-container">
         <view
-          wx:for="{{tagList}}"
+          wx:for="{{finenessTagList}}"
           wx:key="item"
           class="classify-item {{index === selectedTag ? 'classify-item-active' : ''}}"
           data-item="{{item}}"

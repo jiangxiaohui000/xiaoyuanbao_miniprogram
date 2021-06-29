@@ -12,70 +12,33 @@ Page({
     searchValue: '',
     productsCategory: ['精选', '手机', '男装', '女装', '数码', '日用', '图书', '饰品', '美妆', '百货', '箱包', '运动'],
     productsList: [{
-      id: 1,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '111',
-      originPrice: '2343',
-      heat: 1,
-    }, {
-      id: 2,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '33333',
-      originPrice: '23222243',
-      heat: 2,
-    }, {
-      id: 3,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '111',
-      originPrice: '2343',
-      heat: 3,
-    }, {
-      id: 4,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '33333',
-      originPrice: '23222243',
-      heat: 4,
-    }, {
-      id: 5,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '111',
-      originPrice: '2343',
-      heat: 5,
-    }, {
-      id: 6,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '33333',
-      originPrice: '23222243',
-      heat: 4,
-    }, {
-      id: 7,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '111',
-      originPrice: '2343',
-      heat: 3,
-    }, {
-      id: 8,
-      img: '../../images/kouhong.jpg',
-      desc: 'Lancome/兰蔻产地: 法国颜色分类: 888粉金管颜色备注保质期: 3年适合肤质: 任何肤质正常规格是否为特殊用途化妆品: 否',
-      currentPrice: '33333',
-      originPrice: '23222243',
-      heat: 2,
+			_id: 'adcb22dsldvklkasdfvkdsaf',
+			uid: '1',
+			avatar: '../../images/touxiang1.jpeg',
+			name: '小脑斧大西吉',
+			ctime: 1623141369000,
+			favorited: 30, // 被收藏次数
+      currentPrice: 1111,
+      originPrice: 2222,
+			desc: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lanco',
+			displayImg: '../../images/kouhong.jpg',
+			img: ['../../images/productDetail2.jpg', '../../images/productDetail3.jpg', '../../images/productDetail4.jpg'],
+      heat: 3, // 热度
+			isOff: false, // 是否已下架
+			isDeleted: false, // 是否已删除
+			isCollected: false,
+			classify: '', // 类别
+			brand: '', // 品牌
+			fineness: '', // 成色
     }],
     swiperImgs: [{
-			id: 1,
+			_id: 1,
 			img: '../../images/banner1.jpg'
 		}, {
-			id: 2,
+			_id: 2,
 			img: '../../images/banner2.jpg'
 		}, {
-			id: 3,
+			_id: 3,
 			img: '../../images/banner3.jpg'
     }],
     scrollTop: 0,
@@ -192,7 +155,7 @@ Page({
           console.log(e, 'fail')
           wx.showModal({
             title: '提示',
-            content: '出错啦，让小宝休息一下下',
+            content: '小宝找你找得有点累~',
             showCancel: false,
             confirmText: '我知道啦'
           }) 
@@ -319,7 +282,7 @@ Page({
             fail: () => {
               wx.showModal({
                 title: '提示',
-                content: '出错啦，让小宝休息一下下',
+                content: '小宝找你找得有点累~',
                 showCancel: false,
                 confirmText: '我知道啦'
               })
@@ -351,7 +314,7 @@ Page({
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {
-        res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.id, from: 'homePage'})
+        res.eventChannel.emit('toProductDetail', {_id: e.currentTarget.dataset._id, from: 'homePage'})
       }
     });
   },
