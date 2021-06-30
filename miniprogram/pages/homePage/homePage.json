@@ -1,5 +1,7 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "mp-loading": "weui-miniprogram/loading/loading"
+  },
   "onReachBottomDistance": 100,
 	"backgroundTextStyle": "dark"
 }

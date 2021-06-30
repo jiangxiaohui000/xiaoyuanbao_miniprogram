@@ -11,26 +11,7 @@ Page({
     requestResult: '',
     searchValue: '',
     productsCategory: ['精选', '手机', '男装', '女装', '数码', '日用', '图书', '饰品', '美妆', '百货', '箱包', '运动'],
-    productsList: [{
-			_id: 'adcb22dsldvklkasdfvkdsaf',
-			uid: '1',
-			avatar: '../../images/touxiang1.jpeg',
-			name: '小脑斧大西吉',
-			ctime: 1623141369000,
-			favorited: 30, // 被收藏次数
-      currentPrice: 1111,
-      originPrice: 2222,
-			desc: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lanco',
-			displayImg: '../../images/kouhong.jpg',
-			img: ['../../images/productDetail2.jpg', '../../images/productDetail3.jpg', '../../images/productDetail4.jpg'],
-      heat: 3, // 热度
-			isOff: false, // 是否已下架
-			isDeleted: false, // 是否已删除
-			isCollected: false,
-			classify: '', // 类别
-			brand: '', // 品牌
-			fineness: '', // 成色
-    }],
+    productsList: [],
     swiperImgs: [{
 			_id: 1,
 			img: '../../images/banner1.jpg'
@@ -54,6 +35,11 @@ Page({
     avatarUrl: '',
     heatIconList: [],
     notHeatIconList: [],
+    pageData: {
+      pageSize: 20,
+      currentPage: 1
+    },
+    showLoading: true,
   },
 
   onLoad() {
@@ -71,17 +57,40 @@ Page({
         this.getUserLocation(res, _this); // 位置信息
       }
     });
-    this.data.productsList.forEach(item => {
-      const { heatIconList, notHeatIconList } = this.calculatingHeat(item);
-      const { newCurrentPrice, newOriginPrice } = this.calculatingPrice(item);
-      item.heatIconList = heatIconList;
-      item.notHeatIconList = notHeatIconList;
-      item.currentPrice = newCurrentPrice;
-      item.originPrice = newOriginPrice;
-    });
-    this.setData({
-      productsList: this.data.productsList
-    });
+    this.initData();
+  },
+  // 数据初始化
+  initData() {
+    wx.cloud.callFunction({
+      name: 'getProductsData',
+      data: {
+        pageData: this.data.pageData
+      },
+      success: res => {
+        if(res && res.result && res.result.data && res.result.data.data) {
+          const data = res.result.data.data;
+          data.forEach(item => {
+            const { heatIconList, notHeatIconList } = this.calculatingHeat(item);
+            const { newCurrentPrice, newOriginPrice } = this.calculatingPrice(item);
+            item.heatIconList = heatIconList;
+            item.notHeatIconList = notHeatIconList;
+            item.currentPrice = newCurrentPrice;
+            item.originPrice = newOriginPrice;
+          });
+          this.setData({
+            productsList: [...this.data.productsList, ...data],
+            showLoading: !!data.length,
+          });
+        }
+      },
+      fail: e => {
+        console.log(e);
+        wx.showToast({
+          title: '服务繁忙，请稍后再试~',
+          icon: 'none'
+        })
+      }
+    })  
   },
   // 获取用户信息
   getUserInfo(res, _this) {
@@ -96,7 +105,7 @@ Page({
       })      
     } else {
       wx.login({
-        timeout: 1000,
+        timeout: 5000,
         success: res => {
           console.log('login seccess', res)
           if (res.authSetting['scope.userInfo']) {
@@ -157,7 +166,7 @@ Page({
             title: '提示',
             content: '小宝找你找得有点累~',
             showCancel: false,
-            confirmText: '我知道啦'
+            confirmText: '辛苦啦~'
           }) 
         }
       })
@@ -284,7 +293,7 @@ Page({
                 title: '提示',
                 content: '小宝找你找得有点累~',
                 showCancel: false,
-                confirmText: '我知道啦'
+                confirmText: '辛苦啦~'
               })
             },
           });
@@ -301,7 +310,10 @@ Page({
   },
   // 触底操作
   onReachBottom() {
-    console.log('到底了');
+    if(this.data.showLoading) {
+      this.data.pageData.currentPage += 1;
+      this.initData();  
+    }
   },
   // 页面滚动
   onPageScroll(e) {
@@ -333,24 +345,24 @@ Page({
     console.log(e.currentTarget.dataset.item)
   },
   // 选择商品分类
-  chooseCategory(e) {
-    // const query = wx.createSelectorQuery();
-    // query.selectAll('.products-category-item').boundingClientRect();
-    // query.select('.products-category-item').boundingClientRect();
-    // query.exec(res => {
-    //   console.log(res);
-    //   const selectedItemLeft = res[0][e.target.dataset.index].left;
-    //   console.log(selectedItemLeft);
-    //   if(selectedItemLeft > 190) {
-    //     this.setData({
-    //       selectedItemLeft: selectedItemLeft
-    //     })
-    //   }
-    // });
-    this.setData({
-      currentIndex: e.target.dataset.index
-    });
-  },
+  // chooseCategory(e) {
+  //   const query = wx.createSelectorQuery();
+  //   query.selectAll('.products-category-item').boundingClientRect();
+  //   query.select('.products-category-item').boundingClientRect();
+  //   query.exec(res => {
+  //     console.log(res);
+  //     const selectedItemLeft = res[0][e.target.dataset.index].left;
+  //     console.log(selectedItemLeft);
+  //     if(selectedItemLeft > 190) {
+  //       this.setData({
+  //         selectedItemLeft: selectedItemLeft
+  //       })
+  //     }
+  //   });
+  //   this.setData({
+  //     currentIndex: e.target.dataset.index
+  //   });
+  // },
   // 计算热度
   calculatingHeat(item) {
     const heatIconList = [];

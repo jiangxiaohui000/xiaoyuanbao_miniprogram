@@ -195,6 +195,21 @@ page {
   font-size: 20rpx;
   color: #999;
 }
+.no-more {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-icon_meiyougengduoliao::before {
+  font-size: 34rpx;
+  color: #aaa;
+}
+.no-more text {
+  color: #aaa;
+  font-size: 24rpx;
+  margin-left: 6rpx;
+}
 .dingwei {
   animation: 2s linear 2s infinite running dingwei;
 }

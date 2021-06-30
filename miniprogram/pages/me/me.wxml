@@ -32,8 +32,8 @@
   </view>
 </view>
 <!-- 我发布的 -->
-<view class="products-container">
-  <view class="products-title">我发布的  {{productsList.length}}</view>
+<scroll-view class="products-container" scroll-y="true" enable-flex="true" bindscrolltolower="productScroll">
+  <view class="products-title">我发布的  {{postNum}}</view>
   <!-- 发布商品列表 -->
   <view
     class="products-item"
@@ -60,7 +60,12 @@
     <!-- 下架icon -->
     <i class="iconfont icon-lianxi-yixiajia" wx:if="{{item.isOff}}"></i>
   </view>
-</view>
+  <mp-loading show="{{showLoading}}" type="circle"></mp-loading>
+  <view class="no-more" wx:if="{{!showLoading}}">
+    <i class="iconfont icon-icon_meiyougengduoliao"></i>
+    <text>没有更多啦~</text>
+  </view>
+</scroll-view>
 <!-- 弹窗 -->
 <mp-dialog
   title=""

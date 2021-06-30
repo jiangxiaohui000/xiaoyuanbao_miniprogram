@@ -11,26 +11,8 @@ Page({
 		logged: false,
 		takeSession: false,
 		requestResult: '',
-		productsList: [{
-			_id: 'adcb22dsldvklkasdfvkdsaf',
-			uid: '1',
-			avatar: '../../images/touxiang1.jpeg',
-			name: '小脑斧大西吉',
-			ctime: 1623141369000,
-			favorited: 30, // 被收藏次数
-      currentPrice: 1111,
-      originPrice: 2222,
-			desc: '产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lancome/兰蔻Lancome/兰蔻单品:产品名称: Lancome/兰蔻 菁纯丝绒柔雾唇釉品牌: Lanco',
-			displayImg: '../../images/kouhong.jpg',
-			img: ['../../images/productDetail2.jpg', '../../images/productDetail3.jpg', '../../images/productDetail4.jpg'],
-      heat: 3, // 热度
-			isOff: false, // 是否已下架
-			isDeleted: false, // 是否已删除
-			isCollected: false,
-			classify: '', // 类别
-			brand: '', // 品牌
-			fineness: '', // 成色
-    }],
+		productsList: [],
+		postNum: '',
 		mineItems: [{
 			value: 'collection',
 			label: '收藏',
@@ -54,6 +36,11 @@ Page({
 		toptipsShow: false,
 		toptipsType: '',
 		resultText: '',
+    pageData: {
+      pageSize: 6,
+      currentPage: 1
+    },
+    showLoading: true,
 	},
 
 	onLoad: function() {
@@ -73,12 +60,38 @@ Page({
 	},
 	// 数据初始化
 	initData() {
-		this.data.productsList.map(item => {
-			item.currentPrice = priceConversion(item.currentPrice);
-			return item;
-		});
-		this.setData({
-			productsList: this.data.productsList
+		wx.cloud.callFunction({
+			name: 'getProductsData',
+			data: {
+				pageData: this.data.pageData,
+				uid: '11111111',
+			},
+			success: res => {
+				console.log(res, 'productsData')
+				if(res && res.result && res.result.data && res.result.data.data) {
+					const data = res.result.data.data;
+					data.map(item => {
+						item.currentPrice = priceConversion(item.currentPrice);
+						return item;
+					});
+					this.setData({
+						productsList: [...this.data.productsList, ...data],
+            showLoading: !!data.length,
+					})
+				}
+				if(res && res.result && res.result.count && res.result.count.total) {
+					this.setData({
+						postNum: res.result.count.total
+					})
+				}
+			},
+			fail: e => {
+				console.log(e);
+				wx.showToast({
+          title: '服务繁忙，请稍后再试~',
+          icon: 'none'
+        })
+			}
 		})
 	},
 	// 获取用户信息
@@ -119,31 +132,6 @@ Page({
 			});
 		}
 	},
-	// 获取用户openid
-	// onGetOpenid: function () {
-	// 	wx.showLoading({
-	// 		title: '请稍后...',
-	// 	})
-	// 	// 调用云函数
-	// 	wx.cloud.callFunction({
-	// 		name: 'login',
-	// 		data: {},
-	// 		success: res => {
-	// 			wx.hideLoading();
-	// 			console.log('[云函数] [login] user openid: ', res.result.openid)
-	// 			app.globalData.openid = res.result.openid
-	// 			wx.navigateTo({
-	// 				url: '../userConsole/userConsole',
-	// 			})
-	// 		},
-	// 		fail: err => {
-	// 			console.error('[云函数] [login] 调用失败', err)
-	// 			wx.navigateTo({
-	// 				url: '../deployFunctions/deployFunctions',
-	// 			})
-	// 		}
-	// 	})
-	// },
 	// 上传图片
 	doUpload: function () {
 		if(!this.data.logged) { // 未登录
@@ -388,4 +376,36 @@ Page({
 			modifiedPrice: money(e.detail.value)
 		});
 	},
+  // 触底操作
+	productScroll() {
+    if(this.data.showLoading) {
+      this.data.pageData.currentPage += 1;
+      this.initData();  
+    }
+	},
+	// 获取用户openid
+	// onGetOpenid: function () {
+	// 	wx.showLoading({
+	// 		title: '请稍后...',
+	// 	})
+	// 	// 调用云函数
+	// 	wx.cloud.callFunction({
+	// 		name: 'login',
+	// 		data: {},
+	// 		success: res => {
+	// 			wx.hideLoading();
+	// 			console.log('[云函数] [login] user openid: ', res.result.openid)
+	// 			app.globalData.openid = res.result.openid
+	// 			wx.navigateTo({
+	// 				url: '../userConsole/userConsole',
+	// 			})
+	// 		},
+	// 		fail: err => {
+	// 			console.error('[云函数] [login] 调用失败', err)
+	// 			wx.navigateTo({
+	// 				url: '../deployFunctions/deployFunctions',
+	// 			})
+	// 		}
+	// 	})
+	// },
 })

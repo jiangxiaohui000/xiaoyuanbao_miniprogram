@@ -74,25 +74,21 @@ page {
   overflow-x: hidden;
   background-color: #fff;
   border-radius: 15rpx;
-}
-.products-container::-webkit-scrollbar {
-  display: none;
+  padding-left: 10rpx;
 }
 .products-title {
   width: 100%;
   height: 80rpx;
   line-height: 85rpx;
   font-size: 30rpx;
-  padding-left: 20rpx;
-  border-bottom: 1px solid #ddd;
 }
 .products-item {
   height: 200rpx;
   overflow: hidden;
   padding-right: 15rpx;
   display: flex;
-  border-bottom: 1px solid #eee;
   position: relative;
+  margin-bottom: 10rpx;
 }
 .products-item:last-child {
   border-bottom: none;
@@ -185,4 +181,19 @@ page {
 .weui-dialog .weui-dialog__bd {
   margin-bottom: 0;
   padding: 10rpx 20rpx;
+}
+.no-more {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-icon_meiyougengduoliao::before {
+  font-size: 34rpx;
+  color: #aaa;
+}
+.no-more text {
+  color: #aaa;
+  font-size: 24rpx;
+  margin-left: 6rpx;
 }

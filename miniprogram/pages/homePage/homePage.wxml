@@ -79,8 +79,12 @@
       </view>
     </view>
   </view>
-
-  <i class="iconfont icon-dixian"></i>
+  <mp-loading show="{{showLoading}}" type="circle"></mp-loading>
+  <view class="no-more" wx:if="{{!showLoading}}">
+    <i class="iconfont icon-icon_meiyougengduoliao"></i>
+    <text>没有更多啦~</text>
+  </view>
+  
 
   <!-- 操作数据库 -->
   <!-- <view class="uploader">
