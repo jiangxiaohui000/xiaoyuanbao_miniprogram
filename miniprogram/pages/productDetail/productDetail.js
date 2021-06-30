@@ -99,7 +99,7 @@ Page({
 	// 删除
 	delete() {
 		wx.showModal({
-			title: '提示',
+			title: '',
 			content: '确定要删除吗?',
 			success (res) {
 				if (res.confirm) {

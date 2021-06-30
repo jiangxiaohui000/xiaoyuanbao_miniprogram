@@ -6,12 +6,18 @@
 }
 
 .chatroom .header {
-  flex-basis: fit-content;
-  /* display: flex; */
+  width: 100%;
+  height: 100rpx;
   border-bottom: 1px solid #ddd;
   font-size: 24rpx;
   color: #aaa;
   padding: 10rpx;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  overflow: hidden;
+  z-index: 999;
 }
 
 .header-img {
@@ -47,7 +53,7 @@
   display: flex;
   flex-direction: column;
   background: rgb(237,237,237);
-  padding-bottom: 160rpx;
+  padding: 140rpx 0 160rpx;
 }
 
 .body .message {

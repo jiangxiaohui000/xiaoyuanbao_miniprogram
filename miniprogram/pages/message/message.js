@@ -1,4 +1,6 @@
 const app = getApp();
+const dayjs = require('dayjs');
+const { timeFormatter } = require('../../utils/timeFormatter');
 
 Page({
   data: {
@@ -6,30 +8,47 @@ Page({
     sysMessage: '',
     sysMessageUnRead: Boolean,
     chatList: [{
-      id: 1,
+      _id: 1,
       name: '快乐的小甜甜',
-      time: '1-23 11:44',
+      ctime: 1624977918502,
       info: '便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了',
       logo: '../../images/touxiang1.jpeg',
       img: '../../images/touxiang1.jpeg',
-      price: '11',
+      price: 111,
       hasUnreadMessage: false,
     }, {
-      id: 2,
+      _id: 2,
       name: '雨中追逐',
-      time: '12-23 11:44',
+      ctime: 1624632305000,
       info: '项目中常常有这种需要我们对溢出文本进行显示的操作，单行多行的情况都有的情况都有的情况都有的情况都有',
       logo: '../../images/touxiang2.jpeg',
       img: '../../images/touxiang2.jpeg',
-      price: '11',
+      price: 11,
+      hasUnreadMessage: true,
+    }, {
+      _id: 3,
+      name: '雨中追逐',
+      ctime: 1593096305000,
+      info: '项目中常常有这种需要我们对溢出文本进行显示的操作，单行多行的情况都有的情况都有的情况都有的情况都有',
+      logo: '../../images/touxiang2.jpeg',
+      img: '../../images/touxiang2.jpeg',
+      price: 11,
       hasUnreadMessage: true,
     }],
   },
   onLoad() {
+    // this.setData({
+    //   sysMessageTime: '10-23 13:23',
+    //   sysMessage: '尊敬的用户，您好，感谢您注册校园宝，我们将竭诚为您服务。',
+    //   sysMessageUnRead: true,
+    // })
+    this.data.chatList.map(item => {
+      // item.ctime = dayjs(item.ctime).format('YYYY-MM-DD HH:mm:ss');
+      item.ctime = timeFormatter(item.ctime);
+      return item;
+    });
     this.setData({
-      sysMessageTime: '10-23 13:23',
-      sysMessage: '尊敬的用户，您好，感谢您注册校园宝，我们将竭诚为您服务。',
-      sysMessageUnRead: true,
+      chatList: this.data.chatList
     })
   },
   // 去聊天
@@ -42,7 +61,7 @@ Page({
   },
   // 删除聊天
   slideDelete(e) {
-    const index = this.data.chatList.findIndex(item => item.id === e.currentTarget.dataset.id);
+    const index = this.data.chatList.findIndex(item => item._id === e.currentTarget.dataset._id);
     this.data.chatList.splice(index, 1);
     this.setData({
       chatList: this.data.chatList
