@@ -28,6 +28,7 @@ Page({
 		collectedIcon: '',
 		productTags: [],
 		from: '',
+		groupId: '',
 	},
 	/**
 	 * 生命周期函数--监听页面加载
@@ -37,6 +38,7 @@ Page({
 		eventChannel.on('toProductDetail', (data) => {
 			console.log(data, 'data');
 			data && data.from && this.setData({ from: data.from });
+			data && data.groupId && this.setData({ groupId: data.groupId });
 		});
 		this.initData();
 	},
@@ -79,7 +81,7 @@ Page({
 	gotoChatRoom() {
 		const data = this.data.productInfo;
 		wx.navigateTo({
-      url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&name=${data.name}`,
+      url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&name=${data.name}&groupId=${this.data.groupId}`,
     })
 	},
 	// 编辑

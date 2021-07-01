@@ -56,7 +56,7 @@
       class="products-item"
       wx:for="{{productsList}}"
       wx:key="id"
-      data-id="{{item.id}}"
+      data-item="{{item}}"
       bindtap="toProductsDetail">
       <!-- 图片 -->
       <view class="img-container">

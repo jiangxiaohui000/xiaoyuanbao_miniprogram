@@ -9,7 +9,7 @@ Page({
     requestResult: '',
     // chatRoomEnvId: 'release-f8415a',
     chatRoomCollection: 'chatroom',
-    chatRoomGroupId: 'demo',
+    chatRoomGroupId: '',
     chatInfo: '',
 
     // functions for used in chatroom components
@@ -20,7 +20,8 @@ Page({
   onLoad: function(options) {
     console.log(options, 'room options')
     this.setData({
-      chatInfo: {name: options.name, img: options.img, price: options.price}
+      chatInfo: {name: options.name, img: options.img, price: options.price},
+      chatRoomGroupId: options.groupId,
     });
     // 获取用户信息
     wx.getSetting({

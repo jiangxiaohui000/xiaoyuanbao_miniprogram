@@ -14,6 +14,15 @@ App({
       })
     }
     this.globalData = {}
+    wx.cloud.callFunction({
+      name: 'login',
+      data: {},
+      success: res => {
+        if(res && res.result && res.result.event && res.result.event && res.result.event.userInfo) {
+          this.globalData.userInfo = res.result.event.userInfo;
+        }
+      }
+    })
   },
 	onShow: function() {
 	},

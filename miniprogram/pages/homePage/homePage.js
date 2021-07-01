@@ -334,10 +334,13 @@ Page({
   },
   // 前往商品详情页面
   toProductsDetail(e) {
+    console.log(app, 'app')
+    const targetItem = e.currentTarget.dataset.item;
+    const groupId = app.globalData.userInfo.openId.substr(0, 6) + targetItem._id.substr(0, 6) + targetItem.uid.substr(0, 6);
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {
-        res.eventChannel.emit('toProductDetail', {_id: e.currentTarget.dataset._id, from: 'homePage'})
+        res.eventChannel.emit('toProductDetail', {_id: targetItem._id, groupId: groupId, from: 'homePage'})
       }
     });
   },
