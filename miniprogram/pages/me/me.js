@@ -14,17 +14,22 @@ Page({
 		productsList: [],
 		postNum: '',
 		mineItems: [{
-			value: 'collection',
+			value: 0,
+			label: '卖出',
+			icon: 'maichu1',
+			num: 0
+		}, {
+			value: 1,
 			label: '收藏',
 			icon: 'collection-b',
 			num: 0
 		}, {
-			value: 'buy',
+			value: 2,
 			label: '购买',
 			icon: 'gouwujianying',
 			num: 0
 		}, {
-			value: 'evaluate',
+			value: 3,
 			label: '评价',
 			icon: 'pingjia',
 			num: 0

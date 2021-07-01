@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'iconfont';  /* Project id 1749239 */
-  src: url('//at.alicdn.com/t/font_1749239_rf8od2zn16.woff2?t=1625043448497') format('woff2'),
-       url('//at.alicdn.com/t/font_1749239_rf8od2zn16.woff?t=1625043448497') format('woff'),
-       url('//at.alicdn.com/t/font_1749239_rf8od2zn16.ttf?t=1625043448497') format('truetype');
+  src: url('//at.alicdn.com/t/font_1749239_zf6r238ie9.woff2?t=1625143708519') format('woff2'),
+       url('//at.alicdn.com/t/font_1749239_zf6r238ie9.woff?t=1625143708519') format('woff'),
+       url('//at.alicdn.com/t/font_1749239_zf6r238ie9.ttf?t=1625143708519') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-maichu1:before {
+  content: "\e60e";
 }
 
 .icon-icon_meiyougengduoliao:before {
@@ -23,8 +27,6 @@
 
 .icon-lianxi-yixiajia:before {
   content: "\e6ff";
-  font-size: 100rpx;
-  color: #aaa;
 }
 
 .icon-gengduo:before {
@@ -57,40 +59,18 @@
 
 .icon-guanbi:before {
   content: "\e60b";
-  font-size: 26rpx;
-}
-
-.icon-miaoshu:before {
-  content: "\e7d2";
-}
-
-.icon-tupian:before {
-  content: "\eaf2";
 }
 
 .icon-maichu:before {
   content: "\e62c";
-  font-size: 45rpx;
-  color: #fff;
 }
 
 .icon-tabAdd:before {
   content: "\e600";
-  font-size: 50rpx;
-}
-
-.icon-dixian:before {
-  content: "\e66a";
-  font-size: 24rpx;
-  color: #000;
-  opacity: 0.6;
 }
 
 .icon-dingwei:before {
   content: "\e616";
-  font-size: 48rpx;
-  color: #07c160;
-  margin-right: 20rpx;
 }
 
 .icon-delete:before {
@@ -99,7 +79,6 @@
 
 .icon-shoucang1:before {
   content: "\e636";
-  color: #07c160;
 }
 
 .icon-shoucang:before {
@@ -108,40 +87,17 @@
 
 .icon-pingjia:before {
   content: "\e618";
-  font-size: 30rpx;
-  color: #07c160;
 }
 
 .icon-gouwujianying:before {
   content: "\e67d";
-  font-size: 30rpx;
-  color: #07c160;
 }
 
 .icon-xitongxiaoxi:before {
   content: "\e683";
-  font-size: 80rpx;
-  color: #fff;
 }
 
 .icon-collection-b:before {
   content: "\e60d";
-  font-size: 30rpx;
-  color: #07c160;
-}
-
-.icon-shangpin:before {
-  content: "\e624";
-  font-size: 30rpx;
-  color: #07c160;
-}
-
-.icon-arrow-right:before {
-  content: "\e601";
-}
-
-.icon-saoyisao:before {
-  content: "\e607";
-  font-size: 40rpx;
 }
 

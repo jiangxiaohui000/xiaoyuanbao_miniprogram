@@ -138,3 +138,6 @@ page {
   font-size: 26rpx;
   margin-right: 20rpx;
 }
+.icon-shoucang1 {
+  color: #07c160;
+}

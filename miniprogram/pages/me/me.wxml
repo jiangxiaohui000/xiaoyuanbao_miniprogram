@@ -25,7 +25,7 @@
 </view>
 <!-- 收藏购买评价 -->
 <view class="mine">
-  <view class="mine-item" wx:for="{{mineItems}}" wx:key="item" data-item="{{item}}" bindtap="toMineItemDetail">
+  <view class="mine-item" wx:for="{{mineItems}}" wx:key="item.value" data-item="{{item}}" bindtap="toMineItemDetail">
     <i class="iconfont icon-{{item.icon}}"></i>
     <text style="margin-left: 10rpx;">{{item.label}}</text>
     <text style="margin-left: 10rpx;">{{item.num}}</text>

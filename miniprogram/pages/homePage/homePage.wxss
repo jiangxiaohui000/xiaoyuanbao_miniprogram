@@ -230,3 +230,8 @@ page {
     transform: scale(1);
   }
 }
+.icon-dingwei::before {
+  font-size: 48rpx;
+  color: #07c160;
+  margin-right: 20rpx;
+}

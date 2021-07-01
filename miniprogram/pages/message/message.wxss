@@ -154,3 +154,8 @@
 	justify-content: center;
 	align-items: center;
 }
+
+.icon-xitongxiaoxi:before {
+  font-size: 80rpx;
+  color: #fff;
+}

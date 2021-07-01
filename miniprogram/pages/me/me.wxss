@@ -90,17 +90,16 @@ page {
   position: relative;
   margin-bottom: 10rpx;
 }
-.products-item:last-child {
-  border-bottom: none;
-}
 .products-item .img-container {
   flex: 1;
+  display: flex;
+  align-items: center;
 }
 .products-item .img-container .img {
   background-size: cover;
   border-radius: 20rpx;
-  width: 200rpx;
-  height: 200rpx;
+  width: 180rpx;
+  height: 180rpx;
 }
 .products-item .text-container {
   display: flex;
@@ -144,6 +143,10 @@ page {
   position: absolute;
   left: 0;
   top: -17px;
+}
+.icon-lianxi-yixiajia::before {
+  font-size: 100rpx;
+  color: #aaa;
 }
 .dialog-box {
   display: flex;
@@ -196,4 +199,15 @@ page {
   color: #aaa;
   font-size: 24rpx;
   margin-left: 6rpx;
+}
+.icon-maichu1::before,
+.icon-collection-b::before,
+.icon-gouwujianying::before,
+.icon-pingjia::before {
+  font-size: 30rpx;
+  color: #07c160;
+}
+.icon-maichu::before {
+  font-size: 45rpx;
+  color: #fff;
 }

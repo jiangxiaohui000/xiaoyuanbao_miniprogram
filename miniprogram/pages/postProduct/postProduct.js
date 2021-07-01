@@ -17,25 +17,25 @@ Page({
       value: 0,
       label: '手机'
     }, {
-      value: 2,
+      value: 1,
       label: '电脑'
     }, {
-      value: 3,
+      value: 2,
       label: '数码3C'
     }, {
-      value: 4,
+      value: 3,
       label: '运动户外'
     }, {
-      value: 5,
+      value: 4,
       label: '服饰鞋帽'
     }, {
-      value: 6,
+      value: 5,
       label: '美妆护肤'
     }, {
-      value: 7,
+      value: 6,
       label: '生活百货'
     }, {
-      value: 8,
+      value: 7,
       label: '其他'
     }],
     selectedClassify: '',
