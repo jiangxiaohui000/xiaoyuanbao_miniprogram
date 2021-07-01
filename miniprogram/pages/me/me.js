@@ -37,7 +37,7 @@ Page({
 		toptipsType: '',
 		resultText: '',
     pageData: {
-      pageSize: 6,
+      pageSize: 5,
       currentPage: 1
     },
     showLoading: true,
@@ -50,6 +50,15 @@ Page({
 			})
 			return;
 		}
+    wx.onNetworkStatusChange((res) => {
+      if(!res.isConnected) {
+        wx.showModal({
+          title: '您好像没有连接网络哦~\n请连接后重试',
+          showCancel: false,
+          confirmText: '好的'
+        })
+      }
+    })
 		wx.getSetting({
 			success: res => {
 				this.getUserInfo(res); // 获取用户信息
@@ -380,7 +389,7 @@ Page({
 	productScroll() {
     if(this.data.showLoading) {
       this.data.pageData.currentPage += 1;
-      this.initData();  
+      this.initData();
     }
 	},
 	// 获取用户openid

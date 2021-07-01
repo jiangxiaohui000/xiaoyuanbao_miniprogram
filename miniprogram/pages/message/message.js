@@ -1,12 +1,11 @@
 const app = getApp();
-const dayjs = require('dayjs');
 const { timeFormatter } = require('../../utils/timeFormatter');
 
 Page({
   data: {
-    sysMessageTime: '',
-    sysMessage: '',
-    sysMessageUnRead: Boolean,
+    // sysMessageTime: '',
+    // sysMessage: '',
+    // sysMessageUnRead: false,
     chatList: [{
       _id: 1,
       name: '快乐的小甜甜',
@@ -42,8 +41,16 @@ Page({
     //   sysMessage: '尊敬的用户，您好，感谢您注册校园宝，我们将竭诚为您服务。',
     //   sysMessageUnRead: true,
     // })
+    wx.onNetworkStatusChange((res) => {
+      if(!res.isConnected) {
+        wx.showModal({
+          title: '您好像没有连接网络哦~\n请连接后重试',
+          showCancel: false,
+          confirmText: '好的'
+        })
+      }
+    })
     this.data.chatList.map(item => {
-      // item.ctime = dayjs(item.ctime).format('YYYY-MM-DD HH:mm:ss');
       item.ctime = timeFormatter(item.ctime);
       return item;
     });

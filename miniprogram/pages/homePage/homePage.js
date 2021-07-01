@@ -5,12 +5,13 @@ const { priceConversion } = require('../../utils/priceConversion');
 
 Page({
   data: {
-    userInfo: {},
+    // userInfo: {},
+    avatarUrl: '../../images/user-unlogin.png',
     logged: false,
     takeSession: false,
     requestResult: '',
     searchValue: '',
-    productsCategory: ['精选', '手机', '男装', '女装', '数码', '日用', '图书', '饰品', '美妆', '百货', '箱包', '运动'],
+    // productsCategory: ['精选', '手机', '男装', '女装', '数码', '日用', '图书', '饰品', '美妆', '百货', '箱包', '运动'],
     productsList: [],
     swiperImgs: [{
 			_id: 1,
@@ -32,7 +33,6 @@ Page({
     locationFlash: true,
     locationShow: false,
     timer: null,
-    avatarUrl: '',
     heatIconList: [],
     notHeatIconList: [],
     pageData: {
@@ -49,10 +49,19 @@ Page({
       });
       return;
     }
+    wx.onNetworkStatusChange((res) => {
+      if(!res.isConnected) {
+        wx.showModal({
+          title: '您好像没有连接网络哦~\n请连接后重试',
+          showCancel: false,
+          confirmText: '好的'
+        })
+      }
+    })
     const _this = this;
     wx.getSetting({
       success: res => {
-        // console.log(res, 'getSetting');
+        console.log(res, 'getSetting');
         this.getUserInfo(res, _this); // 用户信息
         this.getUserLocation(res, _this); // 位置信息
       }
@@ -90,7 +99,7 @@ Page({
           icon: 'none'
         })
       }
-    })  
+    })
   },
   // 获取用户信息
   getUserInfo(res, _this) {
@@ -99,7 +108,7 @@ Page({
         success: res => {
           _this.setData({
             avatarUrl: res.userInfo.avatarUrl,
-            userInfo: res.userInfo
+            // userInfo: res.userInfo
           })
         }
       })      
@@ -113,11 +122,14 @@ Page({
               success: res => {
                 _this.setData({
                   avatarUrl: res.userInfo.avatarUrl,
-                  userInfo: res.userInfo
+                  // userInfo: res.userInfo
                 })
               }
             })      
           }
+        },
+        fail: e => {
+          console.log(e);
         }
       })
     }
@@ -163,11 +175,11 @@ Page({
         fail (e) { // 未获取到经纬度
           console.log(e, 'fail')
           wx.showModal({
-            title: '提示',
-            content: '小宝找你找得有点累~',
+            title: '小宝没有找到你~',
+            content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
             showCancel: false,
-            confirmText: '辛苦啦~'
-          }) 
+            confirmText: '我知道啦'
+          })
         }
       })
     } else { // 用户未同意授权位置信息
@@ -303,7 +315,6 @@ Page({
   },
   // 下拉刷新
 	onPullDownRefresh() {
-    console.log(111111)
     setTimeout(() => {
       wx.stopPullDownRefresh()
     }, 1000);
