@@ -26,6 +26,8 @@ Component({
     scrollTop: 0,
     scrollToMessage: '',
     hasKeyboard: false,
+    // keyboardHeight: 0,
+    sendFocus: false,
   },
 
   methods: {
@@ -43,7 +45,7 @@ Component({
         ...criteria,
       }
     },
-
+    // 初始化数据
     async initRoom() {
       this.try(async () => {
         await this.initOpenID()
@@ -68,17 +70,16 @@ Component({
         } : {})
       }, '初始化失败')
     },
-
+    // 获取用户openId
     async initOpenID() {
       return this.try(async () => {
         const openId = await this.getOpenID()
-
         this.setData({
           openId,
         })
       }, '初始化 openId 失败')
     },
-
+    // 消息监听
     async initWatch(criteria) {
       this.try(() => {
         const { collection } = this.properties
@@ -149,12 +150,10 @@ Component({
         }
       }
     },
-
+    // 发送消息
     async onConfirmSendText(e) {
       this.try(async () => {
-        if (!e.detail.value) {
-          return
-        }
+        if (!e.detail.value) return;
 
         const { collection } = this.properties
         const db = this.db
@@ -197,10 +196,11 @@ Component({
               }
             } else return chat
           }),
+          sendFocus: true,
         })
       }, '发送文字失败')
     },
-
+    // 发送图片
     async onChooseImage(e) {
       wx.chooseImage({
         count: 1,
@@ -266,25 +266,19 @@ Component({
         },
       })
     },
-
+    // 图片预览
     onMessageImageTap(e) {
       wx.previewImage({
         urls: [e.target.dataset.fileid],
       })
     },
-
-    // 交换联系方式
-    exchange() {
-      console.log(111)
-    },
-
+    // 滚动到底部
     scrollToBottom(force) {
       if (force) {
         console.log('force scroll to bottom')
         this.setData(SETDATA_SCROLL_TO_BOTTOM)
         return
       }
-
       this.createSelectorQuery().select('.body').boundingClientRect(bodyRect => {
         this.createSelectorQuery().select(`.body`).scrollOffset(scroll => {
           if (scroll.scrollTop + bodyRect.height * 3 > scroll.scrollHeight) {
@@ -294,7 +288,7 @@ Component({
         }).exec()
       }).exec()
     },
-
+    // 滚动到顶部触发
     async onScrollToUpper() {
       if (this.db && this.data.chats.length) {
         const { collection } = this.properties
@@ -331,6 +325,18 @@ Component({
         },
       })
     },
+    // 获取焦点时
+    onBindFocus(e) {
+      // this.setData({
+      //   keyboardHeight: e.detail.height
+      // })
+      this.createSelectorQuery().select('.body').boundingClientRect(bodyRect => {
+        console.log(bodyRect.bottom, e.detail.height, 'heiheiheihei')
+        if(bodyRect.bottom + 10 <= e.detail.height) {
+          console.log('111222')
+        }
+      }).exec()
+    }
   },
 
   ready() {
@@ -339,6 +345,9 @@ Component({
     this.fatalRebuildCount = 0;
     wx.setNavigationBarTitle({
       title: this.data.chatInfo.name
-    })
+    });
+    this.setData({
+      scrollToMessage: `item-${this.data.chats.length}`, // 进入到页面时，自动滚到最下面
+    });
   },
 })

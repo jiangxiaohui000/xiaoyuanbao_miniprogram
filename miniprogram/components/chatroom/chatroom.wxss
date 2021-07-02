@@ -36,20 +36,8 @@
   float: left;
 }
 
-/* .header-contact {
-  height: 40rpx;
-  line-height: 40rpx;
-  overflow: hidden;
-  border: 1px solid #07c160;
-  border-radius: 30rpx;
-  text-align: center;
-  padding: 4rpx 10rpx;
-  float: right;
-  margin-top: 24rpx;
-} */
-
 .chatroom .body {
-  flex: 2;
+  height: calc(100vh - 330rpx);
   display: flex;
   flex-direction: column;
   background: rgb(237,237,237);
@@ -136,8 +124,7 @@
 
 .chatroom .footer {
   width: 100%;
-  flex-basis: fit-content;
-  /* display: flex; */
+  height: 100rpx;
   border-top: 1px solid #ddd;
   font-size: 10rpx;
   background: rgb(246,246,246);
@@ -148,7 +135,6 @@
 }
 
 .chatroom .footer .message-sender {
-  /* flex: 1; */
   display: flex;
   padding: 20rpx 30rpx;
 }

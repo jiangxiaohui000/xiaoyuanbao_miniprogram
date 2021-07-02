@@ -68,6 +68,16 @@ Page({
     });
     this.initData();
   },
+  onShow() {
+    this.setData({
+      locationShow: true,
+    })
+    this.data.timer = setTimeout(() => {
+      this.setData({
+        locationShow: false
+      })
+    }, 3000);
+  },
   // 数据初始化
   initData() {
     wx.cloud.callFunction({
@@ -296,16 +306,16 @@ Page({
                   title: '提示',
                   content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
                   showCancel: false,
-                  confirmText: '我知道啦'
+                  confirmText: '好的~'
                 })
               }
             },
             fail: () => {
               wx.showModal({
                 title: '提示',
-                content: '小宝找你找得有点累~',
+                content: '位置服务繁忙，请再试一次~',
                 showCancel: false,
-                confirmText: '辛苦啦~'
+                confirmText: '好的~'
               })
             },
           });

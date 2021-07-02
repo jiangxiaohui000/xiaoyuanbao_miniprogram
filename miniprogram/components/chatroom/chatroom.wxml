@@ -6,14 +6,13 @@
       <view style="color: #000;">￥{{chatInfo.price}}</view>
       <view>交易前，聊一聊</view>
     </view>
-    <!-- <view class="header-contact" bindtap="exchange">交换联系方式</view> -->
   </view>
 
   <!-- chats -->
   <scroll-view 
     class="body"
     enable-flex="true"
-    scroll-y 
+    scroll-y
     scroll-with-animation="{{scrollWithAnimation}}"
     scroll-top="{{scrollTop}}" 
     scroll-into-view="{{scrollToMessage}}"
@@ -58,13 +57,15 @@
         type="text"
         confirm-type="send"
         bindconfirm="onConfirmSendText"
+        bindfocus="onBindFocus"
+        focus="sendFocus"
         cursor-spacing="20"
         value="{{textInputValue}}"
       ></input>
 
       <image 
-        src="./photo.png" 
-        class="btn-send-image" 
+        src="./photo.png"
+        class="btn-send-image"
         mode="scaleToFill"
         bindtap="onChooseImage"
       ></image>
