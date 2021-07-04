@@ -161,7 +161,7 @@ Page({
             success: res => { // 再通过腾讯位置服务获取到地理位置
               // console.log('location service', res);
               _this.setData({
-                userAddress: res.result.formatted_addresses.recommend,
+                userAddress: res.result.address,
                 userAddressLatitude: res.result.location.lat,
                 userAddressLongitude: res.result.location.lng,
                 locationFlash: false,

@@ -3,5 +3,6 @@
     "mp-loading": "weui-miniprogram/loading/loading"
   },
   "onReachBottomDistance": 100,
-	"backgroundTextStyle": "dark"
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": true
 }

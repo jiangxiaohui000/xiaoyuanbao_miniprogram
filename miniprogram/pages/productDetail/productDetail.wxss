@@ -102,8 +102,6 @@ page {
   height: 100rpx;
   width: 100%;
   background-color: #fff;
-  border-top-left-radius: 20rpx;
-  border-top-right-radius: 20rpx;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -116,17 +114,30 @@ page {
   justify-content: space-around;
   align-items: center;
 }
-.collection {
-  width: 50%;
+.features-item-left {
+  flex: 6;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.collection, .share {
   display: flex;
   align-items: center;
   font-size: 26rpx;
+  margin-left: 30rpx;
+}
+.icon-shoucang::before, .icon-shoucang1::before, .icon-fenxiang::before {
+  font-size: 40rpx;
+}
+.icon-shoucang1::before {
+  color: #07c160;
 }
 .chat-button {
+  flex: 1;
   color: #fff;
   background-color: #07c160;
   border-radius: 40rpx;
-  margin: 0;
+  margin: 0 20rpx 0 0;
 }
 .edit-product, .delete-product {
   width: 110rpx;
@@ -137,7 +148,4 @@ page {
   border: 1px solid #eee;
   font-size: 26rpx;
   margin-right: 20rpx;
-}
-.icon-shoucang1 {
-  color: #07c160;
 }

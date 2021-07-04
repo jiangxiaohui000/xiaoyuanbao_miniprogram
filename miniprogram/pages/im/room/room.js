@@ -19,6 +19,8 @@ Page({
 
   onLoad: function(options) {
     console.log(options, 'room options')
+    // let eventChannel = this.getOpenerEventChannel();
+    // eventChannel.emit('chat', '1111')
     this.setData({
       chatInfo: {name: options.name, img: options.img, price: options.price},
       chatRoomGroupId: options.groupId,
@@ -78,13 +80,6 @@ Page({
         avatarUrl: e.detail.userInfo.avatarUrl,
         userInfo: e.detail.userInfo
       })
-    }
-  },
-
-  onShareAppMessage() {
-    return {
-      title: '即时通信 Demo',
-      path: '/pages/im/room/room',
     }
   },
 })

@@ -331,9 +331,9 @@ Component({
       //   keyboardHeight: e.detail.height
       // })
       this.createSelectorQuery().select('.body').boundingClientRect(bodyRect => {
-        console.log(bodyRect.bottom, e.detail.height, 'heiheiheihei')
+        console.log(bodyRect.bottom, e.detail.height, '获取焦点时')
         if(bodyRect.bottom + 10 <= e.detail.height) {
-          console.log('111222')
+          console.log('获取焦点时1111')
         }
       }).exec()
     }

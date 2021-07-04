@@ -64,6 +64,11 @@ Page({
     const item = e.currentTarget.dataset.item;
     wx.navigateTo({
       url: `/pages/im/room/room?img=${item.img}&price=${item.price}&name=${item.name}`,
+      // success: res => {
+      //   res.eventChannel.on('chat', res => {
+      //     console.log(res, 'emit')
+      //   })
+      // }
     })
   },
   // 删除聊天

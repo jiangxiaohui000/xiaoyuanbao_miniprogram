@@ -4,7 +4,7 @@
   <view class="tool-box">
     <!-- 定位 -->
     <i class="iconfont icon-dingwei {{locationFlash ? 'dingwei' : ''}}" bindtap="goLocationPage"></i>
-    <text class="user-address" wx:if="{{locationShow}}">当前位置：{{userAddress}}</text>
+    <text class="user-address" wx:if="{{locationShow && userAddress}}">当前位置：{{userAddress}}</text>
     <!-- 搜索框 -->
     <view class="search" bindtap="gotoSearch">
       <icon type='search' size="14"></icon>

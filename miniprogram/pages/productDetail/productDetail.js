@@ -77,6 +77,10 @@ Page({
 			})
 		}
 	},
+	// 分享
+	// shareProduct() {
+	// 	this.onShareAppMessage(this.data.productInfo);
+	// },
 	// 聊一聊
 	gotoChatRoom() {
 		const data = this.data.productInfo;
@@ -169,7 +173,18 @@ Page({
 	/**
 	 * 用户点击右上角分享
 	 */
-	onShareAppMessage: function () {
-
+	onShareAppMessage: (data) => {
+		const promise = new Promise(resolve => {
+      setTimeout(() => {
+        resolve({
+          title: data ? data.desc.substring(0, 10) + '...' : this.data.productInfo.desc.substring(0, 10) + '...'
+        })
+      }, 2000)
+    })
+    return {
+      title: data ? data.desc.substring(0, 10) + '...' : this.data.productInfo.desc.substring(0, 10) + '...',
+      path: '/pages/productDetail/productDetail',
+      promise 
+    }
 	},
 })
