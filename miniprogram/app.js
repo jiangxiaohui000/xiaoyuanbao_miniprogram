@@ -1,4 +1,5 @@
 //app.js
+const { phoneType } = require('./utils/phoneType');
 App({
   onLaunch: function () {
     if (!wx.cloud) {
@@ -14,15 +15,31 @@ App({
       })
     }
     this.globalData = {}
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {},
-      success: res => {
-        if(res && res.result && res.result.event && res.result.event && res.result.event.userInfo) {
-          this.globalData.userInfo = res.result.event.userInfo;
+    this.globalData.needAdapt = phoneType();
+  },
+  login: function(cb) {
+    if(this.globalData.openid) {
+      const _this = this;
+      typeof cb === 'function' && cb(_this.globalData.openid);
+    } else {
+      const _this = this;
+      wx.cloud.callFunction({
+        name: 'login',
+        data: {},
+        success: res => {
+          if(res && res.result && res.result.event && res.result.openid) {
+            _this.globalData.openid = res.result.openid;
+            typeof cb === 'function' && cb(res.result.openid);
+            wx.cloud.callFunction({
+              name: 'userData',
+              data: {
+                openid: res.result.openid
+              },
+            })
+          }
         }
-      }
-    })
+      })  
+    }
   },
 	onShow: function() {
 	},

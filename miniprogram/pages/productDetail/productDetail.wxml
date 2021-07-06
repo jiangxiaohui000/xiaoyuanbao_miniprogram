@@ -1,6 +1,7 @@
 <!--miniprogram/pages/productDetail.wxml-->
+
 <!-- 用户信息 -->
-<view class="user-info">
+<view class="user-info" wx:if="{{productInfo}}">
   <view class="left-info">
     <image class="user-avatar" src="{{productInfo.avatar}}" mode="aspectFit"></image>
     <view class="user-name">
@@ -12,21 +13,24 @@
     <view class="right-info-box">{{productInfo.favorited}} 已收藏</view>
   </view>
 </view>
+
 <!-- 价格 -->
-<view class="product-price">
+<view class="product-price" wx:if="{{productInfo}}">
   <view class="price-symbol">￥</view>
   <view class="price-num">{{productInfo.currentPrice}}</view>
   <!-- <view class="product-tag" wx:for="{{productTags}}" wx:key="item">{{item}}</view> -->
 </view>
+
 <!-- 商品描述 -->
-<view class="product-description">
+<view class="product-description" wx:if="{{productInfo}}" style="padding-bottom: {{needAdapt ? '200rpx' : '120rpx'}};">
   <view class="product-desc-text">{{productInfo.desc}}</view>
   <view wx:for="{{productInfo.img}}" wx:key="index" class="product-detail-img-container">
     <image src="{{item}}" class="product-detail-img" data-img="{{item}}" bindtap="imgPreview"></image>
   </view>
 </view>
+
 <!-- 底部功能 -->
-<view class="features">
+<view class="features" wx:if="{{productInfo}}">
   <view class="features-item" wx:if="{{from == 'homePage'}}">
     <view class="features-item-left">
       <view class="collection" bindtap="collectProducts">

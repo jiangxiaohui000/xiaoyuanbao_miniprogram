@@ -14,5 +14,5 @@ function money(val) {
 }
 
 module.exports = {
-  money,
+  money
 }

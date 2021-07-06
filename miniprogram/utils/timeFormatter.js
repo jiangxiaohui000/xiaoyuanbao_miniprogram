@@ -15,5 +15,5 @@ function timeFormatter(timestamp) {
 }
 
 module.exports = {
-	timeFormatter,
+	timeFormatter
 }

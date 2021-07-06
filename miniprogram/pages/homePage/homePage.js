@@ -2,27 +2,16 @@
 const app = getApp();
 const QQMapWX = require('../../utils/qqmap-wx-jssdk.js'); // 引入腾讯位置服务
 const { priceConversion } = require('../../utils/priceConversion');
+const { checkNetworkStatus } = require('../../utils/checkNetworkStatus');
 
 Page({
   data: {
-    // userInfo: {},
-    avatarUrl: '../../images/user-unlogin.png',
     logged: false,
     takeSession: false,
     requestResult: '',
-    searchValue: '',
     // productsCategory: ['精选', '手机', '男装', '女装', '数码', '日用', '图书', '饰品', '美妆', '百货', '箱包', '运动'],
     productsList: [],
-    swiperImgs: [{
-			_id: 1,
-			img: '../../images/banner1.jpg'
-		}, {
-			_id: 2,
-			img: '../../images/banner2.jpg'
-		}, {
-			_id: 3,
-			img: '../../images/banner3.jpg'
-    }],
+    swiperImgs: [],
     scrollTop: 0,
     searchKeyWord: 'Apple超级品牌日',
     currentIndex: 0,
@@ -40,6 +29,8 @@ Page({
       currentPage: 1
     },
     showLoading: true,
+    isLoaded: false,
+    openid: '',
   },
 
   onLoad() {
@@ -49,23 +40,18 @@ Page({
       });
       return;
     }
-    wx.onNetworkStatusChange((res) => {
-      if(!res.isConnected) {
-        wx.showModal({
-          title: '您好像没有连接网络哦~\n请连接后重试',
-          showCancel: false,
-          confirmText: '好的'
-        })
-      }
+    app.login(res => {
+      this.data.openid = res;
     })
+    // 网络状态检测
+    checkNetworkStatus();
     const _this = this;
     wx.getSetting({
       success: res => {
-        console.log(res, 'getSetting');
-        this.getUserInfo(res, _this); // 用户信息
         this.getUserLocation(res, _this); // 位置信息
       }
     });
+    wx.showLoading();
     this.initData();
   },
   onShow() {
@@ -86,6 +72,7 @@ Page({
         pageData: this.data.pageData
       },
       success: res => {
+        wx.hideLoading()
         if(res && res.result && res.result.data && res.result.data.data) {
           const data = res.result.data.data;
           data.forEach(item => {
@@ -99,50 +86,29 @@ Page({
           this.setData({
             productsList: [...this.data.productsList, ...data],
             showLoading: !!data.length,
+            isLoaded: true,
+            swiperImgs: [{
+              _id: 1,
+              img: '../../images/banner1.jpg'
+            }, {
+              _id: 2,
+              img: '../../images/banner2.jpg'
+            }, {
+              _id: 3,
+              img: '../../images/banner3.jpg'
+            }]
           });
         }
       },
       fail: e => {
         console.log(e);
+        wx.hideLoading()
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none'
         })
       }
     })
-  },
-  // 获取用户信息
-  getUserInfo(res, _this) {
-    if (res.authSetting['scope.userInfo']) { // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-      wx.getUserInfo({
-        success: res => {
-          _this.setData({
-            avatarUrl: res.userInfo.avatarUrl,
-            // userInfo: res.userInfo
-          })
-        }
-      })      
-    } else {
-      wx.login({
-        timeout: 5000,
-        success: res => {
-          console.log('login seccess', res)
-          if (res.authSetting['scope.userInfo']) {
-            wx.getUserInfo({
-              success: res => {
-                _this.setData({
-                  avatarUrl: res.userInfo.avatarUrl,
-                  // userInfo: res.userInfo
-                })
-              }
-            })      
-          }
-        },
-        fail: e => {
-          console.log(e);
-        }
-      })
-    }
   },
   // 获取用户位置
   getUserLocation(res, _this) {
@@ -344,9 +310,8 @@ Page({
   },
   // 前往商品详情页面
   toProductsDetail(e) {
-    console.log(app, 'app')
     const targetItem = e.currentTarget.dataset.item;
-    const groupId = app.globalData.userInfo.openId.substr(0, 6) + targetItem._id.substr(0, 6) + targetItem.uid.substr(0, 6);
+    const groupId = app.globalData.openid.substr(0, 6) + targetItem._id.substr(0, 6) + targetItem.uid.substr(0, 6);
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {

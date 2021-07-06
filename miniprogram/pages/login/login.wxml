@@ -1,0 +1,8 @@
+<!--miniprogram/pages/login.wxml-->
+<view class="container">
+  <view class="logo-box">
+    <view class="logo"></view>
+    <view>登录校园宝</view>  
+  </view>
+  <view class="button" bindtap="getUserProfile">微信快捷登录</view>
+</view>

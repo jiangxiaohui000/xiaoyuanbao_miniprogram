@@ -9,5 +9,5 @@ function priceConversion(data) {
 }
 
 module.exports = {
-  priceConversion,
+  priceConversion
 }
