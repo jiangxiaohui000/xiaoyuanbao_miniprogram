@@ -1,18 +1,18 @@
 const app = getApp()
 const { priceConversion } = require('../../utils/priceConversion');
-const { money } = require('../../utils/moneyInputLimit')
+const { money } = require('../../utils/moneyInputLimit');
+const { checkNetworkStatus } = require('../../utils/checkNetworkStatus');
 
 Page({
 	data: {
-		avatarUrl: '../../images/user-unlogin.png',
 		userInfo: {
-			nickName: '未登录'
+			avatarUrl: '../../images/user-unlogin.png',
+			nickName: '',
 		},
 		logged: false,
 		takeSession: false,
-		requestResult: '',
 		productsList: [],
-		postNum: '',
+		postNum: 0,
 		mineItems: [{
 			value: 0,
 			label: '卖出',
@@ -45,7 +45,9 @@ Page({
       pageSize: 5,
       currentPage: 1
     },
-    showLoading: true,
+		showLoading: false,
+		openid: '',
+		authorizationApplicationDialogShow: false,
 	},
 
 	onLoad: function() {
@@ -55,22 +57,24 @@ Page({
 			})
 			return;
 		}
-    wx.onNetworkStatusChange((res) => {
-      if(!res.isConnected) {
-        wx.showModal({
-          title: '您好像没有连接网络哦~\n请连接后重试',
-          showCancel: false,
-          confirmText: '好的'
-        })
-      }
-    })
-		wx.getSetting({
-			success: res => {
-				this.getUserInfo(res); // 获取用户信息
+		checkNetworkStatus(); // 网络状态检测
+		this.login();
+		if(this.data.openid) { // 已登录
+			this.data.userInfo.nickName = '校园宝用户';
+			this.setData({
+				userInfo: this.data.userInfo
+			})
+			if(this.data.userInfo.avatarUrl === '../../images/user-unlogin.png') {
+				this.setData({
+					authorizationApplicationDialogShow: true,
+				})
 			}
-		});
-		this.initData();
-		wx.stopPullDownRefresh();
+		} else {
+			this.data.userInfo.nickName = '点击登录';
+			this.setData({
+				userInfo: this.data.userInfo
+			})
+		}
 	},
 	// 数据初始化
 	initData() {
@@ -78,29 +82,29 @@ Page({
 			name: 'getProductsData',
 			data: {
 				pageData: this.data.pageData,
-				uid: '11111111',
+				uid: this.data.openid,
 			},
 			success: res => {
-				console.log(res, 'productsData')
-				if(res && res.result && res.result.data && res.result.data.data) {
+				wx.hideLoading();
+				wx.stopPullDownRefresh();
+				if(res && res.result && res.result.data && res.result.data.data && res.result.count && res.result.count.total) {
 					const data = res.result.data.data;
+					const total = res.result.count.total;
 					data.map(item => {
 						item.currentPrice = priceConversion(item.currentPrice);
 						return item;
 					});
 					this.setData({
 						productsList: [...this.data.productsList, ...data],
+						postNum: total,
             showLoading: !!data.length,
-					})
-				}
-				if(res && res.result && res.result.count && res.result.count.total) {
-					this.setData({
-						postNum: res.result.count.total
 					})
 				}
 			},
 			fail: e => {
 				console.log(e);
+				wx.hideLoading();
+				wx.stopPullDownRefresh();
 				wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none'
@@ -108,43 +112,40 @@ Page({
 			}
 		})
 	},
-	// 获取用户信息
-	getUserInfo: function(res) {
-		if (res.authSetting['scope.userInfo']) { // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-			wx.getUserInfo({
-				success: res => {
-					// console.log(res, 'me')
-					this.setData({
-						logged: true,
-						avatarUrl: res.userInfo.avatarUrl,
-						userInfo: res.userInfo
-					})
-				}
-			})
+	// 登录
+	login() {
+		if(!this.data.openid) {
+			app.login(res => this.setData({openid: res})); // 调用全局登录方法获取openid
+			if(this.data.openid) {
+				wx.showToast({
+					title: '登录成功',
+				})
+				wx.showLoading();
+				this.initData();
+				setTimeout(() => {
+					if(this.data.userInfo.avatarUrl === '../../images/user-unlogin.png') {
+						this.setData({
+							authorizationApplicationDialogShow: true
+						})
+					} else {
+						this.setData({
+							userInfo: this.data.userInfo
+						})	
+					}
+				}, 1000);
+			}	
 		}
 	},
 	// 点击头像获取用户信息
-	onGetUserInfo: function(e) {
-		if (!this.data.logged && e.detail.userInfo) {
-			this.setData({
-				logged: true,
-				avatarUrl: e.detail.userInfo.avatarUrl,
-				userInfo: e.detail.userInfo
-			})
-			wx.showModal({
-				title: '',
-				content: `欢迎您，${e.detail.userInfo.nickName}`,
-				showCancel: false,
-				confirmText: '退下~'
-			});
-		} else {
-			wx.showModal({
-				title: '',
-				content: `你好呀，${e.detail.userInfo.nickName}`,
-				showCancel: false,
-				confirmText: '你好~'
-			});
-		}
+	onGetUserInfo: function() {
+		wx.getUserProfile({
+			desc: '用于展示用户信息',
+			success: res => {
+				this.setData({
+					userInfo: res.userInfo
+				})
+			}
+		})
 	},
 	// 上传图片
 	doUpload: function () {
@@ -227,8 +228,18 @@ Page({
 	},
 	// 下拉刷新
 	onPullDownRefresh: function() {
-		this.onLoad();
-		console.log(2222)
+		this.setData({
+			productsList: []
+		});
+		wx.showLoading();
+		this.initData();
+	},
+  // 上滑触底
+	productScroll: function() {
+    if(this.data.showLoading) {
+      this.data.pageData.currentPage += 1;
+      this.initData();
+    }
 	},
 	// 收藏 购买 评价
 	toMineItemDetail: function(e) {
@@ -377,6 +388,20 @@ Page({
 			modifiedPrice: '',
 		});
 	},
+	// 弹窗 -- 获取授权
+	tapAuthorizationButton(e) {
+		this.setData({
+			authorizationApplicationDialogShow: false
+		});
+		if(e.detail.index) { // 授权
+			this.onGetUserInfo();
+		} else { // 未授权
+			this.data.userInfo.nickName = this.data.openid ? '校园宝用户' : '点击登录';
+			this.setData({
+				userInfo: this.data.userInfo
+			})
+		}
+	},
 	// input -- 输入降价后的金额
 	dialogInput(e) {
 		if(+e.detail.value >= 100000000) {
@@ -390,36 +415,4 @@ Page({
 			modifiedPrice: money(e.detail.value)
 		});
 	},
-  // 触底操作
-	productScroll() {
-    if(this.data.showLoading) {
-      this.data.pageData.currentPage += 1;
-      this.initData();
-    }
-	},
-	// 获取用户openid
-	// onGetOpenid: function () {
-	// 	wx.showLoading({
-	// 		title: '请稍后...',
-	// 	})
-	// 	// 调用云函数
-	// 	wx.cloud.callFunction({
-	// 		name: 'login',
-	// 		data: {},
-	// 		success: res => {
-	// 			wx.hideLoading();
-	// 			console.log('[云函数] [login] user openid: ', res.result.openid)
-	// 			app.globalData.openid = res.result.openid
-	// 			wx.navigateTo({
-	// 				url: '../userConsole/userConsole',
-	// 			})
-	// 		},
-	// 		fail: err => {
-	// 			console.error('[云函数] [login] 调用失败', err)
-	// 			wx.navigateTo({
-	// 				url: '../deployFunctions/deployFunctions',
-	// 			})
-	// 		}
-	// 	})
-	// },
 })

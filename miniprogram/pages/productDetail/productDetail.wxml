@@ -37,10 +37,6 @@
         <i class="iconfont {{collectedIcon}}"></i>
         <text>{{collectedStatus}}</text>
       </view>
-      <!-- <view class="share" bindtap="shareProduct">
-        <i class="iconfont icon-fenxiang"></i>
-        <text>分享</text>
-      </view>  -->
     </view>
     <button class="chat-button" size="mini" bindtap="gotoChatRoom">聊一聊</button>
   </view>

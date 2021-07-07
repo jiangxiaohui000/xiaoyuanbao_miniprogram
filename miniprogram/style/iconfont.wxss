@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'iconfont';  /* Project id 1749239 */
-  src: url('//at.alicdn.com/t/font_1749239_mvs5somr29.woff2?t=1625375262504') format('woff2'),
-       url('//at.alicdn.com/t/font_1749239_mvs5somr29.woff?t=1625375262504') format('woff'),
-       url('//at.alicdn.com/t/font_1749239_mvs5somr29.ttf?t=1625375262504') format('truetype');
+  src: url('//at.alicdn.com/t/font_1749239_hri7d3i4abc.woff2?t=1625644136599') format('woff2'),
+       url('//at.alicdn.com/t/font_1749239_hri7d3i4abc.woff?t=1625644136599') format('woff'),
+       url('//at.alicdn.com/t/font_1749239_hri7d3i4abc.ttf?t=1625644136599') format('truetype');
 }
 
 .iconfont {
@@ -13,20 +13,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-fenxiang:before {
-  content: "\e626";
+.icon-weidenglu:before {
+  content: "\e601";
+}
+
+.icon-Null-data:before {
+  content: "\e869";
+}
+
+.icon-zanwushuju:before {
+  content: "\e635";
 }
 
 .icon-maichu1:before {
   content: "\e60e";
-}
-
-.icon-icon_meiyougengduoliao:before {
-  content: "\e670";
-}
-
-.icon-no-more:before {
-  content: "\e60c";
 }
 
 .icon-lianxi-yixiajia:before {
@@ -81,12 +81,12 @@
   content: "\e61e";
 }
 
-.icon-shoucang1:before {
-  content: "\e636";
-}
-
 .icon-shoucang:before {
   content: "\e65e";
+}
+
+.icon-shoucang1:before {
+  content: "\e636";
 }
 
 .icon-pingjia:before {
@@ -104,4 +104,3 @@
 .icon-collection-b:before {
   content: "\e60d";
 }
-

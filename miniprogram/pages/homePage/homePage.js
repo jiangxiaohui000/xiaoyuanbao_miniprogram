@@ -40,15 +40,12 @@ Page({
       });
       return;
     }
-    app.login(res => {
-      this.data.openid = res;
-    })
-    // 网络状态检测
-    checkNetworkStatus();
+    app.login(res => this.data.openid = res); // 调用全局登录方法获取openid
+    checkNetworkStatus(); // 网络状态检测
     const _this = this;
     wx.getSetting({
       success: res => {
-        this.getUserLocation(res, _this); // 位置信息
+        this.getUserLocation(res, _this); // 获取用户位置信息
       }
     });
     wx.showLoading();

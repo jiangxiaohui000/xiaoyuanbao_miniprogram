@@ -144,6 +144,31 @@ page {
   left: 0;
   top: -17px;
 }
+.no-data {
+  height: 500rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+}
+.no-data text {
+  font-size: 24rpx;
+}
+.icon-zanwushuju::before {
+  font-size: 70rpx;
+}
+.not-login {
+  height: 500rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 24rpx;
+}
+.icon-weidenglu::before {
+  font-size: 70rpx;
+}
 .icon-lianxi-yixiajia::before {
   font-size: 100rpx;
   color: #aaa;
@@ -191,7 +216,7 @@ page {
   align-items: center;
   justify-content: center;
 }
-.icon-icon_meiyougengduoliao::before {
+.icon-Null-data::before {
   font-size: 34rpx;
   color: #aaa;
 }

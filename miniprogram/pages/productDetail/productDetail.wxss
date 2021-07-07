@@ -126,7 +126,7 @@ page {
   font-size: 26rpx;
   margin-left: 30rpx;
 }
-.icon-shoucang::before, .icon-shoucang1::before, .icon-fenxiang::before {
+.icon-shoucang::before, .icon-shoucang1::before {
   font-size: 40rpx;
 }
 .icon-shoucang1::before {

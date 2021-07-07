@@ -1,15 +1,14 @@
-<!-- 我的 -->
+<!-- pages/me/me -->
 <view class="user-info">
   <view class="user-info-left">
     <!-- 用户头像 -->
     <button
-      open-type="getUserInfo"
-      bindgetuserinfo="onGetUserInfo"
+      bindtap="onGetUserInfo"
       class="user-info-avatar"
-      style="background-image: url({{avatarUrl}})"
+      style="background-image: url({{userInfo.avatarUrl}})"
     ></button>
     <!-- 用户昵称 -->
-    <view class="user-name">{{userInfo.nickName}}</view>  
+    <view class="user-name" bindtap="login">{{userInfo.nickName}}</view>  
   </view>
   <view class="user-info-right">
     <!-- 点我速卖 -->
@@ -18,12 +17,9 @@
       <text>点我速卖</text>
     </view>
   </view>
-  
-  <!-- <view>
-    <button class="userinfo-nickname" bindtap="onGetOpenid">点击获取 openid</button>
-  </view> -->
 </view>
-<!-- 收藏购买评价 -->
+
+<!-- 卖出 收藏 购买 评价 -->
 <view class="mine">
   <view class="mine-item" wx:for="{{mineItems}}" wx:key="item" data-item="{{item}}" bindtap="toMineItemDetail">
     <i class="iconfont icon-{{item.icon}}"></i>
@@ -31,42 +27,72 @@
     <text style="margin-left: 10rpx;">{{item.num}}</text>
   </view>
 </view>
+
 <!-- 我发布的 -->
 <scroll-view class="products-container" scroll-y="true" enable-flex="true" bindscrolltolower="productScroll">
   <view class="products-title">我发布的  {{postNum}}</view>
-  <!-- 发布商品列表 -->
-  <view
-    class="products-item"
-    wx:for="{{productsList}}"
-    wx:key="item"
-    data-item="{{item}}"
-    catchtap="preview"
-  >
-    <!-- 图片 -->
-    <view class="img-container">
-      <image class="img" src="{{item.displayImg}}" alt="" style="opacity: {{item.isOff ? 0.4: 1}}"></image>
-    </view>
-    <!-- 描述 -->
-    <view class="text-container" style="opacity: {{item.isOff ? 0.4: 1}}">
-      <view class="products-desc">{{item.desc}}</view>
-      <view class="products-price">
-        <text class="products-current-price">￥{{item.currentPrice}}</text>
-        <view class="operate-button-group">
-          <view class="operate-button" data-item="{{item}}" catchtap="priceReduction">降价</view>
-          <view class="operate-button" data-item="{{item}}" catchtap="more"><i class="iconfont icon-gengduo"></i></view>
-        </view>  
+  <!-- 已登录 -->
+  <view wx:if="{{openid}}">
+    <!-- 发布过商品 -->
+    <view wx:if="{{productsList.length}}">
+      <!-- 发布商品列表 -->
+      <view
+        class="products-item"
+        wx:for="{{productsList}}"
+        wx:key="item"
+        data-item="{{item}}"
+        catchtap="preview"
+      >
+        <!-- 图片 -->
+        <view class="img-container">
+          <image class="img" src="{{item.displayImg}}" alt="" style="opacity: {{item.isOff ? 0.4: 1}}"></image>
         </view>
+        <!-- 描述 -->
+        <view class="text-container" style="opacity: {{item.isOff ? 0.4: 1}}">
+          <view class="products-desc">{{item.desc}}</view>
+          <view class="products-price">
+            <text class="products-current-price">￥{{item.currentPrice}}</text>
+            <view class="operate-button-group">
+              <view class="operate-button" data-item="{{item}}" catchtap="priceReduction">降价</view>
+              <view class="operate-button" data-item="{{item}}" catchtap="more"><i class="iconfont icon-gengduo"></i></view>
+            </view>  
+            </view>
+        </view>
+        <!-- 下架icon -->
+        <i class="iconfont icon-lianxi-yixiajia" wx:if="{{item.isOff}}"></i>
+      </view>
+      <mp-loading show="{{showLoading && productsList.length < postNum}}" type="circle"></mp-loading>
+      <view class="no-more" wx:if="{{!(showLoading && productsList.length < postNum)}}">
+        <i class="iconfont icon-Null-data"></i>
+        <text>没有更多啦~</text>
+      </view>
     </view>
-    <!-- 下架icon -->
-    <i class="iconfont icon-lianxi-yixiajia" wx:if="{{item.isOff}}"></i>
+    <!-- 未发布商品 -->
+    <view class="no-data" wx:if="{{!productsList.length}}">
+      <i class="iconfont icon-zanwushuju"></i>
+      <text>您还没有发布宝贝</text>
+      <text>点击右上角按钮发布吧~</text>
+    </view>
   </view>
-  <mp-loading show="{{showLoading}}" type="circle"></mp-loading>
-  <view class="no-more" wx:if="{{!showLoading}}">
-    <i class="iconfont icon-icon_meiyougengduoliao"></i>
-    <text>没有更多啦~</text>
+  <!-- 未登录 -->
+  <view wx:if="{{!openid}}" class="not-login">
+    <i class="iconfont icon-weidenglu"></i>
+    <view>您还未登录，<text bindtap="login" style="color: #0000ff; text-decoration: underline;">点我</text>去登录吧~</view>
   </view>
 </scroll-view>
-<!-- 弹窗 -->
+
+<!-- 获取用户信息弹窗 -->
+<mp-dialog
+  title="授权申请"
+  show="{{authorizationApplicationDialogShow}}"
+  bindbuttontap="tapAuthorizationButton"
+  buttons="{{[{text: '拒绝'}, {text: '授权'}]}}"
+>
+  <view style="font-size: 26rpx; padding: 20rpx 0;">申请获取您的公开信息（昵称、头像等）</view>
+  <view style="font-size: 26rpx; padding: 20rpx 0;">您的昵称和头像仅用作展示</view>
+</mp-dialog>
+
+<!-- 修改价格弹窗 -->
 <mp-dialog
   title=""
   show="{{dialogShow}}"

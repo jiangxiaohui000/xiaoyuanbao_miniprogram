@@ -23,22 +23,26 @@ App({
       typeof cb === 'function' && cb(_this.globalData.openid);
     } else {
       const _this = this;
-      wx.cloud.callFunction({
+      wx.cloud.callFunction({ // 进入小程序先请求登录接口取用户的openid
         name: 'login',
         data: {},
-        success: res => {
-          if(res && res.result && res.result.event && res.result.openid) {
-            _this.globalData.openid = res.result.openid;
-            typeof cb === 'function' && cb(res.result.openid);
-            wx.cloud.callFunction({
-              name: 'userData',
-              data: {
-                openid: res.result.openid
-              },
-            })
-          }
+      }).then(res => {
+        if(res && res.result && res.result.event && res.result.openid) {
+          _this.globalData.openid = res.result.openid;
+          typeof cb === 'function' && cb(res.result.openid);
+          wx.cloud.callFunction({ // 拿到openid后给到用户集合
+            name: 'userData',
+            data: {
+              openid: res.result.openid
+            },
+          })
         }
-      })  
+      }).catch(e => {
+        console.log(e);
+        wx.showToast({
+          title: '登录异常，请稍后再试！',
+        })
+      })
     }
   },
 	onShow: function() {

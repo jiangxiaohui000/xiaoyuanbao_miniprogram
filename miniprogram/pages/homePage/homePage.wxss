@@ -187,7 +187,7 @@ page {
   align-items: center;
   justify-content: center;
 }
-.icon-icon_meiyougengduoliao::before {
+.icon-Null-data::before {
   font-size: 34rpx;
   color: #aaa;
 }
