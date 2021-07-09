@@ -18,11 +18,10 @@ App({
     this.globalData.needAdapt = phoneType();
   },
   login: function(cb) {
+    const _this = this;
     if(this.globalData.openid) {
-      const _this = this;
       typeof cb === 'function' && cb(_this.globalData.openid);
     } else {
-      const _this = this;
       wx.cloud.callFunction({ // 进入小程序先请求登录接口取用户的openid
         name: 'login',
         data: {},

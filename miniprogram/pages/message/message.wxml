@@ -1,53 +1,59 @@
 <view class="message-container">
-  <!-- 系统信息 -->
-  <!-- <view class="sys-message">
-    <view class="sys-message-icon"><i class="iconfont icon-xitongxiaoxi"></i></view>
-    <view class="sys-message-unread" wx:if="{{sysMessageUnRead}}">
-      <view class="sys-message-unread-inner"></view>
-    </view>
-    <view class="sys-message-detail">
-      <view class="sys-message-detail-top">
-        <view style="font-size: 30rpx;line-height: 66rpx">系统消息</view>
-        <view class="sys-message-time">{{sysMessageTime}}</view>
+  <view wx:if="{{openid}}">
+    <!-- 系统信息 -->
+    <!-- <view class="sys-message">
+      <view class="sys-message-icon"><i class="iconfont icon-xitongxiaoxi"></i></view>
+      <view class="sys-message-unread" wx:if="{{sysMessageUnRead}}">
+        <view class="sys-message-unread-inner"></view>
       </view>
-      <view class="sys-message-detail-info">{{sysMessage}}</view>
-    </view>
-  </view> -->
-  <!-- 聊天列表 -->
-  <view
-    wx:for="{{chatList}}"
-    wx:key="id"
-    class="message-item"
-    data-item="{{item}}"
-    bindtap="gotoChatItem"
-  >
-    <movable-area class="movable-area">
-      <movable-view
-        class="movable-view"
-        direction="horizontal"
-        out-of-bounds="true"
-        x="{{item.xmove}}"
-        inertia="true"
-        data-chatIndex="{{index}}"
-        bindtouchstart="handleTouchStart"
-        bindtouchend="handleTouchEnd"
-        bindchange="handleMovableChange"
-      >
-        <!-- 头像 -->
-        <image class="message-head-portrait" src="{{item.logo}}" mode="aspectFill" lazy-load="false"></image>
-        <!-- 昵称 消息 -->
-        <view class="message-content">
-          <view class="message-name">{{item.name}}</view>
-          <view class="message-info">{{item.info}}</view>
-          <view class="message-time">{{item.ctime}}</view>
+      <view class="sys-message-detail">
+        <view class="sys-message-detail-top">
+          <view style="font-size: 30rpx;line-height: 66rpx">系统消息</view>
+          <view class="sys-message-time">{{sysMessageTime}}</view>
         </view>
-        <image class="message-product-img" src="{{item.img}}" mode="aspectFill" lazy-load="false"></image>
-        <!-- 未读 -->
-        <view class="message-unread" wx:if="{{item.hasUnreadMessage}}">
-          <view class="message-unread-inner"></view>
-        </view>
-      </movable-view>
-    </movable-area>
-    <view class="slide-delete" data-id="{{item.id}}" catchtap="slideDelete">删除</view>
+        <view class="sys-message-detail-info">{{sysMessage}}</view>
+      </view>
+    </view> -->
+    <!-- 聊天列表 -->
+    <view
+      wx:for="{{chatList}}"
+      wx:key="id"
+      class="message-item"
+      data-item="{{item}}"
+      bindtap="gotoChatItem"
+    >
+      <movable-area class="movable-area">
+        <movable-view
+          class="movable-view"
+          direction="horizontal"
+          out-of-bounds="true"
+          x="{{item.xmove}}"
+          inertia="true"
+          data-chatIndex="{{index}}"
+          bindtouchstart="handleTouchStart"
+          bindtouchend="handleTouchEnd"
+          bindchange="handleMovableChange"
+        >
+          <!-- 头像 -->
+          <image class="message-head-portrait" src="{{item.logo}}" mode="aspectFill" lazy-load="false"></image>
+          <!-- 昵称 消息 -->
+          <view class="message-content">
+            <view class="message-name">{{item.name}}</view>
+            <view class="message-info">{{item.info}}</view>
+            <view class="message-time">{{item.mtime}}</view>
+          </view>
+          <image class="message-product-img" src="{{item.img}}" mode="aspectFill" lazy-load="false"></image>
+          <!-- 未读 -->
+          <view class="message-unread" wx:if="{{item.hasUnreadMessage}}">
+            <view class="message-unread-inner"></view>
+          </view>
+        </movable-view>
+      </movable-area>
+      <view class="slide-delete" data-id="{{item.id}}" catchtap="slideDelete">删除</view>
+    </view>  
+  </view>
+  <view wx:else class="not-login-container">
+    <text style="margin: 40rpx 0;">您暂未登录，请登录后查看</text>
+    <button bindtap="login" size="mini">去登录</button>
   </view>
 </view>

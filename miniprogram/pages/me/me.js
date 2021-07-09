@@ -58,7 +58,7 @@ Page({
 			return;
 		}
 		checkNetworkStatus(); // 网络状态检测
-		this.login();
+		this.login(); // 微信账号登录
 		if(this.data.openid) { // 已登录
 			this.data.userInfo.nickName = '校园宝用户';
 			this.setData({
@@ -69,7 +69,7 @@ Page({
 					authorizationApplicationDialogShow: true,
 				})
 			}
-		} else {
+		} else { // 未登录
 			this.data.userInfo.nickName = '点击登录';
 			this.setData({
 				userInfo: this.data.userInfo
@@ -120,7 +120,7 @@ Page({
 				wx.showToast({
 					title: '登录成功',
 				})
-				wx.showLoading();
+				wx.showLoading({ title: '加载中...' });
 				this.initData();
 				setTimeout(() => {
 					if(this.data.userInfo.avatarUrl === '../../images/user-unlogin.png') {
@@ -149,10 +149,10 @@ Page({
 	},
 	// 上传图片
 	doUpload: function () {
-		if(!this.data.logged) { // 未登录
+		if(!this.data.openid) { // 未登录
 			wx.showModal({
 				title: '提示',
-				content: '您未登录，请点击头像进行登录',
+				content: '点击左侧登录按钮，登录后继续发布',
 				showCancel: false,
 				confirmText: '我知道啦'
 			});
@@ -231,7 +231,7 @@ Page({
 		this.setData({
 			productsList: []
 		});
-		wx.showLoading();
+		wx.showLoading({ title: '加载中...' });
 		this.initData();
 	},
   // 上滑触底
