@@ -18,9 +18,9 @@ exports.main = async (event, context) => {
         value: file.fileContent
       }
     });
-    cloud.deleteFile({
-      fileList: [event.img]
-    });
+    // cloud.deleteFile({
+    //   fileList: [event.img]
+    // });
     return result;
   } catch (error) {
     return error;

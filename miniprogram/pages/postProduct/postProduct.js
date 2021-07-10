@@ -11,7 +11,7 @@ Page({
     toptipsType: '',
     toptipsShow: false,
     galleryShow: false,
-    imgUrls: [],
+    imgUrls: [], // 图片预览
     currentImgIndex: 0,
     classifyList: [{
       value: 0,
@@ -247,7 +247,7 @@ Page({
       selectedClassify: this.data.selectedClassify
     })
   },
-  // 选择标签
+  // 选择标签 -- 成色
   chooseTag(e) {
     const value = e.currentTarget.dataset.item.value;
     this.data.selectedTag = this.data.selectedTag === value ? '' : value;
@@ -271,7 +271,11 @@ Page({
             imageList: this.data.imageList,
             price: this.data.price,
             originPrice: this.data.originPrice,
+            classify: this.data.selectedClassify,
+            brandName: this.data.brandName,
+            finenessTag: this.data.selectedTag,
           }
+          console.log(params, 'params');
           wx.showToast({
             title: '发布成功',
           })
