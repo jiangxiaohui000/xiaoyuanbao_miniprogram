@@ -22,6 +22,11 @@
     </view>
     <i class="iconfont icon-tabAdd add" wx:if="{{imageList.length < 9}}" bindtap="addImage"></i>
   </view>
+  <!-- 位置 -->
+  <view class="location-container" wx:if="{{userAddress}}">
+    <i class="iconfont icon-weizhi"></i>
+    <text class="location-address">{{userAddress}}</text>
+  </view>
   <!-- 价格 -->
   <view class="price" style="margin-top: 20rpx;">
     <i class="iconfont icon-jiage1" style="margin-right: 6rpx;"></i>出售价格：￥

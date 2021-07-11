@@ -1,5 +1,7 @@
 // pages/postProduct/postProduct.js
-const { money } = require('../../utils/moneyInputLimit')
+const { money } = require('../../utils/moneyInputLimit');
+const QQMapWX = require('../../utils/qqmap-wx-jssdk.js'); // 引入腾讯位置服务
+
 Page({
   data: {
     productDesc: '',
@@ -55,6 +57,7 @@ Page({
     selectedTag: '',
     brandName: '',
     brandTagShow: false,
+    userAddress: '',
   },
   /**
    * 生命周期函数--监听页面加载
@@ -62,10 +65,10 @@ Page({
   onLoad: function (options) {
     if(options && options.params) {
       const params = JSON.parse(options.params);
-      this.data.productDesc = params.desc;
-      this.data.imageList = params.img;
-      this.data.price = params.currentPrice;
-      this.data.originPrice = params.originPrice;
+      this.data.productDesc = params.desc || '';
+      this.data.imageList = params.img || [];
+      this.data.price = params.currentPrice || '';
+      this.data.originPrice = params.originPrice || '';
       this.setData({
         productDesc: this.data.productDesc,
         imageList: this.data.imageList,
@@ -96,7 +99,12 @@ Page({
         releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
       })
     });
-
+    const _this = this;
+    wx.getSetting({
+      success: res => {
+        this.getUserLocation(res, _this); // 获取用户位置信息
+      }
+    });
   },
   // 上传图片
 	addImage: function () {
@@ -274,6 +282,7 @@ Page({
             classify: this.data.selectedClassify,
             brandName: this.data.brandName,
             finenessTag: this.data.selectedTag,
+            userAddress: this.data.userAddress,
           }
           console.log(params, 'params');
           wx.showToast({
@@ -309,6 +318,38 @@ Page({
       brandTagShow: false,
       brandName: '',
     })
+  },
+  // 自动获取用户位置
+  getUserLocation(res, _this) {
+    if(res.authSetting['scope.userLocation']) { // 用户默认同意授权位置信息
+      wx.getLocation({
+        type: 'wgs84',
+        success: res => { // 先获取到经纬度
+          this.useQQMap(res.latitude, res.longitude, _this);
+        },
+        fail (e) { // 未获取到经纬度
+          console.log(e, 'fail')
+        }
+      })
+    }
+  },
+  // 使用腾讯位置服务
+  useQQMap(latitude, longitude, _this) {
+    const qqmapsdk = new QQMapWX({
+      key: 'A4BBZ-RMHYU-LDQVQ-BZDUV-EOPZO-5BFWK'
+    });
+    qqmapsdk.reverseGeocoder({ // 再通过腾讯位置服务获取到地理位置
+      location: { latitude, longitude },
+      success: res => {
+        // console.log('location service', res);
+        _this.setData({
+          userAddress: res.result.formatted_addresses.recommend,
+        });
+      },
+      fail: e => { // 腾讯位置服务出错
+        console.log(e, 'fail')
+      }
+    });
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

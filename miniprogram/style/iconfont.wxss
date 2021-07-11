@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'iconfont';  /* Project id 1749239 */
-  src: url('//at.alicdn.com/t/font_1749239_hri7d3i4abc.woff2?t=1625644136599') format('woff2'),
-       url('//at.alicdn.com/t/font_1749239_hri7d3i4abc.woff?t=1625644136599') format('woff'),
-       url('//at.alicdn.com/t/font_1749239_hri7d3i4abc.ttf?t=1625644136599') format('truetype');
+  src: url('//at.alicdn.com/t/font_1749239_md2bts7f359.woff2?t=1626000248235') format('woff2'),
+       url('//at.alicdn.com/t/font_1749239_md2bts7f359.woff?t=1626000248235') format('woff'),
+       url('//at.alicdn.com/t/font_1749239_md2bts7f359.ttf?t=1626000248235') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-weizhi:before {
+  content: "\e71e";
 }
 
 .icon-weidenglu:before {

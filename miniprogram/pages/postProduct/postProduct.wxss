@@ -4,7 +4,7 @@
   padding: 20rpx 20rpx 100rpx;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -53,6 +53,27 @@
   align-items: center;
   background: #eee;
   border-radius: 10rpx;
+}
+.location-container {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  height: 50rpx;
+  max-width: 400rpx;
+  overflow: hidden;
+  background-color: #eee;
+  padding: 0 10rpx;
+  border-radius: 10px;
+  font-size: 24rpx;
+}
+.location-address {
+  margin-left: 10rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.icon-weizhi::before {
+  font-size: 30rpx;
 }
 .price {
   width: 100%;
