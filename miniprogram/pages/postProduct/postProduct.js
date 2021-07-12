@@ -1,4 +1,5 @@
 // pages/postProduct/postProduct.js
+const app = getApp();
 const { money } = require('../../utils/moneyInputLimit');
 const QQMapWX = require('../../utils/qqmap-wx-jssdk.js'); // 引入腾讯位置服务
 
@@ -58,6 +59,8 @@ Page({
     brandName: '',
     brandTagShow: false,
     userAddress: '',
+    userInfo: '',
+    fileIdArr: [],
   },
   /**
    * 生命周期函数--监听页面加载
@@ -79,6 +82,7 @@ Page({
       })
     }
     let eventChannel = this.getOpenerEventChannel();
+    // 发布
     eventChannel.on('sendImage', res => {
       if(res && res.filePath) {
         this.setData({
@@ -86,7 +90,10 @@ Page({
           imgUrls: res.filePath,
         });
       }
+      res && res.userInfo && (this.data.userInfo = res.userInfo);
+      res && res.fileIdArr && (this.data.fileIdArr = res.fileIdArr);
     });
+    // 编辑
     eventChannel.on('toEdit', res => {
       res && res.productDesc && (this.data.productDesc = res.productDesc);
       res && res.imageList && (this.data.imageList = res.imageList);
@@ -115,16 +122,18 @@ Page({
 			sourceType: ['album', 'camera'],
 			success: (res) => {
 				wx.showLoading({ title: '努力传输中' });
-				const filePathArr = [];
+        const filePathArr = [];
+        const fileIdArr = [];
 				const imgSecCheckArr = [];
-				const len = res.tempFilePaths.length;
+        const len = res.tempFilePaths.length;
 				res.tempFilePaths.forEach((item, index) => {
 					filePathArr.push(item);
 					wx.cloud.uploadFile({ // 上传文件
 						cloudPath: 'temp/' + new Date().getTime() + "-post-" + Math.floor(Math.random() * 1000),
 						filePath: item,
 						success: res => {
-							const fileID = res.fileID;
+              const fileID = res.fileID;
+              fileIdArr.push(fileID);
 							wx.cloud.callFunction({ // 图片安全检查
 								name: 'imgSecCheck',
 								data: { img: fileID },
@@ -135,6 +144,7 @@ Page({
 									if(imgSecCheckArr.every(item => item.result.errCode == 0)) { // 通过
 										wx.hideLoading();
                     this.data.imageList.push(...filePathArr);
+                    this.data.fileIdArr.push(...fileIdArr);
                     this.setData({
                       imageList: this.data.imageList,
                       imgUrls: this.data.imageList,
@@ -274,19 +284,47 @@ Page({
         wx.hideLoading();
         const { errCode } = res.result;
         if(errCode == 0) {
-          const params = {
-            productDesc: this.data.productDesc,
-            imageList: this.data.imageList,
-            price: this.data.price,
-            originPrice: this.data.originPrice,
-            classify: this.data.selectedClassify,
-            brandName: this.data.brandName,
-            finenessTag: this.data.selectedTag,
-            userAddress: this.data.userAddress,
-          }
-          console.log(params, 'params');
-          wx.showToast({
-            title: '发布成功',
+          const tempFileList = [];
+          wx.cloud.getTempFileURL({ // 根据fileID获取临时URL
+            fileList: this.data.fileIdArr,
+            success: res => {
+              if(res && res.fileList && res.fileList.length) {
+                res.fileList.forEach(item => {
+                  tempFileList.push(item.tempFileURL);
+                });
+                const params = {
+                  productDesc: this.data.productDesc,
+                  imageList: tempFileList,
+                  price: this.data.price,
+                  originPrice: this.data.originPrice,
+                  classify: this.data.selectedClassify,
+                  brandName: this.data.brandName,
+                  finenessTag: this.data.selectedTag,
+                  userAddress: this.data.userAddress,
+                  avatar: this.data.userInfo.avatar,
+                  nickName: this.data.userInfo.nickName,
+                  isCollected: [],
+                  isOff: false,
+                  isDeleted: false,
+                  uid: app.globalData.openid,
+                }
+                wx.cloud.callFunction({ // 调用发布接口
+                  name: 'postProduct',
+                  data: params,
+                  success: res => {
+                    console.log(res, 'postProduct-success')
+                    wx.showToast({ title: '发布成功' });
+                    wx.reLaunch({ url: '../me/me' });
+                  },
+                  fail: e => {
+                    console.log(e)
+                  }
+                })
+              }
+            },
+            fail: e => {
+              console.log(e);
+            }
           })
         } else if(errCode == 87014) {
           this.setData({
@@ -303,8 +341,6 @@ Page({
   },
   // 品牌名称输入，失去焦点生成tag
   brandInputBlur(e) {
-    console.log(e, '000')
-    console.log(this.data.brandName, '000')
     if(e.detail.value !== '') {
       this.setData({
           brandName: e.detail.value,

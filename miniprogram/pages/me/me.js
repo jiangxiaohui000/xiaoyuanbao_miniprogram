@@ -6,7 +6,7 @@ const { checkNetworkStatus } = require('../../utils/checkNetworkStatus');
 Page({
 	data: {
 		userInfo: {
-			avatarUrl: '../../images/user-unlogin.png',
+			avatarUrl: '',
 			nickName: '',
 		},
 		logged: false,
@@ -59,21 +59,25 @@ Page({
 		}
 		checkNetworkStatus(); // 网络状态检测
 		this.login(); // 微信账号登录
+		wx.getStorageSync({
+			key: 'avatarUrl',
+			success: res => {
+				console.log(res, 'avatar');
+			},
+			fail: e => {
+				console.log(e, 'err')
+			}
+		})
 		if(this.data.openid) { // 已登录
-			this.data.userInfo.nickName = '校园宝用户';
-			this.setData({
-				userInfo: this.data.userInfo
-			})
-			if(this.data.userInfo.avatarUrl === '../../images/user-unlogin.png') {
-				this.setData({
-					authorizationApplicationDialogShow: true,
-				})
+			this.data.userInfo.nickName = '校园宝用户'; // 登录状态下默认的用户名
+			this.data.userInfo.avatarUrl = '../../images/user-unlogin.png' // 登录状态下默认的头像
+			this.setData({ userInfo: this.data.userInfo });
+			if(this.data.userInfo.avatarUrl === '../../images/user-unlogin.png') { // 如果当前头像是默认头像，可以判断没有拿到真实的用户信息，则弹窗提示用户授权
+				this.setData({ authorizationApplicationDialogShow: true });
 			}
 		} else { // 未登录
 			this.data.userInfo.nickName = '点击登录';
-			this.setData({
-				userInfo: this.data.userInfo
-			})
+			this.setData({ userInfo: this.data.userInfo });
 		}
 	},
 	// 数据初始化
@@ -92,6 +96,7 @@ Page({
 					const total = res.result.count.total;
 					data.map(item => {
 						item.currentPrice = priceConversion(item.currentPrice);
+						item.displayImg = item.img[0];
 						return item;
 					});
 					this.setData({
@@ -114,23 +119,25 @@ Page({
 	},
 	// 登录
 	login() {
-		if(!this.data.openid) {
+		if(!this.data.openid) { // 如果当前没有openid，才需要调用登录接口
 			app.login(res => this.setData({openid: res})); // 调用全局登录方法获取openid
-			if(this.data.openid) {
-				wx.showToast({
-					title: '登录成功',
-				})
-				wx.showLoading({ title: '加载中...' });
+			if(this.data.openid) { // 拿到openid后判断为已登录状态
+				wx.showToast({ title: '登录成功' });
+				wx.showLoading();
 				this.initData();
-				setTimeout(() => {
+				setTimeout(() => { // 然后判断当前有没有拿到真实的用户信息
 					if(this.data.userInfo.avatarUrl === '../../images/user-unlogin.png') {
-						this.setData({
-							authorizationApplicationDialogShow: true
-						})
+						this.setData({ authorizationApplicationDialogShow: true });
 					} else {
-						this.setData({
-							userInfo: this.data.userInfo
-						})	
+						this.setData({ userInfo: this.data.userInfo });
+						// wx.setStorage({
+						// 	key: 'avatarUrl',
+						// 	value: this.data.userInfo.avatarUrl
+						// });
+						// wx.setStorage({
+						// 	key: 'nickName',
+						// 	value: this.data.userInfo.nickName
+						// })
 					}
 				}, 1000);
 			}	
@@ -149,6 +156,7 @@ Page({
 	},
 	// 上传图片
 	doUpload: function () {
+		const _this = this;
 		if(!this.data.openid) { // 未登录
 			wx.showModal({
 				title: '提示',
@@ -164,7 +172,8 @@ Page({
 			sourceType: ['album', 'camera'],
 			success: (res) => {
 				wx.showLoading({ title: '努力传输中' });
-				const filePathArr = []; // 传给下一个页面的文件路径
+				const filePathArr = []; // 传给发布页面的文件路径
+				const fileIdArr = []; // 传给发布页面的文件ID
 				const imgSecCheckArr = [];
 				const len = res.tempFilePaths.length;
 				res.tempFilePaths.forEach((item, index) => {
@@ -172,21 +181,27 @@ Page({
 					wx.cloud.uploadFile({ // 上传文件
 						cloudPath: 'temp/' + new Date().getTime() + "-me-" + Math.floor(Math.random() * 1000),
 						filePath: item,
-						success: res => {
+						success: res => { // 文件上传成功
 							const fileID = res.fileID;
+							fileIdArr.push(fileID);
 							wx.cloud.callFunction({ // 图片安全检查
 								name: 'imgSecCheck',
 								data: { img: fileID },
 							}).then(res => {
-								console.log(res, 'img check')
+								// console.log(res, 'img check')
 								imgSecCheckArr.push(res);
 								if(len == index + 1) {
 									if(imgSecCheckArr.every(item => item.result.errCode == 0)) { // 通过
 										wx.hideLoading();
+										const params = {
+											filePath: filePathArr,
+											fileIdArr: fileIdArr,
+											userInfo: _this.data.userInfo,
+										}
 										wx.navigateTo({
 											url: '../postProduct/postProduct',
 											success: function(result) {
-												result.eventChannel.emit('sendImage', {filePath: filePathArr})
+												result.eventChannel.emit('sendImage', params);
 											}
 										});
 									} else if(imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 未通过
@@ -210,7 +225,7 @@ Page({
 								wx.hideLoading();
 							})
 						},
-						fail: e => {
+						fail: e => { // 文件上传失败
 							console.log(e, 'uploadfile fail');
 							wx.hideLoading();
 							wx.showToast({
@@ -247,15 +262,14 @@ Page({
 	},
 	// 商品预览
 	preview(e) {
-		console.log(e, 'preview')
-		if(!e.currentTarget.dataset.item.isOff) {
+		if(!e.currentTarget.dataset.item.isOff) { // 如果商品没有下架
 			wx.navigateTo({
 				url: '../productDetail/productDetail',
 				success: function(res) {
 					res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.item._id, from: 'me'})
 				}
 			});	
-		} else {
+		} else { // 商品下架了
 			wx.showActionSheet({
 				itemList: ['编辑', '重新上架', '删除'],
 				success: res => {

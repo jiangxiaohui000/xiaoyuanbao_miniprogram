@@ -43,8 +43,8 @@ Page({
 				wx.hideLoading()
 				if(res && res.result && res.result.data && res.result.data.data && res.result.data.data.length) {
 					this.data.productInfo = res.result.data.data[0];
-					this.data.collectedStatus = this.data.productInfo.isCollected ? '已收藏' : '收藏';
-					this.data.collectedIcon = this.data.productInfo.isCollected ? 'icon-shoucang1' : 'icon-shoucang';
+					this.data.collectedStatus = this.data.productInfo.isCollected.filter(item => item == app.globalData.openid).length ? '已收藏' : '收藏';
+					this.data.collectedIcon = this.data.productInfo.isCollected.filter(item => item == app.globalData.openid).length ? 'icon-shoucang1' : 'icon-shoucang';
 					this.data.productInfo.ctime = dayjs(this.data.productInfo.ctime).format('YYYY-MM-DD HH:mm:ss');
 					this.data.productInfo.currentPrice = priceConversion(this.data.productInfo.currentPrice);
 					this.setData({

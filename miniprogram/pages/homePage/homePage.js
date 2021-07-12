@@ -67,6 +67,7 @@ Page({
             item.notHeatIconList = notHeatIconList;
             item.currentPrice = newCurrentPrice;
             item.originPrice = newOriginPrice;
+            item.displayImg = item.img[0];
           });
           this.setData({
             productsList: [...this.data.productsList, ...data],

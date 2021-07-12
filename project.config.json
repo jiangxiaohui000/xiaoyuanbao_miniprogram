@@ -11,7 +11,7 @@
     "newFeature": true,
     "coverView": true,
     "nodeModules": true,
-    "autoAudits": false,
+    "autoAudits": true,
     "showShadowRootInWxmlPanel": true,
     "scopeDataCheck": false,
     "uglifyFileName": false,
@@ -27,6 +27,7 @@
       "disablePlugins": [],
       "outputPath": ""
     },
+    "enableEngineNative": false,
     "useIsolateContext": true,
     "userConfirmedBundleSwitch": false,
     "packNpmManually": false,
