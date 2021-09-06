@@ -45,7 +45,7 @@
       >
         <!-- 图片 -->
         <view class="img-container">
-          <image class="img" lazy-load="true" src="{{item.displayImg}}" alt="" style="opacity: {{item.isOff ? 0.4: 1}}"></image>
+          <image class="img" mode="aspectFill" lazy-load="true" src="{{item.displayImg}}" alt="" style="opacity: {{item.isOff ? 0.4: 1}}"></image>
         </view>
         <!-- 描述 -->
         <view class="text-container" style="opacity: {{item.isOff ? 0.4: 1}}">
@@ -100,11 +100,13 @@
   buttons="{{[{text: '取消'}, {text: '确认'}]}}"
 >
   <view class="dialog-box">
-    <image src="{{dialogImg}}"></image>
+    <image mode="aspectFill" src="{{dialogImg}}"></image>
     <view class="dialog-box-inner">
       <view>当前价格：￥{{currentPrice}}</view>
       <view style="display: flex; align-items: center;">修改价格：￥<input type="digit" value="{{modifiedPrice}}" bindinput="dialogInput" /></view>
     </view>
   </view>
 </mp-dialog>
+
+<!-- 提示 -->
 <mp-toptips msg="{{resultText}}" type="{{toptipsType}}" show="{{toptipsShow}}" delay="3000"></mp-toptips>
