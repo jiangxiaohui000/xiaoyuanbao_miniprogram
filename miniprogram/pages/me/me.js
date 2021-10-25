@@ -58,7 +58,9 @@ Page({
 			return;
 		}
 		checkNetworkStatus(); // 网络状态检测
-		this.login(); // 微信账号登录
+		const openid = wx.getStorageSync('openid');
+		openid && (this.data.openid = openid);
+		!openid && this.login(); // 微信账号登录
 		wx.getStorageSync({
 			key: 'avatarUrl',
 			success: res => {
@@ -122,6 +124,10 @@ Page({
 		if(!this.data.openid) { // 如果当前没有openid，才需要调用登录接口
 			app.login(res => this.setData({openid: res})); // 调用全局登录方法获取openid
 			if(this.data.openid) { // 拿到openid后判断为已登录状态
+				wx.setStorage({
+					key: 'openid',
+					value: this.data.openid
+				});
 				wx.showToast({ title: '登录成功' });
 				wx.showLoading();
 				this.initData();

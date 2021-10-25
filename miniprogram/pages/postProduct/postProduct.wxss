@@ -97,7 +97,7 @@
   font-size: 30rpx;
   display: flex;
   align-items: center;
-  flex: 1;
+  /* flex: 1; */
 }
 .icon-leibie {
   font-size: 22rpx;
@@ -118,7 +118,7 @@
   display: none;
 }
 .classify-item {
-  min-width: 100rpx;
+  /* min-width: 100rpx; */
   height: 50rpx;
   line-height: 50rpx;
   padding: 0 10rpx;

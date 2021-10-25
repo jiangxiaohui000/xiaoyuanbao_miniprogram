@@ -58,6 +58,7 @@
           wx:for="{{classifyList}}"
           wx:key="item"
           class="classify-item {{index === selectedClassify ? 'classify-item-active' : ''}}"
+          style="min-width: 100rpx;"
           data-item="{{item}}"
           bindtap="chooseClassify"
         >{{item.label}}</view>
@@ -67,12 +68,12 @@
   <view style="width: 100%; height: 80rpx; display: flex; align-items: center;">
     <i class="iconfont icon-icontag" style="margin-right: 6rpx;"></i>标签：
   </view>
-  <view class="classify" style="padding-left: 70rpx;">
+  <view class="classify" style="padding-left: 36rpx;">
     品牌：
     <input type="text" value="{{brandName}}" placeholder="品牌名称" class="brand-input" bindblur="brandInputBlur" wx:if="{{!brandTagShow}}" />
     <view wx:if="{{brandTagShow}}" class="brand-tag">{{brandName}} <i class="iconfont icon-guanbi" style="margin-left: 6rpx;" bindtap="deleteBrandTag"></i></view>
   </view>
-  <view class="classify" style="padding-left: 70rpx;">
+  <view class="classify" style="padding-left: 36rpx;">
     成色：
     <view class="classify-item-container">
         <view

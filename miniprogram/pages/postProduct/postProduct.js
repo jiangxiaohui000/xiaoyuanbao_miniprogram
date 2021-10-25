@@ -160,7 +160,7 @@ Page({
 									} else {
                     wx.hideLoading();
                     this.setData({
-                      resultText: '上传失败，请稍后再试！',
+                      resultText: '上传失败，请重试！',
                       toptipsShow: true,
                       toptipsType: 'info',
                     });
@@ -175,7 +175,7 @@ Page({
 							console.log(e, 'uploadfile fail');
 							wx.hideLoading();
 							wx.showToast({
-								title: '上传失败',
+								title: '上传失败，请重试！',
 								icon: 'error'
 							});
 						}
