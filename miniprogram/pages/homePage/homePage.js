@@ -57,7 +57,7 @@ Page({
         pageData: this.data.pageData
       },
       success: res => {
-        wx.hideLoading()
+        wx.hideLoading();
         if(res && res.result && res.result.data && res.result.data.data) {
           const data = res.result.data.data;
           data.forEach(item => {
@@ -71,7 +71,7 @@ Page({
           });
           this.setData({
             productsList: [...this.data.productsList, ...data],
-            showLoading: !!data.length,
+            showLoading: !!!data.length,
             isLoaded: true,
             swiperImgs: [{
               _id: 1,
