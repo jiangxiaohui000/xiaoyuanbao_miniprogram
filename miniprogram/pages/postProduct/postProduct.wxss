@@ -152,8 +152,8 @@
 }
 .release-button {
   width: 100%;
-  height: 70rpx;
-  line-height: 70rpx;
+  height: 80rpx;
+  line-height: 80rpx;
   text-align: center;
   background-color: #07c160;
   position: fixed;

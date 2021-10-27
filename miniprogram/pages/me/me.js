@@ -154,6 +154,7 @@ Page({
 		wx.getUserProfile({
 			desc: '用于展示用户信息',
 			success: res => {
+				console.log(res, 'onGetUserInfo');
 				this.setData({
 					userInfo: res.userInfo
 				})
