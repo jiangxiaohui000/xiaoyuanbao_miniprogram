@@ -12,10 +12,10 @@ Component({
     chatInfo: Object,
     userInfo: Object,
     onGetUserInfo: {
-      type: Function,
+      type: Object,
     },
     getOpenID: {
-      type: Function,
+      type: Object,
     },
   },
 

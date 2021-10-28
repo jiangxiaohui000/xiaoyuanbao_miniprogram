@@ -59,6 +59,7 @@ Page({
 		}
 		checkNetworkStatus(); // 网络状态检测
 		const openid = wx.getStorageSync('openid');
+		console.log(this.data.openid, 'openid');
 		openid && (this.data.openid = openid);
 		!openid && this.login(); // 微信账号登录
 		wx.getStorageSync({
@@ -154,7 +155,7 @@ Page({
 		wx.getUserProfile({
 			desc: '用于展示用户信息',
 			success: res => {
-				console.log(res, 'onGetUserInfo');
+				// console.log(res, 'onGetUserInfo');
 				this.setData({
 					userInfo: res.userInfo
 				})

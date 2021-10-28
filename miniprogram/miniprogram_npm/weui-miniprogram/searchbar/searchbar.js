@@ -117,7 +117,7 @@ Component({
     search: {
       // 返回Promise的函数
       // @ts-ignore
-      type: Function,
+      type: Object,
       value: null
     },
     throttle: {
