@@ -11,7 +11,7 @@ Page({
 		// productTags: [],
 		from: '',
 		groupId: '',
-		needAdapt: false,
+		needAdaptIphoneX: false,
 	},
 	/**
 	 * 生命周期函数--监听页面加载
@@ -28,7 +28,7 @@ Page({
 			data && data._id && this.initData(data._id);
 		});
 		this.setData({
-			needAdapt: app.globalData.needAdapt
+			needAdaptIphoneX: app.globalData.needAdaptIphoneX
 		})
 	},
 	// 数据初始化

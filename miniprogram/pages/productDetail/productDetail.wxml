@@ -22,7 +22,7 @@
 </view>
 
 <!-- 商品描述 -->
-<view class="product-description" wx:if="{{productInfo}}" style="padding-bottom: {{needAdapt ? '200rpx' : '120rpx'}};">
+<view class="product-description" wx:if="{{productInfo}}" style="padding-bottom: {{needAdaptIphoneX ? '200rpx' : '120rpx'}};">
   <view class="product-desc-text">{{productInfo.desc}}</view>
   <view wx:for="{{productInfo.img}}" wx:key="index" class="product-detail-img-container">
     <image src="{{item}}" mode="aspectFit" class="product-detail-img" data-img="{{item}}" bindtap="imgPreview"></image>

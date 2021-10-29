@@ -314,7 +314,12 @@ Page({
                   success: res => {
                     console.log(res, 'postProduct-success')
                     wx.showToast({ title: '发布成功' });
-                    wx.reLaunch({ url: '../me/me' });
+                    wx.navigateTo({
+                      url: '../me/me',
+                      success: function(res) {
+                        res.EventChannel.emit('postSuccess', { postSuccess: true });
+                      }
+                    });
                   },
                   fail: e => {
                     console.log(e)

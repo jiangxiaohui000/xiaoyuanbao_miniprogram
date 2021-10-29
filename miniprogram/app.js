@@ -14,8 +14,8 @@ App({
         traceUser: true,
       })
     }
-    this.globalData = {}
-    this.globalData.needAdapt = phoneType();
+    this.globalData = {};
+    this.globalData.needAdaptIphoneX = phoneType();
   },
   login: function(cb) {
     const _this = this;

@@ -48,8 +48,8 @@ Page({
 		showLoading: false,
 		openid: '',
 		authorizationApplicationDialogShow: false,
+		hasUserInfo: false,
 	},
-
 	onLoad: function() {
 		if (!wx.cloud) {
 			wx.redirectTo({
@@ -57,31 +57,38 @@ Page({
 			})
 			return;
 		}
-		checkNetworkStatus(); // 网络状态检测
-		const openid = wx.getStorageSync('openid');
+		checkNetworkStatus(); // 检测网络状态
+		const openid = app.globalData.openid;
+		this.setData({
+			openid: openid,
+		});
 		console.log(this.data.openid, 'openid');
+		console.log(app.globalData, 'globalData');
 		openid && (this.data.openid = openid);
 		!openid && this.login(); // 微信账号登录
-		wx.getStorageSync({
-			key: 'avatarUrl',
-			success: res => {
-				console.log(res, 'avatar');
-			},
-			fail: e => {
-				console.log(e, 'err')
-			}
-		})
 		if(this.data.openid) { // 已登录
 			this.data.userInfo.nickName = '校园宝用户'; // 登录状态下默认的用户名
 			this.data.userInfo.avatarUrl = '../../images/user-unlogin.png' // 登录状态下默认的头像
-			this.setData({ userInfo: this.data.userInfo });
-			if(this.data.userInfo.avatarUrl === '../../images/user-unlogin.png') { // 如果当前头像是默认头像，可以判断没有拿到真实的用户信息，则弹窗提示用户授权
-				this.setData({ authorizationApplicationDialogShow: true });
+			this.setData({
+				userInfo: this.data.userInfo,
+			});
+			if(!this.data.hasUserInfo) { // 如果没有拿到真实的用户信息，则弹窗提示用户授权
+				this.setData({
+					authorizationApplicationDialogShow: true,
+				});
 			}
+			this.initData();
 		} else { // 未登录
 			this.data.userInfo.nickName = '点击登录';
-			this.setData({ userInfo: this.data.userInfo });
+			this.setData({
+				userInfo: this.data.userInfo,
+			});
 		}
+		let eventChannel = this.getOpenerEventChannel();
+		eventChannel.on('postSuccess', (res) => {
+			console.log(res, '343434')
+			this.initData();
+		})
 	},
 	// 数据初始化
 	initData() {
@@ -106,7 +113,7 @@ Page({
 						productsList: [...this.data.productsList, ...data],
 						postNum: total,
             showLoading: !!data.length,
-					})
+					});
 				}
 			},
 			fail: e => {
@@ -123,44 +130,58 @@ Page({
 	// 登录
 	login() {
 		if(!this.data.openid) { // 如果当前没有openid，才需要调用登录接口
-			app.login(res => this.setData({openid: res})); // 调用全局登录方法获取openid
+			app.login(res => this.setData({ openid: res })); // 调用全局登录方法获取openid
 			if(this.data.openid) { // 拿到openid后判断为已登录状态
-				wx.setStorage({
-					key: 'openid',
-					value: this.data.openid
+				wx.setStorageSync('openid', this.data.openid);
+				app.globalData.openid = this.data.openid;
+				this.setData({
+					openid: this.data.openid,
 				});
 				wx.showToast({ title: '登录成功' });
 				wx.showLoading();
 				this.initData();
 				setTimeout(() => { // 然后判断当前有没有拿到真实的用户信息
-					if(this.data.userInfo.avatarUrl === '../../images/user-unlogin.png') {
-						this.setData({ authorizationApplicationDialogShow: true });
+					if(this.data.hasUserInfo) {
+						this.setData({
+							userInfo: this.data.userInfo,
+						});
 					} else {
-						this.setData({ userInfo: this.data.userInfo });
-						// wx.setStorage({
-						// 	key: 'avatarUrl',
-						// 	value: this.data.userInfo.avatarUrl
-						// });
-						// wx.setStorage({
-						// 	key: 'nickName',
-						// 	value: this.data.userInfo.nickName
-						// })
+						this.setData({
+							authorizationApplicationDialogShow: true,
+						});
 					}
 				}, 1000);
 			}	
 		}
 	},
-	// 点击头像获取用户信息
+	// 获取用户信息(nickName \ avatarUrl)
 	onGetUserInfo: function() {
 		wx.getUserProfile({
 			desc: '用于展示用户信息',
 			success: res => {
 				// console.log(res, 'onGetUserInfo');
+				wx.setStorageSync('avatarUrl', res.userInfo.avatarUrl);
+				wx.setStorageSync('nickName', res.userInfo.nickName);
 				this.setData({
-					userInfo: res.userInfo
-				})
+					userInfo: res.userInfo,
+					hasUserInfo: true,
+				});
 			}
 		})
+	},
+	// 弹窗 -- 获取授权
+	tapAuthorizationButton(e) {
+		this.setData({
+			authorizationApplicationDialogShow: false,
+		});
+		if(e.detail.index) { // 授权
+			this.onGetUserInfo();
+		} else { // 未授权
+			this.data.userInfo.nickName = this.data.openid ? '校园宝用户' : '点击登录';
+			this.setData({
+				userInfo: this.data.userInfo,
+			})
+		}
 	},
 	// 上传图片
 	doUpload: function () {
@@ -263,10 +284,6 @@ Page({
       this.data.pageData.currentPage += 1;
       this.initData();
     }
-	},
-	// 收藏 购买 评价
-	toMineItemDetail: function(e) {
-		console.log('e', e);
 	},
 	// 商品预览
 	preview(e) {
@@ -410,20 +427,6 @@ Page({
 			modifiedPrice: '',
 		});
 	},
-	// 弹窗 -- 获取授权
-	tapAuthorizationButton(e) {
-		this.setData({
-			authorizationApplicationDialogShow: false
-		});
-		if(e.detail.index) { // 授权
-			this.onGetUserInfo();
-		} else { // 未授权
-			this.data.userInfo.nickName = this.data.openid ? '校园宝用户' : '点击登录';
-			this.setData({
-				userInfo: this.data.userInfo
-			})
-		}
-	},
 	// input -- 输入降价后的金额
 	dialogInput(e) {
 		if(+e.detail.value >= 100000000) {
@@ -436,5 +439,9 @@ Page({
 		this.setData({
 			modifiedPrice: money(e.detail.value)
 		});
+	},
+	// 收藏 购买 评价
+	toMineItemDetail: function(e) {
+		console.log('e', e);
 	},
 })
