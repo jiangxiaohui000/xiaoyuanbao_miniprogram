@@ -314,11 +314,13 @@ Page({
                   success: res => {
                     console.log(res, 'postProduct-success')
                     wx.showToast({ title: '发布成功' });
-                    wx.navigateTo({
-                      url: '../me/me',
-                      success: function(res) {
-                        res.EventChannel.emit('postSuccess', { postSuccess: true });
-                      }
+                    const pages = getCurrentPages(); // 获取页面栈
+                    const prevPage = pages[pages.length - 2]; // 跳转之前的页面
+                    prevPage.setData({
+                      postSuccess: true,
+                    });
+                    wx.navigateBack({
+                      delta: 1,
                     });
                   },
                   fail: e => {

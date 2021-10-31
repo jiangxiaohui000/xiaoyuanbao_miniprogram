@@ -77,6 +77,7 @@ Page({
 					authorizationApplicationDialogShow: true,
 				});
 			}
+			wx.showLoading();
 			this.initData();
 		} else { // 未登录
 			this.data.userInfo.nickName = '点击登录';
@@ -84,11 +85,17 @@ Page({
 				userInfo: this.data.userInfo,
 			});
 		}
-		let eventChannel = this.getOpenerEventChannel();
-		eventChannel.on('postSuccess', (res) => {
-			console.log(res, '343434')
+	},
+	onShow() {
+		const pages = getCurrentPages(); // 获取页面栈
+		const currPage = pages[pages.length - 1]; // 跳转之后的页面
+		if(currPage.data.postSuccess) {
+			this.setData({
+				productsList: [],
+			});
+			wx.showLoading();
 			this.initData();
-		})
+		}
 	},
 	// 数据初始化
 	initData() {
@@ -270,15 +277,15 @@ Page({
 			}
 		})
 	},
-	// 下拉刷新
+	// 下拉刷新列表
 	onPullDownRefresh: function() {
 		this.setData({
 			productsList: []
 		});
-		wx.showLoading({ title: '加载中...' });
+		wx.showLoading();
 		this.initData();
 	},
-  // 上滑触底
+  // 上滑加载更多
 	productScroll: function() {
     if(this.data.showLoading) {
       this.data.pageData.currentPage += 1;
