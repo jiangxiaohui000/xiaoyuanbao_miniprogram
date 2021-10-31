@@ -319,12 +319,19 @@ Page({
                     prevPage.setData({
                       postSuccess: true,
                     });
-                    wx.navigateBack({
-                      delta: 1,
-                    });
+                    const timer = setTimeout(() => {
+                      wx.navigateBack({
+                        delta: 1,
+                      });
+                      clearTimeout(timer);
+                    }, 600);
                   },
                   fail: e => {
-                    console.log(e)
+                    console.log(e);
+                    wx.showToast({
+                      title: '服务繁忙，请稍后再试~',
+                      icon: 'none'
+                    })
                   }
                 })
               }
