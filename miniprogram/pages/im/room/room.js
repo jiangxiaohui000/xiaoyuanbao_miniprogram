@@ -14,7 +14,8 @@ Page({
 
     // functions for used in chatroom components
     onGetUserInfo: null,
-    getOpenID: null,
+    // getOpenID: null,
+    openid: '',
   },
 
   onLoad: function(options) {
@@ -22,8 +23,9 @@ Page({
     // let eventChannel = this.getOpenerEventChannel();
     // eventChannel.emit('chat', '1111')
     this.setData({
-      chatInfo: {name: options.name, img: options.img, price: options.price},
+      chatInfo: {nickName: options.nickName, img: options.img, price: options.price},
       chatRoomGroupId: options.groupId,
+      openid: app.globalData.openid,
     });
     // 获取用户信息
     wx.getSetting({
@@ -44,7 +46,7 @@ Page({
 
     this.setData({
       onGetUserInfo: this.onGetUserInfo,
-      getOpenID: this.getOpenID,
+      // getOpenID: this.getOpenID,
     })
 
     wx.getSystemInfo({
@@ -61,17 +63,17 @@ Page({
     })
   },
 
-  getOpenID: async function() {
-    if (this.openid) {
-      return this.openid
-    }
+  // getOpenID: async function() {
+  //   if (this.openid) {
+  //     return this.openid
+  //   }
 
-    const { result } = await wx.cloud.callFunction({
-      name: 'login',
-    })
+  //   const { result } = await wx.cloud.callFunction({
+  //     name: 'login',
+  //   })
 
-    return result.openid
-  },
+  //   return result.openid
+  // },
 
   onGetUserInfo: function(e) {
     if (!this.logged && e.detail.userInfo) {

@@ -14,9 +14,10 @@ Component({
     onGetUserInfo: {
       type: Object,
     },
-    getOpenID: {
-      type: Object,
-    },
+    // getOpenID: {
+    //   type: Object,
+    // },
+    openid: String,
   },
 
   data: {
@@ -35,9 +36,9 @@ Component({
       this.properties.onGetUserInfo(e)
     },
 
-    getOpenID() { 
-      return this.properties.getOpenID() 
-    },
+    // getOpenID() { 
+    //   return this.properties.getOpenID() 
+    // },
 
     mergeCommonCriteria(criteria) {
       return {
@@ -48,7 +49,8 @@ Component({
     // 初始化数据
     async initRoom() {
       this.try(async () => {
-        await this.initOpenID()
+        // await this.initOpenID()
+        this.data.openId = this.properties.openid;
 
         const { envId, collection } = this.properties
         const db = this.db = wx.cloud.database({
@@ -71,14 +73,14 @@ Component({
       }, '初始化失败')
     },
     // 获取用户openId
-    async initOpenID() {
-      return this.try(async () => {
-        const openId = await this.getOpenID()
-        this.setData({
-          openId,
-        })
-      }, '初始化 openId 失败')
-    },
+    // async initOpenID() {
+    //   return this.try(async () => {
+    //     const openId = await this.getOpenID()
+    //     this.setData({
+    //       openId,
+    //     })
+    //   }, '初始化 openId 失败')
+    // },
     // 消息监听
     async initWatch(criteria) {
       this.try(() => {
@@ -344,7 +346,7 @@ Component({
     this.initRoom();
     this.fatalRebuildCount = 0;
     wx.setNavigationBarTitle({
-      title: this.data.chatInfo.name
+      title: this.data.chatInfo.nickName
     });
     this.setData({
       scrollToMessage: `item-${this.data.chats.length}`, // 进入到页面时，自动滚到最下面

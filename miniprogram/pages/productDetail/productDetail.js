@@ -87,7 +87,7 @@ Page({
 	gotoChatRoom() {
 		const data = this.data.productInfo;
 		wx.navigateTo({
-      url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&name=${data.name}&groupId=${this.data.groupId}`,
+      url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&nickName=${data.nickName}&groupId=${this.data.groupId}`,
     })
 	},
 	// 编辑

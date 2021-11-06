@@ -4,41 +4,34 @@ const { checkNetworkStatus } = require('../../utils/checkNetworkStatus');
 
 Page({
   data: {
-    // sysMessageTime: '',
-    // sysMessage: '',
-    // sysMessageUnRead: false,
-    chatList: [{
-      _id: 1,
-      product_id: 22222,
-      name: '快乐的小甜甜',
-      ctime: 1624977918502,
-      mtime: 1624979958802,
-      info: '便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了',
-      logo: '../../images/touxiang1.jpeg',
-      img: '../../images/touxiang1.jpeg',
-      price: 111,
-      hasUnreadMessage: false,
-    }, {
-      _id: 2,
-      product_id: 22222,
-      name: '雨中追逐',
-      ctime: 1624632305000,
-      mtime: 1624979919802,
-      info: '项目中常常有这种需要我们对溢出文本进行显示的操作，单行多行的情况都有的情况都有的情况都有的情况都有',
-      logo: '../../images/touxiang2.jpeg',
-      img: '../../images/touxiang2.jpeg',
-      price: 11,
-      hasUnreadMessage: true,
-      openid: '',
-    }],
     openid: '',
+    chatList: [],
+    // chatList: [{
+    //   _id: 1,
+    //   product_id: 22222,
+    //   name: '快乐的小甜甜',
+    //   ctime: 1624977918502,
+    //   mtime: 1624979958802,
+    //   info: '便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了',
+    //   logo: '../../images/touxiang1.jpeg',
+    //   img: '../../images/touxiang1.jpeg',
+    //   price: 111,
+    //   hasUnreadMessage: false,
+    // }, {
+    //   _id: 2,
+    //   product_id: 22222,
+    //   name: '雨中追逐',
+    //   ctime: 1624632305000,
+    //   mtime: 1624979919802,
+    //   info: '项目中常常有这种需要我们对溢出文本进行显示的操作，单行多行的情况都有的情况都有的情况都有的情况都有',
+    //   logo: '../../images/touxiang2.jpeg',
+    //   img: '../../images/touxiang2.jpeg',
+    //   price: 11,
+    //   hasUnreadMessage: true,
+    //   openid: '',
+    // }],
   },
   onLoad() {
-    // this.setData({
-    //   sysMessageTime: '10-23 13:23',
-    //   sysMessage: '尊敬的用户，您好，感谢您注册校园宝，我们将竭诚为您服务。',
-    //   sysMessageUnRead: true,
-    // })
     checkNetworkStatus(); // 网络状态检测
     this.login();
     this.initData();
@@ -71,7 +64,7 @@ Page({
     console.log(e, 'chatItem');
     const item = e.currentTarget.dataset.item;
     wx.navigateTo({
-      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&name=${item.name}`,
+      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&nickName=${item.nickName}`,
       // success: res => {
       //   res.eventChannel.on('chat', res => {
       //     console.log(res, 'emit')

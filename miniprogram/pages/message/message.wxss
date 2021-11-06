@@ -129,7 +129,7 @@
 	width: calc(100% - 240rpx);
 }
 
-.message-name {
+.message-nickName {
 	font-size: 28rpx;
 }
 
@@ -172,4 +172,12 @@
 .not-login-container button {
 	background-color: #07c160;
 	color: #fff;
+}
+
+.no-data {
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }

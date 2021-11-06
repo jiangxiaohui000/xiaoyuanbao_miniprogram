@@ -75,7 +75,7 @@
       <button 
         open-type="getUserInfo" 
         bindgetuserinfo="onGetUserInfo"
-        class="userinfo"
+        class="user-info"
       >请先登录后参与聊天</button>
     </view>
   </view>

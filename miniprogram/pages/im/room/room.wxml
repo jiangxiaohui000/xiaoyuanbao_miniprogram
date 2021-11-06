@@ -7,6 +7,6 @@
     chatInfo="{{chatInfo}}"
     userInfo="{{userInfo}}"
     onGetUserInfo="{{onGetUserInfo}}"
-    getOpenID="{{getOpenID}}"
+    openid="{{openid}}"
   ></chatroom>
 </view>
