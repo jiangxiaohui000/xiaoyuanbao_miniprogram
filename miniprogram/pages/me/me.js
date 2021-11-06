@@ -64,19 +64,19 @@ Page({
 		});
 		console.log(this.data.openid, 'openid');
 		console.log(app.globalData, 'globalData');
+		const avatarUrl = wx.getStorageSync('avatarUrl');
+		const nickName = wx.getStorageSync('nickName');
+		this.data.hasUserInfo = (!!avatarUrl && !!nickName);
+		console.log(avatarUrl, nickName, this.data.hasUserInfo, 'user-info');
 		openid && (this.data.openid = openid);
 		!openid && this.login(); // 微信账号登录
 		if(this.data.openid) { // 已登录
-			this.data.userInfo.nickName = '校园宝用户'; // 登录状态下默认的用户名
-			this.data.userInfo.avatarUrl = '../../images/user-unlogin.png' // 登录状态下默认的头像
+			this.data.userInfo.nickName = this.data.hasUserInfo ? wx.getStorageSync('nickName') : '校园宝用户';
+			this.data.userInfo.avatarUrl = this.data.hasUserInfo ? wx.getStorageSync('avatarUrl') : '../../images/user-unlogin.png';
 			this.setData({
 				userInfo: this.data.userInfo,
+				authorizationApplicationDialogShow: !this.data.hasUserInfo,
 			});
-			if(!this.data.hasUserInfo) { // 如果没有拿到真实的用户信息，则弹窗提示用户授权
-				this.setData({
-					authorizationApplicationDialogShow: true,
-				});
-			}
 			wx.showLoading();
 			this.initData();
 		} else { // 未登录
