@@ -9,10 +9,10 @@ Component({
     envId: String,
     collection: String,
     groupId: String,
-    chatInfo: Object,
-    userInfo: Object,
+    chatInfo: null,
+    userInfo: null,
     onGetUserInfo: {
-      type: Object,
+      type: null,
     },
     // getOpenID: {
     //   type: Object,
@@ -88,7 +88,7 @@ Component({
         const db = this.db
         const _ = db.command
 
-        console.warn(`开始监听`, criteria)
+        console.info(`开始监听`, criteria)
         this.messageListener = db.collection(collection).where(this.mergeCommonCriteria(criteria)).watch({
           onChange: this.onRealtimeMessageSnapshot.bind(this),
           onError: e => {
@@ -109,7 +109,7 @@ Component({
     },
 
     onRealtimeMessageSnapshot(snapshot) {
-      console.warn(`收到消息`, snapshot)
+      console.info(`收到消息`, snapshot)
 
       if (snapshot.type === 'init') {
         this.setData({
