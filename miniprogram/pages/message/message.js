@@ -34,10 +34,32 @@ Page({
   onLoad() {
     checkNetworkStatus(); // 网络状态检测
     this.login();
-    this.initData();
+  },
+  onShow() {
   },
   // 数据初始化
   initData() {
+    wx.cloud.callFunction({
+      name: 'getChatsData',
+      data: {},
+      success: res => {
+        console.log(res, 'message-data')
+        const result = res.result.result.data;
+        this.setData({
+          chatList: result,
+        });
+      },
+      fail: e => {
+        console.log(e, 'getChatsData-error');
+        wx.showToast({
+          title: '服务繁忙，请稍后再试...',
+          icon: 'none'
+        })
+      },
+      complete: () => {
+        wx.hideLoading();
+      }
+    })
     this.data.chatList.map(item => {
       item.mtime = timeFormatter(item.mtime);
       return item;
@@ -50,6 +72,8 @@ Page({
   login() {
     app.login(res => this.data.openid = res);
     if(this.data.openid) {
+      wx.showLoading();
+      this.initData();
       this.setData({
         openid: this.data.openid
       });
