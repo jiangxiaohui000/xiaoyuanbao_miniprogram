@@ -378,7 +378,7 @@ Page({
 								console.log(res)
 								if(res.confirm) {
 									this.data.productsList.map(item => {
-										item.isOff = item.id === e.currentTarget.dataset.item.id;
+										item.isOff = item._id === e.currentTarget.dataset.item._id;
 										return item;
 									});
 									this.setData({
