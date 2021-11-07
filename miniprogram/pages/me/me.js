@@ -167,12 +167,20 @@ Page({
 			desc: '用于展示用户信息',
 			success: res => {
 				// console.log(res, 'onGetUserInfo');
-				wx.setStorageSync('avatarUrl', res.userInfo.avatarUrl);
-				wx.setStorageSync('nickName', res.userInfo.nickName);
-				this.setData({
-					userInfo: res.userInfo,
-					hasUserInfo: true,
-				});
+				if(res && res.userInfo) {
+					let avatarUrl = res.userInfo.avatarUrl;
+					const nickName = res.userInfo.nickName;
+					avatarUrl = avatarUrl.split("/")
+					avatarUrl[avatarUrl.length - 1] = 0;
+					avatarUrl = avatarUrl.join('/');
+					// console.log(avatarUrl, nickName, 'avatarUrl-nickName');
+					wx.setStorageSync('avatarUrl', avatarUrl);
+					wx.setStorageSync('nickName', nickName);
+					this.setData({
+						userInfo: res.userInfo,
+						hasUserInfo: true,
+					});	
+				}
 			}
 		})
 	},
