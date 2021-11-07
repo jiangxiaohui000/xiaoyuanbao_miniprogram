@@ -45,9 +45,7 @@ Component({
 				sizeType: ['compressed'],
 				sourceType: ['album', 'camera'],
 				success: function (res) {
-					wx.showLoading({
-						title: '上传中',
-					});
+					wx.showLoading({ title: '上传中...' });
 					const filePath = res.tempFilePaths[0]
 					// 上传图片
 					const cloudPath = 'my-image' + filePath.match(/\.[^.]+?$/)[0]

@@ -121,7 +121,7 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
-				wx.showLoading({ title: '努力传输中' });
+				wx.showLoading({ title: '努力传输中...' });
         const filePathArr = [];
         const fileIdArr = [];
 				const imgSecCheckArr = [];
@@ -189,7 +189,7 @@ Page({
 	},
   // 图片预览
   imgPreview(e) {
-    wx.showLoading({title: '正在打开'});
+    wx.showLoading({ title: '正在打开' });
     this.setData({
       currentImgIndex: e.currentTarget.dataset.index,
     });
@@ -276,7 +276,7 @@ Page({
   // 发布
   releaseProduct() {
     if(this.data.productDesc && this.data.imageList.length && this.data.price) {
-      wx.showLoading({ title: '发布中' });
+      wx.showLoading({ title: '发布中...' });
       wx.cloud.callFunction({
         name: 'msgSecCheck',
         data: { content: this.data.productDesc }

@@ -207,7 +207,7 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
-				wx.showLoading({ title: '努力传输中' });
+				wx.showLoading({ title: '努力传输中...' });
 				const filePathArr = []; // 传给发布页面的文件路径
 				const fileIdArr = []; // 传给发布页面的文件ID
 				const imgSecCheckArr = [];
@@ -298,7 +298,7 @@ Page({
 			wx.navigateTo({
 				url: '../productDetail/productDetail',
 				success: function(res) {
-					res.eventChannel.emit('toProductDetail', {id: e.currentTarget.dataset.item._id, from: 'me'})
+					res.eventChannel.emit('toProductDetail', {_id: e.currentTarget.dataset.item._id, from: 'me'})
 				}
 			});	
 		} else { // 商品下架了
