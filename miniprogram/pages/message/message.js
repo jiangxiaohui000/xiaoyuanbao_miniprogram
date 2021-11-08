@@ -6,6 +6,7 @@ Page({
   data: {
     openid: '',
     chatList: [],
+    dataIsReady: false,
     // chatList: [{
     //   _id: 1,
     //   product_id: 22222,
@@ -36,6 +37,9 @@ Page({
     this.login();
   },
   onShow() {
+    if(this.data.dataIsReady) {
+      console.log(3333)
+    }
   },
   // 数据初始化
   initData() {
@@ -44,6 +48,7 @@ Page({
       data: {},
       success: res => {
         console.log(res, 'message-data')
+        this.data.dataIsReady = true;
         const result = res.result.result.data;
         this.setData({
           chatList: result,
