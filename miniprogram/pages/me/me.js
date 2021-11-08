@@ -49,6 +49,7 @@ Page({
 		openid: '',
 		authorizationApplicationDialogShow: false,
 		hasUserInfo: false,
+		currentDataId: '',
 	},
 	onLoad: function() {
 		if (!wx.cloud) {
@@ -162,27 +163,36 @@ Page({
 		}
 	},
 	// 获取用户信息(nickName \ avatarUrl)
-	onGetUserInfo: function() {
-		wx.getUserProfile({
-			desc: '用于展示用户信息',
-			success: res => {
-				// console.log(res, 'onGetUserInfo');
-				if(res && res.userInfo) {
-					let avatarUrl = res.userInfo.avatarUrl;
-					const nickName = res.userInfo.nickName;
-					avatarUrl = avatarUrl.split("/")
-					avatarUrl[avatarUrl.length - 1] = 0;
-					avatarUrl = avatarUrl.join('/');
-					// console.log(avatarUrl, nickName, 'avatarUrl-nickName');
-					wx.setStorageSync('avatarUrl', avatarUrl);
-					wx.setStorageSync('nickName', nickName);
-					this.setData({
-						userInfo: res.userInfo,
-						hasUserInfo: true,
-					});	
-				}
-			}
-		})
+	onGetUserInfo() {
+		if(!this.data.hasUserInfo) {
+			wx.getUserProfile({
+				desc: '用于展示用户信息',
+				success: res => {
+					// console.log(res, 'onGetUserInfo');
+					if(res && res.userInfo) {
+						let avatarUrl = res.userInfo.avatarUrl;
+						const nickName = res.userInfo.nickName;
+						avatarUrl = avatarUrl.split("/")
+						avatarUrl[avatarUrl.length - 1] = 0;
+						avatarUrl = avatarUrl.join('/');
+						// console.log(avatarUrl, nickName, 'avatarUrl-nickName');
+						wx.setStorageSync('avatarUrl', avatarUrl);
+						wx.setStorageSync('nickName', nickName);
+						this.setData({
+							userInfo: res.userInfo,
+							hasUserInfo: true,
+						});	
+					}
+				},
+				fail: e => {
+					console.log(e, 'getUserInfo-fail');
+					wx.showToast({
+						title: '服务繁忙，请稍后再试...',
+						icon: 'none',
+					})
+				},
+			})
+		}
 	},
 	// 弹窗 -- 获取授权
 	tapAuthorizationButton(e) {
@@ -363,12 +373,70 @@ Page({
 	priceReduction(e) {
 		console.log(e, 'priceReduction')
 		if(!e.currentTarget.dataset.item.isOff) {
+			this.data.currentDataId = e.currentTarget.dataset.item._id;
 			this.setData({
 				dialogImg: e.currentTarget.dataset.item.displayImg,
 				currentPrice: e.currentTarget.dataset.item.currentPrice,
 				dialogShow: true,
 			});	
 		}
+	},
+	// 弹窗 -- 降价
+	tapDialogButton(e) {
+		if(e.detail.index) { // 确认
+			if(+this.data.modifiedPrice >= 100000000 || +this.data.modifiedPrice <= 0) {
+				this.setData({
+					toptipsShow: true,
+					resultText: '商品价格必须在0元与1亿元之间哦~',
+					toptipsType: 'info',
+				});
+				return;
+			}
+			if(+this.data.modifiedPrice > +this.data.currentPrice) {
+				this.setData({
+					toptipsShow: true,
+					resultText: '新的价格要小于原价格哦~',
+					toptipsType: 'info',
+				});
+				return;
+			}
+			wx.cloud.callFunction({
+				name: 'updateProductsData',
+				data: {
+					_id: this.data.currentDataId,
+					currentPrice: +this.data.modifiedPrice,
+				},
+				success: res => {
+					console.log(res, 'updateProductsData-success');
+					if(res && res.result && res.result.status && res.result.status == 200) {
+						const data = res.result.data;
+						this.data.productsList.map(item => {
+							(item._id === data._id) && (item.currentPrice = data.currentPrice);
+							return item;
+						});
+						this.setData({
+							productsList: this.data.productsList,
+						});	
+					} else {
+						wx.showToast({
+							title: '修改失败，请稍后再试...',
+							icon: 'none',
+						});
+					}
+				},
+				fail: e => {
+					console.log(e, 'updateProductsData-fail')
+					wx.showToast({
+						title: '修改失败，请稍后再试...',
+						icon: 'none',
+					});
+				}
+			})
+		}
+		this.setData({
+			dialogShow: false,
+			modifiedPrice: '',
+		});
 	},
 	// 更多 -- 删除 下架
 	more(e) {
@@ -417,34 +485,9 @@ Page({
 			})	
 		}
 	},
-	// 弹窗 -- 降价
-	tapDialogButton(e) {
-		if(e.detail.index) { // 确认
-			if(+this.data.modifiedPrice >= 100000000) {
-				this.setData({
-					toptipsShow: true,
-					resultText: '商品价格必须在0元与1亿元之间哦~',
-					toptipsType: 'info',
-				});
-				return;
-			}
-			if(+this.data.modifiedPrice > +this.data.currentPrice) {
-				this.setData({
-					toptipsShow: true,
-					resultText: '新的价格要小于原价格哦~',
-					toptipsType: 'info',
-				});
-				return;
-			}
-		}
-		this.setData({
-			dialogShow: false,
-			modifiedPrice: '',
-		});
-	},
 	// input -- 输入降价后的金额
 	dialogInput(e) {
-		if(+e.detail.value >= 100000000) {
+		if(+e.detail.value >= 100000000 || +e.detail.value <= 0) {
 			this.setData({
 				toptipsShow: true,
 				resultText: '商品价格必须在0元与1亿元之间哦~',
