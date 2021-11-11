@@ -162,7 +162,7 @@ Page({
 			}	
 		}
 	},
-	// 获取用户信息(nickName \ avatarUrl)
+	// 获取用户信息(nickName / avatarUrl)
 	onGetUserInfo() {
 		if(!this.data.hasUserInfo) {
 			wx.getUserProfile({
@@ -438,20 +438,40 @@ Page({
 			modifiedPrice: '',
 		});
 	},
-	// 更多 -- 删除 下架
+	// 更多 -- 删除 下架 卖出
 	more(e) {
 		console.log(e, 'more')
 		if(!e.currentTarget.dataset.item.isOff) {
 			wx.showActionSheet({
-				itemList: ['下架', '删除'],
+				itemList: ['卖出', '下架', '删除'],
 				success: (res) => {
 					console.log(res, 'success')
-					if(res.tapIndex === 0) {
+					if(res.tapIndex === 0) { // 卖出
+						wx.showModal({
+							title: '宝贝已经卖出？',
+							content: '卖出去的宝贝要及时确认哦~',
+							cancelText: '还没有',
+							confirmText: '卖出去啦',
+							success: res => {
+								if(res.confirm) {
+									this.data.productsList.map(item => {
+										item.isSold = item._id === e.currentTarget.dataset.item._id;
+										return item;
+									});
+									this.setData({
+										productsList: this.data.productsList
+									})
+									wx.showToast({
+										title: '恭喜',
+									})
+								}
+							}
+						})
+					} else if(res.tapIndex === 1) { // 下架
 						wx.showModal({
 							title: '确定要下架吗？',
 							content: '商品下架后可以再次上架！',
 							success: (res) => {
-								console.log(res)
 								if(res.confirm) {
 									this.data.productsList.map(item => {
 										item.isOff = item._id === e.currentTarget.dataset.item._id;
@@ -466,13 +486,12 @@ Page({
 								}
 							}
 						})
-					} else if(res.tapIndex === 1) {
+					} else if(res.tapIndex === 2) { // 删除
 						wx.showModal({
 							title: '确定要删除吗？',
 							content: '商品删除后不可恢复！',
 							confirmColor: '#f00',
 							success: (res) => {
-								console.log(res)
 								if(res.confirm) {
 									wx.showToast({
 										title: '删除成功',
