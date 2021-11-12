@@ -442,6 +442,7 @@ Page({
 	more(e) {
 		console.log(e, 'more')
 		if(!e.currentTarget.dataset.item.isOff) {
+			this.data.currentDataId = e.currentTarget.dataset.item._id;
 			wx.showActionSheet({
 				itemList: ['卖出', '下架', '删除'],
 				success: (res) => {
@@ -454,15 +455,31 @@ Page({
 							confirmText: '卖出去啦',
 							success: res => {
 								if(res.confirm) {
-									this.data.productsList.map(item => {
-										item.isSold = item._id === e.currentTarget.dataset.item._id;
-										return item;
-									});
-									this.setData({
-										productsList: this.data.productsList
-									})
-									wx.showToast({
-										title: '恭喜',
+									wx.cloud.callFunction({
+										name: 'updateProductsData',
+										data: {
+											_id: this.data.currentDataId,
+											isSold: '1',
+										},
+										success: res => {
+											console.log(res, '9038409jr')
+											if(res && res.result && res.result.status && res.result.status == 200) {
+												const data = res.result.data;
+												this.data.productsList.map(item => {
+													(item._id === data._id) && (item.isSold = data.isSold === '1');
+													return item;
+												});
+												this.setData({
+													productsList: this.data.productsList,
+												});
+												wx.showToast({
+													title: '恭喜',
+												})
+											}
+										},
+										fail: e => {
+											console.log(e, 'error1')
+										}
 									})
 								}
 							}
@@ -473,15 +490,31 @@ Page({
 							content: '商品下架后可以再次上架！',
 							success: (res) => {
 								if(res.confirm) {
-									this.data.productsList.map(item => {
-										item.isOff = item._id === e.currentTarget.dataset.item._id;
-										return item;
-									});
-									this.setData({
-										productsList: this.data.productsList
-									})
-									wx.showToast({
-										title: '下架成功',
+									wx.cloud.callFunction({
+										name: 'updateProductsData',
+										data: {
+											_id: this.data.currentDataId,
+											isOff: '1',
+										},
+										success: res => {
+											console.log(res, '9999999')
+											if(res && res.result && res.result.status && res.result.status == 200) {
+												const data = res.result.data;
+												this.data.productsList.map(item => {
+													(item._id === data._id) && (item.isOff = data.isOff === '1');
+													return item;
+												});
+												this.setData({
+													productsList: this.data.productsList,
+												});
+												wx.showToast({
+													title: '下架成功',
+												})
+											}
+										},
+										fail: e => {
+											console.log(e, 'error2')
+										}
 									})
 								}
 							}
@@ -493,8 +526,31 @@ Page({
 							confirmColor: '#f00',
 							success: (res) => {
 								if(res.confirm) {
-									wx.showToast({
-										title: '删除成功',
+									wx.cloud.callFunction({
+										name: 'updateProductsData',
+										data: {
+											_id: this.data.currentDataId,
+											isDeleted: '1',
+										},
+										success: res => {
+											console.log(res, '9038409jr')
+											if(res && res.result && res.result.status && res.result.status == 200) {
+												const data = res.result.data;
+												this.data.productsList.map(item => {
+													(item._id === data._id) && (item.isDeleted = data.isDeleted === '1');
+													return item;
+												});
+												this.setData({
+													productsList: this.data.productsList,
+												});
+												wx.showToast({
+													title: '删除成功',
+												})
+											}
+										},
+										fail: e => {
+											console.log(e, 'error3')
+										}
 									})
 								}
 							}

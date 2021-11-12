@@ -306,6 +306,7 @@ Page({
                   isCollected: [],
                   isOff: false,
                   isDeleted: false,
+                  isSold: false,
                   uid: app.globalData.openid,
                 }
                 wx.cloud.callFunction({ // 调用发布接口
