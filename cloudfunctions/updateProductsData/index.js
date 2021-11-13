@@ -11,9 +11,9 @@ exports.main = async (event, context) => {
   const _ = db.command;
   const data = {};
   event.currentPrice && (data.currentPrice = +event.currentPrice); // 降价
-  event.isOff && (data.isOff = event.isOff === '1'); // 下架
-  event.isSold && (data.isSold = event.isSold === '1'); // 卖出
-  event.isDeleted && (data.isDeleted = event.isDeleted === '1'); // 删除
+  event.isOff && (data.isOff = event.isOff === '1'); // 1：下架 0：上架
+  event.isSold && (data.isSold = event.isSold === '1'); // 1：卖出 0：重新卖
+  event.isDeleted && (data.isDeleted = event.isDeleted === '1'); // 1：删除
   console.log(event, '111222')
   console.log(data, '111333')
   let result;

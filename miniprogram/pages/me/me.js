@@ -320,43 +320,62 @@ Page({
 				}
 			});	
 		} else { // 商品下架了
+			this.data.currentDataId = e.currentTarget.dataset.item._id;
 			wx.showActionSheet({
 				itemList: ['编辑', '重新上架', '删除'],
 				success: res => {
 					console.log(res, '---')
-					if(res.tapIndex === 0) {
+					if(res.tapIndex === 0) { // 编辑
 						const params = JSON.stringify(e.currentTarget.dataset.item);
 						wx.navigateTo({
 							url: '../postProduct/postProduct?params=' + params,
 						});
-					} else if(res.tapIndex === 1) {
+					} else if(res.tapIndex === 1) { // 重新上架
 						wx.showModal({
 							title: '',
 							content: '确定重新上架吗？',
 							success: res => {
-								console.log(res, '上架')
 								if(res.confirm) {
-									this.data.productsList.map(item => {
-										item.isOff = !e.currentTarget.dataset.item.isOff;
-										return item;
-									});
-									this.setData({
-										productsList: this.data.productsList
-									})
-									wx.showToast({
-										title: '上架成功',
+									wx.cloud.callFunction({
+										name: 'updateProductsData',
+										data: {
+											_id: this.data.currentDataId,
+											isOff: '0',
+										},
+										success: res => {
+											console.log(res, '9999999')
+											if(res && res.result && res.result.status && res.result.status == 200) {
+												const data = res.result.data;
+												this.data.productsList.map(item => {
+													(item._id === data._id) && (item.isOff = data.isOff === '0' ? false : true);
+													return item;
+												});
+												this.setData({
+													productsList: this.data.productsList,
+												});
+												wx.showToast({
+													title: '已上架',
+												})
+											}
+										},
+										fail: e => {
+											console.log(e, 'error2')
+											wx.showToast({
+												title: '服务繁忙，请稍后再试',
+												icon: 'error'
+											})
+										}
 									})
 								}
 							}
 						})
-					} else if(res.tapIndex === 2) {
+					} else if(res.tapIndex === 2) { // 删除
 						wx.showModal({
-							title: '',
-							content: '确定要删除该商品吗？',
+							title: '确定要删除吗？',
+							content: '商品删除后不可恢复',
 							confirmText: '删除',
 							confirmColor: '#f00',
 							success: res => {
-								console.log(res)
 								if(res.confirm) {
 									wx.showToast({
 										title: '删除成功',
@@ -369,7 +388,7 @@ Page({
 			})
 		}
 	},
-	// 降价
+	// 降价--按钮
 	priceReduction(e) {
 		console.log(e, 'priceReduction')
 		if(!e.currentTarget.dataset.item.isOff) {
@@ -379,9 +398,11 @@ Page({
 				currentPrice: e.currentTarget.dataset.item.currentPrice,
 				dialogShow: true,
 			});	
+		} else {
+			this.preview(e);
 		}
 	},
-	// 弹窗 -- 降价
+	// 降价--弹窗
 	tapDialogButton(e) {
 		if(e.detail.index) { // 确认
 			if(+this.data.modifiedPrice >= 100000000 || +this.data.modifiedPrice <= 0) {
@@ -407,7 +428,7 @@ Page({
 					currentPrice: +this.data.modifiedPrice,
 				},
 				success: res => {
-					console.log(res, 'updateProductsData-success');
+					console.log(res, '1221');
 					if(res && res.result && res.result.status && res.result.status == 200) {
 						const data = res.result.data;
 						this.data.productsList.map(item => {
@@ -425,7 +446,7 @@ Page({
 					}
 				},
 				fail: e => {
-					console.log(e, 'updateProductsData-fail')
+					console.log(e, '22222')
 					wx.showToast({
 						title: '修改失败，请稍后再试...',
 						icon: 'none',
@@ -487,7 +508,7 @@ Page({
 					} else if(res.tapIndex === 1) { // 下架
 						wx.showModal({
 							title: '确定要下架吗？',
-							content: '商品下架后可以再次上架！',
+							content: '商品下架后可以再次上架',
 							success: (res) => {
 								if(res.confirm) {
 									wx.cloud.callFunction({
@@ -514,6 +535,10 @@ Page({
 										},
 										fail: e => {
 											console.log(e, 'error2')
+											wx.showToast({
+												title: '服务繁忙，请稍后再试',
+												icon: 'error'
+											})
 										}
 									})
 								}
@@ -522,7 +547,7 @@ Page({
 					} else if(res.tapIndex === 2) { // 删除
 						wx.showModal({
 							title: '确定要删除吗？',
-							content: '商品删除后不可恢复！',
+							content: '商品删除后不可恢复',
 							confirmColor: '#f00',
 							success: (res) => {
 								if(res.confirm) {
@@ -550,6 +575,10 @@ Page({
 										},
 										fail: e => {
 											console.log(e, 'error3')
+											wx.showToast({
+												title: '服务繁忙，请稍后再试',
+												icon: 'error'
+											})
 										}
 									})
 								}
@@ -558,6 +587,8 @@ Page({
 					}
 				}
 			})	
+		} else {
+			this.preview(e);
 		}
 	},
 	// input -- 输入降价后的金额
