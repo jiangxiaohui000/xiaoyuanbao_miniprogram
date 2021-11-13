@@ -1,0 +1,58 @@
+/* pages/soldProducts/soldProducts.wxss */
+.sold-container {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.sold-item {
+  padding: 20rpx;
+  background-color: #f2f2f2;
+  /* margin-bottom: 20rpx; */
+  display: flex;
+}
+
+.sold-item .img-container {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.sold-item .img-container .img {
+  width: 100%;
+  height: 100%;
+}
+
+.sold-item .text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 3;
+  padding-left: 14rpx;
+}
+
+.sold-item .text-container .products-desc {
+  font-size: 24rpx;
+  color: #333;
+  overflow: hidden;
+  line-height: 30rpx;
+  height: 60rpx;
+}
+
+.sold-item .text-container .products-price {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  font-size: 26rpx;
+}
+
+.sold-item .text-container .products-price .products-current-price {
+  color: red;
+}
+
+.sold-item .resold-button {
+  color: #07c160;
+}

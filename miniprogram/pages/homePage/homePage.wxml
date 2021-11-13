@@ -64,7 +64,7 @@
         <view class="products-price">
           <view>
             <text class="products-current-price">￥{{item.currentPrice}}</text>
-            <text class="products-origin-price" wx:if="item.originPrice">￥{{item.originPrice}}</text>
+            <text class="products-origin-price" wx:if="{{item.originPrice}}">￥{{item.originPrice}}</text>
           </view>
           <view class="heat-container">
             热度：

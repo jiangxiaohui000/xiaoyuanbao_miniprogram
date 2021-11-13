@@ -48,7 +48,7 @@
           <image class="img" mode="aspectFill" lazy-load="true" src="{{item.displayImg}}" alt="" style="opacity: {{item.isOff ? 0.4: 1}}"></image>
         </view>
         <!-- 描述 -->
-        <view class="text-container" style="opacity: {{item.isOff ? 0.4: 1}}">
+        <view class="text-container" style="opacity: {{ item.isOff ? 0.4 : 1 }}">
           <view class="products-desc">{{item.desc}}</view>
           <view class="products-price">
             <text class="products-current-price">￥{{item.currentPrice}}</text>

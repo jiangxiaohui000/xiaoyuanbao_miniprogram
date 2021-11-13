@@ -23,17 +23,19 @@ Page({
 			label: '收藏',
 			icon: 'collection-b',
 			num: 0
-		}, {
-			value: 2,
-			label: '购买',
-			icon: 'gouwujianying',
-			num: 0
-		}, {
-			value: 3,
-			label: '评价',
-			icon: 'pingjia',
-			num: 0
-		}],
+		},
+		// {
+		// 	value: 2,
+		// 	label: '购买',
+		// 	icon: 'gouwujianying',
+		// 	num: 0
+		// }, {
+		// 	value: 3,
+		// 	label: '评价',
+		// 	icon: 'pingjia',
+		// 	num: 0
+		// }
+		],
 		dialogShow: false,
 		dialogImg: '',
 		currentPrice: '',
@@ -437,7 +439,10 @@ Page({
 						});
 						this.setData({
 							productsList: this.data.productsList,
-						});	
+						});
+						wx.showToast({
+							title: '已修改',
+						})
 					} else {
 						wx.showToast({
 							title: '修改失败，请稍后再试...',
@@ -607,5 +612,14 @@ Page({
 	// 收藏 购买 评价
 	toMineItemDetail: function(e) {
 		console.log('e', e);
+		const targetItem = e.currentTarget.dataset.item;
+		if(targetItem.value === 0) { // 卖出
+			wx.navigateTo({
+				url: '../soldProducts/soldProducts',
+				data: {
+
+				}
+			})
+		}
 	},
 })
