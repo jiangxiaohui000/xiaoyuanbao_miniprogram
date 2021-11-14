@@ -20,6 +20,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.showLoading();
     this.initData();
   },
 
@@ -29,7 +30,8 @@ Page({
 			name: 'getProductsData',
 			data: {
 				pageData: this.data.pageData,
-				uid: this.data.openid,
+        uid: this.data.openid,
+        isSold: '1',
 			},
 			success: res => {
 				wx.hideLoading();
@@ -86,6 +88,39 @@ Page({
     console.log(e, '4444433333')
     const target = e.currentTarget.dataset.resoleitem;
     console.log(target, '344344')
+    wx.showModal({
+      title: '交易取消了？',
+      content: '若买家与您取消了交易，可重新售卖该宝贝，确定重新卖吗？',
+      success: res => {
+        if(res.confirm) {
+          wx.cloud.callFunction({
+            name: 'updateProductsData',
+            data: {
+              uid: target.uid,
+              _id: target._id,
+              isSold: '0',
+            },
+            success: res => {
+              console.log(res, '89iusdui')
+              if(res && res.result && res.result.status && res.result.status == 200) {
+                this.setData({
+                  productsList: [],
+                });
+                wx.showLoading();
+                this.initData();
+              }
+            },
+            fail: e => {
+              console.log(e, '897489798')
+              wx.showToast({
+                title: '服务繁忙，请稍后再试',
+                icon: 'none',
+              })
+            }
+          })
+        }
+      }
+    })
   },
 
   /**
@@ -113,7 +148,11 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    const pages = getCurrentPages(); // 获取页面栈
+    const prevPage = pages[pages.length - 2]; // 跳转之前的页面
+    prevPage.setData({
+      isResold: true,
+    });
   },
 
   /**

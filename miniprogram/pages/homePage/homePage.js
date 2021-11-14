@@ -54,7 +54,10 @@ Page({
     wx.cloud.callFunction({
       name: 'getProductsData',
       data: {
-        pageData: this.data.pageData
+        pageData: this.data.pageData,
+        isSold: '0',
+        isOff: '0',
+        isDeleted: '0',
       },
       success: res => {
         wx.hideLoading();

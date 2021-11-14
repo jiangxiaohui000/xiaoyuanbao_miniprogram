@@ -79,6 +79,7 @@ page {
 }
 .products-container {
   width: 95%;
+  flex: 1;
   overflow-y: scroll;
   overflow-x: hidden;
   background-color: #fff;

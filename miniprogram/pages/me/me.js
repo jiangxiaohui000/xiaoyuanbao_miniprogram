@@ -92,7 +92,7 @@ Page({
 	onShow() {
 		const pages = getCurrentPages(); // 获取页面栈
 		const currPage = pages[pages.length - 1]; // 跳转之后的页面
-		if(currPage.data.postSuccess) {
+		if(currPage.data.postSuccess || currPage.data.isResold) { // 发布商品、重新卖
 			this.setData({
 				productsList: [],
 			});
@@ -102,18 +102,32 @@ Page({
 	},
 	// 数据初始化
 	initData() {
-		wx.cloud.callFunction({
+		// 查询发布的商品
+		const promise1 = wx.cloud.callFunction({
 			name: 'getProductsData',
 			data: {
 				pageData: this.data.pageData,
 				uid: this.data.openid,
-			},
-			success: res => {
-				wx.hideLoading();
-				wx.stopPullDownRefresh();
-				if(res && res.result && res.result.data && res.result.data.data && res.result.count && res.result.count.total) {
-					const data = res.result.data.data;
-					const total = res.result.count.total;
+				isSold: '0',
+			}
+		});
+		const promise2 = wx.cloud.callFunction({
+			name: 'getProductsData',
+			data: {
+				uid: this.data.openid,
+				isSold: '1',
+			}
+		});
+		Promise.all([promise1, promise2]).then(res => {
+			console.log(res, '43rrr')
+			wx.hideLoading();
+			wx.stopPullDownRefresh();
+			if(res && res.length) {
+				const data1 = res[0];
+				const data2 = res[1];
+				if(data1 && data1.result && data1.result.data && data1.result.data.data && data1.result.count && data1.result.count.total) { // 发布的商品
+					const data = data1.result.data.data;
+					const total = data1.result.count.total;
 					data.map(item => {
 						item.currentPrice = priceConversion(item.currentPrice);
 						item.displayImg = item.img[0];
@@ -125,17 +139,23 @@ Page({
             showLoading: !!data.length,
 					});
 				}
-			},
-			fail: e => {
-				console.log(e);
-				wx.hideLoading();
-				wx.stopPullDownRefresh();
-				wx.showToast({
-          title: '服务繁忙，请稍后再试~',
-          icon: 'none'
-        })
+			  if(data2 && data2.result && data2.result.count) { // 卖出的商品
+					const total = data2.result.count.total;
+					this.data.mineItems[0].num = total;
+					this.setData({
+						mineItems: this.data.mineItems,
+					});
+				}
 			}
-		})
+		}).catch(e => {
+			console.log(e);
+			wx.hideLoading();
+			wx.stopPullDownRefresh();
+			wx.showToast({
+        title: '服务繁忙，请稍后再试~',
+        icon: 'none',
+      });
+		});
 	},
 	// 登录
 	login() {
@@ -341,6 +361,7 @@ Page({
 									wx.cloud.callFunction({
 										name: 'updateProductsData',
 										data: {
+											uid: this.data.openid,
 											_id: this.data.currentDataId,
 											isOff: '0',
 										},
@@ -426,6 +447,7 @@ Page({
 			wx.cloud.callFunction({
 				name: 'updateProductsData',
 				data: {
+					uid: this.data.openid,
 					_id: this.data.currentDataId,
 					currentPrice: +this.data.modifiedPrice,
 				},
@@ -484,20 +506,18 @@ Page({
 									wx.cloud.callFunction({
 										name: 'updateProductsData',
 										data: {
+											uid: this.data.openid,
 											_id: this.data.currentDataId,
 											isSold: '1',
 										},
 										success: res => {
 											console.log(res, '9038409jr')
 											if(res && res.result && res.result.status && res.result.status == 200) {
-												const data = res.result.data;
-												this.data.productsList.map(item => {
-													(item._id === data._id) && (item.isSold = data.isSold === '1');
-													return item;
-												});
 												this.setData({
-													productsList: this.data.productsList,
+													productsList: [],
 												});
+												wx.showLoading();
+												this.initData();
 												wx.showToast({
 													title: '恭喜',
 												})
@@ -505,6 +525,10 @@ Page({
 										},
 										fail: e => {
 											console.log(e, 'error1')
+											wx.showToast({
+												title: '服务繁忙，请稍后再试',
+												icon: 'error'
+											})
 										}
 									})
 								}
@@ -519,6 +543,7 @@ Page({
 									wx.cloud.callFunction({
 										name: 'updateProductsData',
 										data: {
+											uid: this.data.openid,
 											_id: this.data.currentDataId,
 											isOff: '1',
 										},
@@ -559,20 +584,18 @@ Page({
 									wx.cloud.callFunction({
 										name: 'updateProductsData',
 										data: {
+											uid: this.data.openid,
 											_id: this.data.currentDataId,
 											isDeleted: '1',
 										},
 										success: res => {
 											console.log(res, '9038409jr')
 											if(res && res.result && res.result.status && res.result.status == 200) {
-												const data = res.result.data;
-												this.data.productsList.map(item => {
-													(item._id === data._id) && (item.isDeleted = data.isDeleted === '1');
-													return item;
-												});
 												this.setData({
-													productsList: this.data.productsList,
+													productsList: [],
 												});
+												wx.showLoading();
+												this.initData();
 												wx.showToast({
 													title: '删除成功',
 												})
@@ -616,10 +639,7 @@ Page({
 		if(targetItem.value === 0) { // 卖出
 			wx.navigateTo({
 				url: '../soldProducts/soldProducts',
-				data: {
-
-				}
-			})
+			});
 		}
 	},
 })

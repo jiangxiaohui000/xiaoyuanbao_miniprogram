@@ -1,17 +1,23 @@
 <!--pages/soldProducts/soldProducts.wxml-->
-<scroll-view class="sold-container" scroll-y="true" enable-flex="true" bindscrolltolower="productScroll">
-  <view class="sold-item" wx:for="{{productsList}}" wx:key="id" data-item="{{item}}" bindtap="toProductsDetail">
-    <!-- 图片 -->
-    <view class="img-container">
-      <image class="img" mode="aspectFill" lazy-load="true" src="{{item.displayImg}}" alt=""></image>
-    </view>
-    <!-- 描述 -->
-    <view class="text-container">
-      <view class="products-desc">{{item.desc}}</view>
-      <view class="products-price">
-        <view class="products-current-price">标价：￥{{item.currentPrice}}</view>
-        <view class="resold-button" data-resoleItem="{{item}}" catchtap="resole">重新卖</view>
+<view wx:if="{{productsList.length}}">
+  <scroll-view class="sold-container" scroll-y="true" enable-flex="true" bindscrolltolower="productScroll">
+    <view class="sold-item" wx:for="{{productsList}}" wx:key="id" data-item="{{item}}" bindtap="toProductsDetail">
+      <!-- 图片 -->
+      <view class="img-container">
+        <image class="img" mode="aspectFill" lazy-load="true" src="{{item.displayImg}}" alt=""></image>
+      </view>
+      <!-- 描述 -->
+      <view class="text-container">
+        <view class="products-desc">{{item.desc}}</view>
+        <view class="products-price">
+          <view class="products-current-price">标价：￥{{item.currentPrice}}</view>
+          <view class="resold-button" data-resoleItem="{{item}}" catchtap="resole">重新卖</view>
+        </view>
       </view>
     </view>
-  </view>
-</scroll-view>
+  </scroll-view>  
+</view>
+<!-- 暂无数据 -->
+<view class="no-data" wx:else>
+  <i class="iconfont icon-zanwushuju" style="font-size: 100rpx; color: #07c160;"></i>
+</view>

@@ -18,7 +18,7 @@ exports.main = async (event, context) => {
   console.log(data, '111333')
   let result;
   try {
-    result = await db.collection('data_products').where({ _id: event._id }).update({ data: data });  
+    result = await db.collection('data_products').where({ _id: _.eq(event._id), uid: _.eq(event.uid) }).update({ data: data });  
   } catch(e) {
     console.log(e);
     result = e;

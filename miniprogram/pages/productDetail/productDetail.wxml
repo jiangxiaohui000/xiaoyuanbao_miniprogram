@@ -30,7 +30,7 @@
 </view>
 
 <!-- 底部功能 -->
-<view class="features" wx:if="{{productInfo}}">
+<view class="features" wx:if="{{productInfo && from}}">
   <view class="features-item" wx:if="{{from == 'homePage'}}">
     <view class="features-item-left">
       <view class="collection" bindtap="collectProducts">
