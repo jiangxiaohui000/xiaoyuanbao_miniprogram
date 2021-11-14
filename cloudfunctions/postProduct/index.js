@@ -32,13 +32,14 @@ exports.main = async (event, context) => {
       isCollected: event.isCollected,
       isDeleted: event.isDeleted,
       isOff: event.isOff,
+      isSold: event.isSold,
       heat: heat,
       fineness: event.finenessTag,
       classify: event.classify,
       brand: event.brandName,
       uid: event.uid,
       avatar: event.avatar,
-      nickName: event.nickName
+      nickName: event.nickName,
     },
     success: res => {
       console.log(res)
