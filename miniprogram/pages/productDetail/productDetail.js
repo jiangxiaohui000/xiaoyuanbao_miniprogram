@@ -6,12 +6,14 @@ const { priceConversion } = require('../../utils/priceConversion');
 Page({
 	data: {
 		productInfo: '',
-		collectedStatus: '',
+		collectedText: '',
 		collectedIcon: '',
+		collectedStatus: false,
 		// productTags: [],
 		from: '',
 		groupId: '',
 		needAdaptIphoneX: false,
+		_id: '',
 	},
 	/**
 	 * 生命周期函数--监听页面加载
@@ -24,6 +26,7 @@ Page({
 			data && data.from && this.setData({ from: data.from });
 			data && data.groupId && this.setData({ groupId: data.groupId });
 			data && data._id && this.initData(data._id);
+			data && data._id && (this.data._id = data._id);
 		});
 		this.setData({
 			needAdaptIphoneX: app.globalData.needAdaptIphoneX
@@ -41,12 +44,18 @@ Page({
 				wx.hideLoading()
 				if(res && res.result && res.result.data && res.result.data.data && res.result.data.data.length) {
 					this.data.productInfo = res.result.data.data[0];
-					this.data.collectedStatus = this.data.productInfo.isCollected.filter(item => item == app.globalData.openid).length ? '已收藏' : '收藏';
-					this.data.collectedIcon = this.data.productInfo.isCollected.filter(item => item == app.globalData.openid).length ? 'icon-shoucang1' : 'icon-shoucang';
+					this.data.collectedStatus = this.data.productInfo.isCollected.includes(app.globalData.openid);
+					if(this.data.productInfo.isCollected.filter(item => item == app.globalData.openid).length) {
+						this.data.collectedText = '已收藏';
+						this.data.collectedIcon = 'icon-shoucang1';
+					} else {
+						this.data.collectedText = '收藏';
+						this.data.collectedIcon = 'icon-shoucang';
+					}
 					this.data.productInfo.ctime = dayjs(this.data.productInfo.ctime).format('YYYY-MM-DD HH:mm:ss');
 					this.data.productInfo.currentPrice = priceConversion(this.data.productInfo.currentPrice);
 					this.setData({
-						collectedStatus: this.data.collectedStatus,
+						collectedText: this.data.collectedText,
 						collectedIcon: this.data.collectedIcon,
 						productInfo: this.data.productInfo,
 						// productTags: this.data.productTags,
@@ -64,24 +73,60 @@ Page({
 	},
 	// 收藏
 	collectProducts() {
-		if (this.data.collectedStatus === '收藏') {
-			this.setData({
-				collectedStatus: '已收藏',
-				collectedIcon: 'icon-shoucang1'
+		if (this.data.collectedStatus) { // 已收藏
+			const index = this.data.productInfo.isCollected.findIndex(item => item === app.globalData.openid);
+			this.data.productInfo.isCollected.splice(index, 1);
+			console.log(this.data.productInfo.isCollected, '4947444')
+			wx.cloud.callFunction({
+				name: 'updateProductsData',
+				data: {
+					_id: this.data._id,
+					uid: app.globalData.openid,
+					isCollected: this.data.productInfo.isCollected,
+				},
+				success: res => {
+					console.log(res, '99494944')
+					this.setData({
+						collectedText: '收藏',
+						collectedIcon: 'icon-shoucang',
+						collectedStatus: false,
+						productInfo: this.data.productInfo,
+					});
+					wx.showToast({
+						icon: 'success',
+						title: '已取消',
+					});
+				},
+				fail: e => {
+					console.log(e, 'error')
+				}
 			});
-			wx.showToast({
-				icon: 'success',
-				title: '已收藏',
-			})
-		} else {
-			this.setData({
-				collectedStatus: '收藏',
-				collectedIcon: 'icon-shoucang'
-			})
-			wx.showToast({
-				icon: 'success',
-				title: '已取消',
-			})
+		} else { // 没收藏
+			this.data.productInfo.isCollected.push(app.globalData.openid);
+			wx.cloud.callFunction({
+				name: 'updateProductsData',
+				data: {
+					_id: this.data._id,
+					uid: app.globalData.openid,
+					isCollected: this.data.productInfo.isCollected,
+				},
+				success: res => {
+					console.log(res, '445566')
+					this.setData({
+						collectedText: '已收藏',
+						collectedIcon: 'icon-shoucang1',
+						collectedStatus: true,
+						productInfo: this.data.productInfo,
+					});
+					wx.showToast({
+						icon: 'success',
+						title: '已收藏',
+					});
+				},
+				fail: e => {
+					console.log(e, 'error')
+				}
+			});
 		}
 	},
 	// 分享

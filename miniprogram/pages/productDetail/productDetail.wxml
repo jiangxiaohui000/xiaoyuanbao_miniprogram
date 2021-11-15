@@ -35,7 +35,7 @@
     <view class="features-item-left">
       <view class="collection" bindtap="collectProducts">
         <i class="iconfont {{collectedIcon}}"></i>
-        <text>{{collectedStatus}}</text>
+        <text>{{collectedText}}</text>
       </view>
     </view>
     <button class="chat-button" size="mini" bindtap="gotoChatRoom">聊一聊</button>
