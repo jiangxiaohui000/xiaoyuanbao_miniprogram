@@ -73,11 +73,12 @@ Page({
 	},
 	// 收藏
 	collectProducts() {
-		if (this.data.collectedStatus) { // 已收藏
+		if (this.data.collectedStatus) { // 当前已收藏，点击取消收藏
+			wx.showLoading();
 			const index = this.data.productInfo.isCollected.findIndex(item => item === app.globalData.openid);
 			this.data.productInfo.isCollected.splice(index, 1);
 			console.log(this.data.productInfo.isCollected, '4947444')
-			wx.cloud.callFunction({
+			wx.cloud.callFunction({ // 先更新商品数据
 				name: 'updateProductsData',
 				data: {
 					_id: this.data._id,
@@ -86,24 +87,68 @@ Page({
 				},
 				success: res => {
 					console.log(res, '99494944')
-					this.setData({
-						collectedText: '收藏',
-						collectedIcon: 'icon-shoucang',
-						collectedStatus: false,
-						productInfo: this.data.productInfo,
-					});
-					wx.showToast({
-						icon: 'success',
-						title: '已取消',
+					wx.cloud.callFunction({ // 获取用户数据，拿到用户收藏商品的数据
+						name: 'getUserData',
+						data: {
+							uid: app.globalData.openid
+						},
+						success: res => {
+							console.log(res, '435763735467')
+							if(res && res.result && res.result.data && res.result.data.length) {
+								const collectedProducts = res.result.data[0].collectedProducts;
+								const index = collectedProducts.findIndex(item => item == this.data._id);
+								collectedProducts.splice(index, 1);
+								wx.cloud.callFunction({ // 更新用户收藏商品的数据
+									name: 'updateUserData',
+									data: {
+										uid: app.globalData.openid,
+										collectedProducts: collectedProducts,
+									},
+									success: res => {
+										console.log(res, '9op9jdsfh')
+										wx.hideLoading();
+										this.setData({
+											collectedText: '收藏',
+											collectedIcon: 'icon-shoucang',
+											collectedStatus: false,
+											productInfo: this.data.productInfo,
+										});
+										wx.showToast({
+											icon: 'success',
+											title: '已取消',
+										});
+									},
+									fail: e => {
+										console.log(e, 'error')
+										wx.showToast({
+											title: '服务繁忙，请稍后再试',
+											icon: 'none',
+										})
+									}
+								})
+							}
+						},
+						fail: e => {
+							console.log(e, 'error')
+							wx.showToast({
+								title: '服务繁忙，请稍后再试',
+								icon: 'none',
+							})
+						}
 					});
 				},
 				fail: e => {
 					console.log(e, 'error')
+					wx.showToast({
+						title: '服务繁忙，请稍后再试',
+						icon: 'none',
+					})
 				}
 			});
-		} else { // 没收藏
+		} else { // 当前未收藏，点击收藏
+			wx.showLoading();
 			this.data.productInfo.isCollected.push(app.globalData.openid);
-			wx.cloud.callFunction({
+			wx.cloud.callFunction({ // 先更新商品数据
 				name: 'updateProductsData',
 				data: {
 					_id: this.data._id,
@@ -112,19 +157,61 @@ Page({
 				},
 				success: res => {
 					console.log(res, '445566')
-					this.setData({
-						collectedText: '已收藏',
-						collectedIcon: 'icon-shoucang1',
-						collectedStatus: true,
-						productInfo: this.data.productInfo,
-					});
-					wx.showToast({
-						icon: 'success',
-						title: '已收藏',
+					wx.cloud.callFunction({ // 获取用户数据，拿到用户收藏商品的数据
+						name: 'getUserData',
+						data: {
+							uid: app.globalData.openid,
+						},
+						success: res => {
+							console.log(res.result.data,'8444434')
+							if(res && res.result && res.result.data && res.result.data.length) {
+								const collectedProducts = res.result.data[0].collectedProducts;
+								collectedProducts.push(this.data._id);
+								wx.cloud.callFunction({ // 更新用户收藏商品的数据
+									name: 'updateUserData',
+									data: {
+										uid: app.globalData.openid,
+										collectedProducts: collectedProducts,
+									},
+									success: res => {
+										console.log(res, '9op9jdsfh')
+										wx.hideLoading();
+										this.setData({
+											collectedText: '已收藏',
+											collectedIcon: 'icon-shoucang1',
+											collectedStatus: true,
+											productInfo: this.data.productInfo,
+										});
+										wx.showToast({
+											icon: 'success',
+											title: '已收藏',
+										});
+									},
+									fail: e => {
+										console.log(e, 'error')
+										wx.showToast({
+											title: '服务繁忙，请稍后再试',
+											icon: 'none',
+										})
+									}
+								})
+							}
+						},
+						fail: e => {
+							console.log(e, 'error')
+							wx.showToast({
+								title: '服务繁忙，请稍后再试',
+								icon: 'none',
+							})
+						}
 					});
 				},
 				fail: e => {
 					console.log(e, 'error')
+					wx.showToast({
+						title: '服务繁忙，请稍后再试',
+						icon: 'none',
+					})
 				}
 			});
 		}

@@ -30,7 +30,7 @@ App({
           _this.globalData.openid = res.result.openid;
           typeof cb === 'function' && cb(res.result.openid);
           wx.cloud.callFunction({ // 拿到openid后给到用户集合
-            name: 'userData',
+            name: 'addUserData',
             data: {
               openid: res.result.openid
             },
@@ -40,6 +40,7 @@ App({
         console.log(e);
         wx.showToast({
           title: '登录异常，请稍后再试！',
+          icon: 'error',
         })
       })
     }

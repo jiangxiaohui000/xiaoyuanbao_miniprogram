@@ -103,7 +103,7 @@ Page({
 	// 数据初始化
 	initData() {
 		// 查询发布的商品
-		const promise1 = wx.cloud.callFunction({
+		const promise1 = wx.cloud.callFunction({ // 列表展示的
 			name: 'getProductsData',
 			data: {
 				pageData: this.data.pageData,
@@ -111,20 +111,27 @@ Page({
 				isSold: '0',
 			}
 		});
-		const promise2 = wx.cloud.callFunction({
+		const promise2 = wx.cloud.callFunction({ // 卖出的
 			name: 'getProductsData',
 			data: {
 				uid: this.data.openid,
 				isSold: '1',
 			}
 		});
-		Promise.all([promise1, promise2]).then(res => {
+		const promise3 = wx.cloud.callFunction({ // 收藏的
+			name: 'getUserData',
+			data: {
+				uid: this.data.openid,
+			}
+		});
+		Promise.all([promise1, promise2, promise3]).then(res => {
 			console.log(res, '43rrr')
 			wx.hideLoading();
 			wx.stopPullDownRefresh();
 			if(res && res.length) {
 				const data1 = res[0];
 				const data2 = res[1];
+				const data3 = res[2];
 				if(data1 && data1.result && data1.result.data && data1.result.data.data && data1.result.count && data1.result.count.total) { // 发布的商品
 					const data = data1.result.data.data;
 					const total = data1.result.count.total;
@@ -142,6 +149,13 @@ Page({
 			  if(data2 && data2.result && data2.result.count) { // 卖出的商品
 					const total = data2.result.count.total;
 					this.data.mineItems[0].num = total;
+					this.setData({
+						mineItems: this.data.mineItems,
+					});
+				}
+				if(data3 && data3.result && data3.result.data && data3.result.data.length) {
+					const collectedProducts = data3.result.data[0].collectedProducts;
+					this.data.mineItems[1].num = collectedProducts.length;
 					this.setData({
 						mineItems: this.data.mineItems,
 					});

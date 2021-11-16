@@ -71,7 +71,7 @@
     <view class="no-data" wx:if="{{!productsList.length}}">
       <i class="iconfont icon-zanwushuju"></i>
       <text>您还没有发布宝贝</text>
-      <text>点击右上角按钮发布吧~</text>
+      <text>点击右上角按钮去发布吧~</text>
     </view>
   </view>
   <!-- 未登录 -->

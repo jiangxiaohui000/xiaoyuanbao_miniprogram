@@ -19,5 +19,5 @@
 </view>
 <!-- 暂无数据 -->
 <view class="no-data" wx:else>
-  <i class="iconfont icon-zanwushuju" style="font-size: 100rpx; color: #07c160;"></i>
+  <i class="iconfont icon-zanwushuju" style="font-size: 100rpx; opacity: 0.5;"></i>
 </view>
