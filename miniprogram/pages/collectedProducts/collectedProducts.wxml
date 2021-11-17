@@ -1,0 +1,30 @@
+<!--pages/collectedProducts/collectedProducts.wxml-->
+<view wx:if="{{productsList.length}}">
+  <scroll-view class="collected-container" scroll-y="true" enable-flex="true">
+    <view class="collected-item" wx:for="{{productsList}}" wx:key="id" data-item="{{item}}" bindtap="toProductsDetail">
+      <!-- 图片 -->
+      <view class="img-container">
+        <image class="img" mode="aspectFill" lazy-load="true" src="{{item.displayImg}}" alt=""></image>
+      </view>
+      <!-- 描述 -->
+      <view class="text-container">
+        <view class="products-desc">{{item.desc}}</view>
+        <view class="products-price">
+          <view>
+            <text class="products-current-price">￥{{item.currentPrice}}</text>
+            <text class="products-origin-price" wx:if="{{item.originPrice}}">￥{{item.originPrice}}</text>
+          </view>
+          <view class="heat-container">
+            热度：
+            <i wx:for="{{item.heatIconList}}" wx:key="index" class="iconfont icon-ziyuan" style="color: red;"></i>
+            <i wx:for="{{item.notHeatIconList}}" wx:key="index" class="iconfont icon-ziyuan"></i>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>  
+</view>
+<!-- 暂无数据 -->
+<view class="no-data" wx:else>
+  <i class="iconfont icon-zanwushuju" style="font-size: 100rpx; opacity: 0.5;"></i>
+</view>

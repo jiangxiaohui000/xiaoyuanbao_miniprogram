@@ -20,7 +20,8 @@
     "pages/personalInformation/personalInformation",
     "pages/postProduct/postProduct",
     "pages/login/login",
-    "pages/soldProducts/soldProducts"
+    "pages/soldProducts/soldProducts",
+    "pages/collectedProducts/collectedProducts"
   ],
   "tabBar": {
     "color": "#7A7E83",

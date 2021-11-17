@@ -223,7 +223,7 @@ Page({
 				fail: e => {
 					console.log(e, 'getUserInfo-fail');
 					wx.showToast({
-						title: '服务繁忙，请稍后再试...',
+						title: '服务繁忙，请稍后再试~',
 						icon: 'none',
 					})
 				},
@@ -398,7 +398,7 @@ Page({
 										fail: e => {
 											console.log(e, 'error2')
 											wx.showToast({
-												title: '服务繁忙，请稍后再试',
+												title: '服务繁忙，请稍后再试~',
 												icon: 'error'
 											})
 										}
@@ -540,7 +540,7 @@ Page({
 										fail: e => {
 											console.log(e, 'error1')
 											wx.showToast({
-												title: '服务繁忙，请稍后再试',
+												title: '服务繁忙，请稍后再试~',
 												icon: 'error'
 											})
 										}
@@ -580,7 +580,7 @@ Page({
 										fail: e => {
 											console.log(e, 'error2')
 											wx.showToast({
-												title: '服务繁忙，请稍后再试',
+												title: '服务繁忙，请稍后再试~',
 												icon: 'error'
 											})
 										}
@@ -618,7 +618,7 @@ Page({
 										fail: e => {
 											console.log(e, 'error3')
 											wx.showToast({
-												title: '服务繁忙，请稍后再试',
+												title: '服务繁忙，请稍后再试~',
 												icon: 'error'
 											})
 										}
@@ -653,6 +653,10 @@ Page({
 		if(targetItem.value === 0) { // 卖出
 			wx.navigateTo({
 				url: '../soldProducts/soldProducts',
+			});
+		} else if(targetItem.value === 1) { // 收藏
+			wx.navigateTo({
+				url: '../collectedProducts/collectedProducts',
 			});
 		}
 	},

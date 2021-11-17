@@ -202,7 +202,7 @@ Page({
             fail: () => {
               wx.showModal({
                 title: '提示',
-                content: '位置服务繁忙，请再试一次~',
+                content: '服务繁忙，请稍后再试~',
                 showCancel: false,
                 confirmText: '好的~'
               })
@@ -302,8 +302,21 @@ Page({
   calculatingHeat(item) {
     const heatIconList = [];
     const notHeatIconList = [];
-    heatIconList.length = item.heat;
-    notHeatIconList.length = 5 - item.heat;
+    let heat = 0;
+    const collectedArrLength = item.isCollected.length;
+    if(collectedArrLength > 0 && collectedArrLength <= 10) {
+      heat = 1;
+    } else if(collectedArrLength > 10 && collectedArrLength <= 20) {
+      heat = 2;
+    } else if(collectedArrLength > 20 && collectedArrLength <= 30) {
+      heat = 3;
+    } else if(collectedArrLength > 30 && collectedArrLength <= 40) {
+      heat = 4;
+    } else if(collectedArrLength > 40) {
+      heat = 5;
+    }
+    heatIconList.length = heat;
+    notHeatIconList.length = 5 - heat;
     return {
       heatIconList,
       notHeatIconList,

@@ -57,7 +57,7 @@ Page({
       fail: e => {
         console.log(e, 'getChatsData-error');
         wx.showToast({
-          title: '服务繁忙，请稍后再试...',
+          title: '服务繁忙，请稍后再试~',
           icon: 'none'
         })
       },

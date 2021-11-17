@@ -10,6 +10,7 @@ exports.main = async (event, context) => {
   const db = cloud.database();
   const _ = db.command;
   const result = await db.collection('data_user').where({ uid: _.eq(event.uid) }).get();
+  console.log(result, '9484994')
   const { data } = result;
   return {
     data,
