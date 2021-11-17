@@ -29,6 +29,7 @@ Page({
     showLoading: true,
     isLoaded: false,
     openid: '',
+    isOwn: '0',
   },
 
   onLoad() {
@@ -49,6 +50,17 @@ Page({
     wx.showLoading({ title: '加载中...' });
     this.initData();
   },
+  // onShow() {
+  //   const pages = getCurrentPages(); // 获取页面栈
+	// 	const currPage = pages[pages.length - 1]; // 跳转之后的页面
+	// 	if(currPage.data.hasOperatedCollection) { // 用户修改了收藏
+	// 		this.setData({
+	// 			productsList: [],
+	// 		});
+	// 		wx.showLoading();
+	// 		this.initData();
+	// 	}
+  // },
   // 数据初始化
   initData() {
     wx.cloud.callFunction({
@@ -71,6 +83,7 @@ Page({
             item.currentPrice = newCurrentPrice;
             item.originPrice = newOriginPrice;
             item.displayImg = item.img[0];
+            item.isOwn = item.uid === app.globalData.openid ? '1' : '0';
           });
           this.setData({
             productsList: [...this.data.productsList, ...data],
@@ -245,7 +258,7 @@ Page({
       wx.stopPullDownRefresh()
     }, 1000);
   },
-  // 触底操作
+  // 触底加载更多
   onReachBottom() {
     if(this.data.showLoading) {
       this.data.pageData.currentPage += 1;
@@ -265,7 +278,7 @@ Page({
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {
-        res.eventChannel.emit('toProductDetail', {_id: targetItem._id, groupId: groupId, from: 'homePage'})
+        res.eventChannel.emit('toProductDetail', { _id: targetItem._id, groupId: groupId, isOwn: targetItem.isOwn });
       }
     });
   },

@@ -52,6 +52,7 @@ Page({
 		authorizationApplicationDialogShow: false,
 		hasUserInfo: false,
 		currentDataId: '',
+		isOwn: '0',
 	},
 	onLoad: function() {
 		if (!wx.cloud) {
@@ -70,7 +71,6 @@ Page({
 		const avatarUrl = wx.getStorageSync('avatarUrl');
 		const nickName = wx.getStorageSync('nickName');
 		this.data.hasUserInfo = (!!avatarUrl && !!nickName);
-		console.log(avatarUrl, nickName, this.data.hasUserInfo, 'user-info');
 		openid && (this.data.openid = openid);
 		!openid && this.login(); // 微信账号登录
 		if(this.data.openid) { // 已登录
@@ -92,23 +92,26 @@ Page({
 	onShow() {
 		const pages = getCurrentPages(); // 获取页面栈
 		const currPage = pages[pages.length - 1]; // 跳转之后的页面
-		if(currPage.data.postSuccess || currPage.data.isResold) { // 发布商品、重新卖
-			this.setData({
-				productsList: [],
-			});
+		this.data.pageData.currentPage = 1;
+		this.data.productsList = [];
+		if(currPage.data.postSuccess) { // 发布商品
 			wx.showLoading();
-			this.initData();
+			this.getReleasedData();
+		} else if(currPage.data.isResold) { // 重新卖
+			wx.showLoading();
+			this.getReleasedData();
+			this.getSoldData();
 		}
 	},
 	// 数据初始化
 	initData() {
-		// 查询发布的商品
 		const promise1 = wx.cloud.callFunction({ // 列表展示的
 			name: 'getProductsData',
 			data: {
 				pageData: this.data.pageData,
 				uid: this.data.openid,
 				isSold: '0',
+				isDeleted: '0',
 			}
 		});
 		const promise2 = wx.cloud.callFunction({ // 卖出的
@@ -116,6 +119,7 @@ Page({
 			data: {
 				uid: this.data.openid,
 				isSold: '1',
+				isDeleted: '0',
 			}
 		});
 		const promise3 = wx.cloud.callFunction({ // 收藏的
@@ -125,7 +129,7 @@ Page({
 			}
 		});
 		Promise.all([promise1, promise2, promise3]).then(res => {
-			console.log(res, '43rrr')
+			console.log(res, 'init_data')
 			wx.hideLoading();
 			wx.stopPullDownRefresh();
 			if(res && res.length) {
@@ -138,6 +142,7 @@ Page({
 					data.map(item => {
 						item.currentPrice = priceConversion(item.currentPrice);
 						item.displayImg = item.img[0];
+						item.isOwn = item.uid == this.data.openid ? '1' : '0';
 						return item;
 					});
 					this.setData({
@@ -171,6 +176,75 @@ Page({
       });
 		});
 	},
+	// 获取发布的数据
+	getReleasedData() {
+		wx.cloud.callFunction({
+			name: 'getProductsData',
+			data: {
+				pageData: this.data.pageData,
+				uid: this.data.openid,
+				isSold: '0',
+				isDeleted: '0',
+			}
+		}).then(data1 => {
+			console.log(data1, 'data1')
+			wx.hideLoading();
+			if(data1 && data1.result && data1.result.data && data1.result.data.data && data1.result.count && data1.result.count.total) { // 发布的商品
+				const data = data1.result.data.data;
+				const total = data1.result.count.total;
+				data.map(item => {
+					item.currentPrice = priceConversion(item.currentPrice);
+					item.displayImg = item.img[0];
+					return item;
+				});
+				this.setData({
+					productsList: [...this.data.productsList, ...data],
+					postNum: total,
+					showLoading: !!data.length,
+				});
+			}
+		});
+	},
+	// 获取卖出的数据
+	getSoldData() {
+		wx.cloud.callFunction({ // 卖出的
+			name: 'getProductsData',
+			data: {
+				uid: this.data.openid,
+				isSold: '1',
+				isDeleted: '0',
+			}
+		}).then(data2 => {
+			console.log(data2, 'data2')
+			wx.hideLoading();
+			if(data2 && data2.result && data2.result.count) { // 卖出的商品
+				const total = data2.result.count.total;
+				this.data.mineItems[0].num = total;
+				this.setData({
+					mineItems: this.data.mineItems,
+				});
+			}
+		});
+	},
+	// 获取收藏的数据
+	getCollectedData() {
+		wx.cloud.callFunction({ // 收藏的
+			name: 'getUserData',
+			data: {
+				uid: this.data.openid,
+			}
+		}).then(data3 => {
+			console.log(data3, 'data3')
+			wx.hideLoading();
+			if(data3 && data3.result && data3.result.data && data3.result.data.length) {
+				const collectedProducts = data3.result.data[0].collectedProducts;
+				this.data.mineItems[1].num = collectedProducts.length;
+				this.setData({
+					mineItems: this.data.mineItems,
+				});
+			}
+		});
+	},
 	// 登录
 	login() {
 		if(!this.data.openid) { // 如果当前没有openid，才需要调用登录接口
@@ -184,7 +258,7 @@ Page({
 				wx.showToast({ title: '登录成功' });
 				wx.showLoading();
 				this.initData();
-				setTimeout(() => { // 然后判断当前有没有拿到真实的用户信息
+				const timer = setTimeout(() => { // 然后判断当前有没有拿到真实的用户信息
 					if(this.data.hasUserInfo) {
 						this.setData({
 							userInfo: this.data.userInfo,
@@ -195,6 +269,7 @@ Page({
 						});
 					}
 				}, 1000);
+				clearTimeout(timer);
 			}	
 		}
 	},
@@ -204,14 +279,12 @@ Page({
 			wx.getUserProfile({
 				desc: '用于展示用户信息',
 				success: res => {
-					// console.log(res, 'onGetUserInfo');
 					if(res && res.userInfo) {
 						let avatarUrl = res.userInfo.avatarUrl;
 						const nickName = res.userInfo.nickName;
 						avatarUrl = avatarUrl.split("/")
 						avatarUrl[avatarUrl.length - 1] = 0;
 						avatarUrl = avatarUrl.join('/');
-						// console.log(avatarUrl, nickName, 'avatarUrl-nickName');
 						wx.setStorageSync('avatarUrl', avatarUrl);
 						wx.setStorageSync('nickName', nickName);
 						this.setData({
@@ -238,7 +311,7 @@ Page({
 		if(e.detail.index) { // 授权
 			this.onGetUserInfo();
 		} else { // 未授权
-			this.data.userInfo.nickName = this.data.openid ? '校园宝用户' : '点击登录';
+			this.data.userInfo.nickName = this.data.openid ? '已登录用户' : '点击登录';
 			this.setData({
 				userInfo: this.data.userInfo,
 			})
@@ -256,7 +329,7 @@ Page({
 			});
 			return;
 		}
-		wx.chooseImage({ // 选择图片
+		wx.chooseImage({ // 1 选择图片
 			count: 9,
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
@@ -268,17 +341,17 @@ Page({
 				const len = res.tempFilePaths.length;
 				res.tempFilePaths.forEach((item, index) => {
 					filePathArr.push(item);
-					wx.cloud.uploadFile({ // 上传文件
+					wx.cloud.uploadFile({ // 2 上传文件
 						cloudPath: 'temp/' + new Date().getTime() + "-me-" + Math.floor(Math.random() * 1000),
 						filePath: item,
 						success: res => { // 文件上传成功
 							const fileID = res.fileID;
 							fileIdArr.push(fileID);
-							wx.cloud.callFunction({ // 图片安全检查
+							wx.cloud.callFunction({ // 3 图片安全检查
 								name: 'imgSecCheck',
 								data: { img: fileID },
 							}).then(res => {
-								// console.log(res, 'img check')
+								console.log(res, 'img check')
 								imgSecCheckArr.push(res);
 								if(len == index + 1) {
 									if(imgSecCheckArr.every(item => item.result.errCode == 0)) { // 通过
@@ -313,6 +386,10 @@ Page({
 							}).catch(e => {
 								console.log(e, 'imgSecCheck fail');
 								wx.hideLoading();
+								wx.showToast({
+									title: '图片检查失败，请稍后再试',
+									icon: 'error'
+								});
 							})
 						},
 						fail: e => { // 文件上传失败
@@ -327,15 +404,18 @@ Page({
 				});
 			},
 			fail: e => {
-				console.error(e)
+				console.error(e);
+				wx.showToast({
+					title: '未获取到有效图片',
+					icon: 'error'
+				});
 			}
 		})
 	},
 	// 下拉刷新列表
 	onPullDownRefresh: function() {
-		this.setData({
-			productsList: []
-		});
+		this.data.pageData.currentPage = 1;
+		this.data.productsList = [];
 		wx.showLoading();
 		this.initData();
 	},
@@ -343,7 +423,7 @@ Page({
 	productScroll: function() {
     if(this.data.showLoading) {
       this.data.pageData.currentPage += 1;
-      this.initData();
+      this.getReleasedData();
     }
 	},
 	// 商品预览
@@ -352,7 +432,7 @@ Page({
 			wx.navigateTo({
 				url: '../productDetail/productDetail',
 				success: function(res) {
-					res.eventChannel.emit('toProductDetail', {_id: e.currentTarget.dataset.item._id, from: 'me'})
+					res.eventChannel.emit('toProductDetail', { _id: e.currentTarget.dataset.item._id, isOwn: e.currentTarget.dataset.item.isOwn });
 				}
 			});	
 		} else { // 商品下架了
@@ -500,7 +580,7 @@ Page({
 			modifiedPrice: '',
 		});
 	},
-	// 更多 -- 删除 下架 卖出
+	// 更多 -- 卖出 下架 删除
 	more(e) {
 		console.log(e, 'more')
 		if(!e.currentTarget.dataset.item.isOff) {
@@ -527,13 +607,13 @@ Page({
 										success: res => {
 											console.log(res, '9038409jr')
 											if(res && res.result && res.result.status && res.result.status == 200) {
-												this.setData({
-													productsList: [],
-												});
+												this.data.pageData.currentPage = 1;
+												this.data.productsList = [];
 												wx.showLoading();
-												this.initData();
+												this.getReleasedData();
+												this.getSoldData();
 												wx.showToast({
-													title: '恭喜',
+													title: '恭喜~',
 												})
 											}
 										},
@@ -605,14 +685,13 @@ Page({
 										success: res => {
 											console.log(res, '9038409jr')
 											if(res && res.result && res.result.status && res.result.status == 200) {
-												this.setData({
-													productsList: [],
-												});
+												this.data.pageData.currentPage = 1;
+												this.data.productsList = [];
 												wx.showLoading();
-												this.initData();
+												this.getReleasedData();
 												wx.showToast({
 													title: '删除成功',
-												})
+												});
 											}
 										},
 										fail: e => {
@@ -646,7 +725,7 @@ Page({
 			modifiedPrice: money(e.detail.value)
 		});
 	},
-	// 收藏 购买 评价
+	// 卖出 收藏
 	toMineItemDetail: function(e) {
 		console.log('e', e);
 		const targetItem = e.currentTarget.dataset.item;

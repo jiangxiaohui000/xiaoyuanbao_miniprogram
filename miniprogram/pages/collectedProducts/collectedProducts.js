@@ -10,6 +10,7 @@ Page({
   data: {
     productsList: [],
     uid: '',
+    isOwn: '0',
   },
 
   /**
@@ -53,11 +54,12 @@ Page({
                     item.currentPrice = newCurrentPrice;
                     item.originPrice = newOriginPrice;
                     item.displayImg = item.img[0];
+                    item.isOwn = item.uid === this.data.uid ? '1' : '0';
                     return item;
                   });
                   this.setData({
                     productsList: data,
-                  });  
+                  });
                 }
               },
               fail: e => {
@@ -92,7 +94,7 @@ Page({
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {
-        res.eventChannel.emit('toProductDetail', {_id: targetItem._id, groupId: groupId, from: 'homePage'})
+        res.eventChannel.emit('toProductDetail', { _id: targetItem._id, groupId: groupId, isOwn: targetItem.isOwn });
       }
     });
   },
@@ -158,7 +160,11 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-  
+    const pages = getCurrentPages(); // 获取页面栈
+    const prevPage = pages[pages.length - 2]; // 跳转之前的页面
+    prevPage.setData({
+      isResold: this.data.hasResole,
+    });
   },
 
   /**

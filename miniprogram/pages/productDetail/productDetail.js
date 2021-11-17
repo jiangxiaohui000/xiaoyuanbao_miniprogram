@@ -10,10 +10,12 @@ Page({
 		collectedIcon: '',
 		collectedStatus: false,
 		// productTags: [],
-		from: '',
+		isOwn: '0',
 		groupId: '',
 		needAdaptIphoneX: false,
 		_id: '',
+		// originIsCollectedLength: 0,
+		// currentIsCollectedLength: 0,
 	},
 	/**
 	 * 生命周期函数--监听页面加载
@@ -23,7 +25,7 @@ Page({
 		let eventChannel = this.getOpenerEventChannel();
 		eventChannel.on('toProductDetail', (data) => {
 			console.log(data, 'data');
-			data && data.from && this.setData({ from: data.from });
+			data && data.isOwn && this.setData({ isOwn: data.isOwn });
 			data && data.groupId && this.setData({ groupId: data.groupId });
 			data && data._id && this.initData(data._id);
 			data && data._id && (this.data._id = data._id);
@@ -44,6 +46,7 @@ Page({
 				wx.hideLoading()
 				if(res && res.result && res.result.data && res.result.data.data && res.result.data.data.length) {
 					this.data.productInfo = res.result.data.data[0];
+					// this.data.originIsCollectedLength = this.data.productInfo.isCollected.length;
 					this.data.collectedStatus = this.data.productInfo.isCollected.includes(app.globalData.openid);
 					if(this.data.productInfo.isCollected.filter(item => item == app.globalData.openid).length) {
 						this.data.collectedText = '已收藏';
@@ -58,6 +61,7 @@ Page({
 						collectedText: this.data.collectedText,
 						collectedIcon: this.data.collectedIcon,
 						productInfo: this.data.productInfo,
+						// isOwn: this.data.productInfo.uid == app.globalData.openid,
 						// productTags: this.data.productTags,
 					})
 				}
@@ -71,12 +75,13 @@ Page({
 			}
 		})
 	},
-	// 收藏
+	// 收藏与取消收藏
 	collectProducts() {
 		if (this.data.collectedStatus) { // 当前已收藏，点击取消收藏
 			wx.showLoading();
 			const index = this.data.productInfo.isCollected.findIndex(item => item === app.globalData.openid);
 			this.data.productInfo.isCollected.splice(index, 1);
+			// this.data.currentIsCollectedLength = this.data.productInfo.isCollected.length;
 			console.log(this.data.productInfo.isCollected, '4947444')
 			wx.cloud.callFunction({ // 先更新商品数据
 				name: 'updateProductsData',
@@ -148,6 +153,7 @@ Page({
 		} else { // 当前未收藏，点击收藏
 			wx.showLoading();
 			this.data.productInfo.isCollected.push(app.globalData.openid);
+			// this.data.currentIsCollectedLength = this.data.productInfo.isCollected.length;
 			wx.cloud.callFunction({ // 先更新商品数据
 				name: 'updateProductsData',
 				data: {
@@ -216,10 +222,6 @@ Page({
 			});
 		}
 	},
-	// 分享
-	// shareProduct() {
-	// 	this.onShareAppMessage(this.data.productInfo);
-	// },
 	// 聊一聊
 	gotoChatRoom() {
 		const data = this.data.productInfo;
@@ -292,7 +294,11 @@ Page({
 	 * 生命周期函数--监听页面卸载
 	 */
 	onUnload: function () {
-
+		// const pages = getCurrentPages(); // 获取页面栈
+    // const prevPage = pages[pages.length - 2]; // 跳转之前的页面
+    // prevPage.setData({
+    //   hasOperatedCollection: this.data.originIsCollectedLength !== this.data.currentIsCollectedLength,
+    // });
 	},
 
 	/**

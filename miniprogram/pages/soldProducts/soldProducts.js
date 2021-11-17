@@ -13,13 +13,17 @@ Page({
       pageSize: 10,
       currentPage: 1
     },
-		showLoading: false,
+    showLoading: false,
+    hasResole: false,
+    uid: '',
+    isOwn: '0',
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    this.data.uid = app.globalData.openid;
     wx.showLoading();
     this.initData();
   },
@@ -30,7 +34,7 @@ Page({
 			name: 'getProductsData',
 			data: {
 				pageData: this.data.pageData,
-        uid: this.data.openid,
+        uid: this.data.uid,
         isSold: '1',
 			},
 			success: res => {
@@ -41,7 +45,8 @@ Page({
 					const total = res.result.count.total;
 					data.map(item => {
 						item.currentPrice = priceConversion(item.currentPrice);
-						item.displayImg = item.img[0];
+            item.displayImg = item.img[0];
+            item.isOwn = item.uid === this.data.uid ? '1' : '0';
 						return item;
 					});
 					this.setData({
@@ -74,11 +79,11 @@ Page({
   // 前往商品详情页面
   toProductsDetail(e) {
     const targetItem = e.currentTarget.dataset.item;
-    const groupId = app.globalData.openid.substr(0, 6) + targetItem._id.substr(0, 6) + targetItem.uid.substr(0, 6);
+    const groupId = this.data.uid.substr(0, 6) + targetItem._id.substr(0, 6) + targetItem.uid.substr(0, 6);
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {
-        res.eventChannel.emit('toProductDetail', {_id: targetItem._id, groupId: groupId, from: ''})
+        res.eventChannel.emit('toProductDetail', { _id: targetItem._id, groupId: groupId, isOwn: targetItem.isOwn });
       }
     });
   },
@@ -91,7 +96,7 @@ Page({
     wx.showModal({
       title: '交易取消了？',
       content: '若买家与您取消了交易，可重新售卖该宝贝，确定重新卖吗？',
-      success: res => {
+      success: res => { // 确认重新卖
         if(res.confirm) {
           wx.cloud.callFunction({
             name: 'updateProductsData',
@@ -108,6 +113,7 @@ Page({
                 });
                 wx.showLoading();
                 this.initData();
+                this.data.hasResole = true;
               }
             },
             fail: e => {
@@ -151,7 +157,7 @@ Page({
     const pages = getCurrentPages(); // 获取页面栈
     const prevPage = pages[pages.length - 2]; // 跳转之前的页面
     prevPage.setData({
-      isResold: true,
+      isResold: this.data.hasResole,
     });
   },
 
