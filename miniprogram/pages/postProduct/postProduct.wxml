@@ -16,7 +16,7 @@
   </view>
   <!-- 商品图片 -->
   <view class="img-box">
-    <view class="img-box-inner" wx:for="{{imageList}}" wx:key="item">
+    <view class="img-box-inner" wx:for="{{imageList}}" wx:key="*this">
       <image class="img" mode="aspectFit" src="{{item}}" data-item="{{item}}" data-index="{{index}}" bindtap="imgPreview"></image>
       <i class="iconfont icon-gary guanbi" data-index="{{index}}" bindtap="deleteImg"></i>
     </view>
@@ -56,7 +56,7 @@
     <view class="classify-item-container">
         <view
           wx:for="{{classifyList}}"
-          wx:key="item"
+          wx:key="value"
           class="classify-item {{index === selectedClassify ? 'classify-item-active' : ''}}"
           style="min-width: 100rpx;"
           data-item="{{item}}"
@@ -78,7 +78,7 @@
     <view class="classify-item-container">
         <view
           wx:for="{{finenessTagList}}"
-          wx:key="item"
+          wx:key="value"
           class="classify-item {{index === selectedTag ? 'classify-item-active' : ''}}"
           data-item="{{item}}"
           bindtap="chooseTag"

@@ -1,7 +1,7 @@
 <!--pages/collectedProducts/collectedProducts.wxml-->
 <view wx:if="{{productsList.length}}">
   <scroll-view class="collected-container" scroll-y="true" enable-flex="true">
-    <view class="collected-item" wx:for="{{productsList}}" wx:key="id" data-item="{{item}}" bindtap="toProductsDetail">
+    <view class="collected-item" wx:for="{{productsList}}" wx:key="_id" data-item="{{item}}" bindtap="toProductsDetail">
       <!-- 图片 -->
       <view class="img-container">
         <image class="img" mode="aspectFill" lazy-load="true" src="{{item.displayImg}}" alt=""></image>
@@ -16,8 +16,8 @@
           </view>
           <view class="heat-container">
             热度：
-            <i wx:for="{{item.heatIconList}}" wx:key="index" class="iconfont icon-ziyuan" style="color: red;"></i>
-            <i wx:for="{{item.notHeatIconList}}" wx:key="index" class="iconfont icon-ziyuan"></i>
+            <i wx:for="{{item.heatIconList}}" wx:key="*this" class="iconfont icon-ziyuan" style="color: red;"></i>
+            <i wx:for="{{item.notHeatIconList}}" wx:key="*this" class="iconfont icon-ziyuan"></i>
           </view>
         </view>
       </view>

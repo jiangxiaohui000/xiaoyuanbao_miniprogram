@@ -1,31 +1,35 @@
 /* miniprogram/pages/search/index.wxss */
 .container {
   padding: 10rpx 30rpx;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   overflow: hidden;
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
 }
+
 /* 搜索框 */
 .search {
-	width: 94%;
-	height: 70rpx;
-	background-color: #fff;
+  width: 100%;
+  height: 70rpx;
+  background-color: #fff;
   margin-top: 20rpx;
   padding-left: 20rpx;
   display: flex;
-  justify-content: flex-start;
   align-items: center;
   border-radius: 40rpx;
   border: 2rpx solid #07c160;
 }
+
 .search input {
-	height: 80rpx;
-	width: 85%;
-	margin-left: 20rpx;
+  height: 80rpx;
+  width: 85%;
+  margin-left: 20rpx;
   line-height: 100%;
   color: #333;
 }
+
 .clear-icon-container {
   display: flex;
   justify-content: center;
@@ -33,25 +37,30 @@
   width: 70rpx;
   height: 100%;
 }
+
 /* 历史搜索 */
 .search-history {
   margin-top: 30rpx;
   width: 100%;
   overflow: hidden;
 }
+
 .search-history-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20rpx;
 }
+
 .history-title {
   color: #333;
   font-size: 30rpx;
 }
+
 .icon-delete {
   color: #aaa;
 }
+
 .history-tag {
   display: inline-block;
   margin: 0 20rpx 18rpx 0;
@@ -61,15 +70,18 @@
   font-size: 24rpx;
   border-radius: 20rpx;
 }
+
 /* 热搜榜 */
 .hot-search {
   margin-top: 30rpx;
   width: 100%;
   overflow: hidden;
 }
+
 .hot-search-content {
   margin-top: 10rpx;
 }
+
 .hot-search-content-item {
   width: 47%;
   height: 40rpx;
@@ -79,4 +91,139 @@
   font-size: 28rpx;
   padding-left: 20rpx;
   margin-top: 20rpx;
+}
+
+.products-category-container {
+  overflow: hidden;
+  width: 100%;
+  height: 50rpx;
+  line-height: 50rpx;
+  margin-top: 40rpx;
+  position: relative;
+  overflow-x: scroll;
+}
+
+.products-category-container::-webkit-scrollbar {
+  display: none;
+}
+
+.products-category {
+  height: 100%;
+  width: 1050rpx;
+  color: #fff;
+  font-size: 30rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.products-category-item {
+  margin-right: 30rpx;
+  float: left;
+}
+
+.products-category-item:last-child {
+  margin-right: 0;
+}
+
+.active {
+  color: #FF0033;
+}
+
+.products-container {
+  margin-top: 20rpx;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.products-item {
+  height: 180rpx;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  padding-right: 10rpx;
+  display: flex;
+  margin-bottom: 22rpx;
+}
+
+.products-item .img-container {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 20rpx;
+  margin-left: 8rpx;
+  overflow: hidden;
+}
+
+.products-item .img-container .img {
+  width: 100%;
+  height: 100%;
+}
+
+.products-item .text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 3;
+  padding-left: 14rpx;
+}
+
+.products-item .text-container .products-desc {
+  font-size: 24rpx;
+  color: #333;
+  overflow: hidden;
+  line-height: 30rpx;
+  height: 60rpx;
+}
+
+.products-item .text-container .products-price {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.products-item .text-container .products-price button {
+  margin: 0;
+  margin-right: 10rpx;
+  padding: 0 50rpx;
+}
+
+.products-item .text-container .products-price .products-current-price {
+  font-size: 34rpx;
+  color: red;
+  margin-right: 16rpx;
+}
+
+.products-item .text-container .products-price .products-origin-price {
+  font-size: 22rpx;
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+.heat-container {
+  display: flex;
+  align-items: center;
+  font-size: 20rpx;
+  color: #999;
+}
+
+.no-more {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-Null-data::before {
+  font-size: 34rpx;
+  color: #aaa;
+}
+
+.no-more text {
+  color: #aaa;
+  font-size: 24rpx;
+  margin-left: 6rpx;
 }

@@ -18,13 +18,13 @@
 <view class="product-price" wx:if="{{productInfo}}">
   <view class="price-symbol">￥</view>
   <view class="price-num">{{productInfo.currentPrice}}</view>
-  <!-- <view class="product-tag" wx:for="{{productTags}}" wx:key="item">{{item}}</view> -->
+  <!-- <view class="product-tag" wx:for="{{productTags}}" wx:key="*this">{{item}}</view> -->
 </view>
 
 <!-- 商品描述 -->
 <view class="product-description" wx:if="{{productInfo}}" style="padding-bottom: {{needAdaptIphoneX ? '200rpx' : '120rpx'}};">
   <view class="product-desc-text">{{productInfo.desc}}</view>
-  <view wx:for="{{productInfo.img}}" wx:key="index" class="product-detail-img-container">
+  <view wx:for="{{productInfo.img}}" wx:key="*this" class="product-detail-img-container">
     <image src="{{item}}" mode="aspectFit" class="product-detail-img" data-img="{{item}}" bindtap="imgPreview"></image>
   </view>
 </view>

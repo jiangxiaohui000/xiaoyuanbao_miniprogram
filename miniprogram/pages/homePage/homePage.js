@@ -13,7 +13,7 @@ Page({
     productsList: [],
     swiperImgs: [],
     scrollTop: 0,
-    searchKeyWord: 'Apple超级品牌日',
+    searchKeyWord: '',
     currentIndex: 0,
     selectedItemLeft: undefined,
     userAddress: '',

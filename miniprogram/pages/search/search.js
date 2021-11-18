@@ -1,16 +1,26 @@
 // miniprogram/pages/search/index.js
-Page({
+const app = getApp();
+const { priceConversion } = require('../../utils/priceConversion');
 
+Page({
   /**
    * 页面的初始数据
    */
   data: {
     searchValue: '',
-    historyTags: ['纽麦', '教师节', '蓝牙耳机', '双十一狂欢', '苹果手机', 'MacBook Air', '优惠券'],
-    hotSearchData: ['纽麦', '教师节', '蓝牙耳机', '双十一狂欢', '苹果手机', 'MacBook Air', '优惠券', '飞利浦显示器 292e2e', '玉兰油七重功效', 'switch游戏机'],
-    searchKeyWord: 'Apple超级品牌日',
+    historyTags: [],
+    hotSearchData: [],
+    searchKeyWord: '',
     dialogShow: false,
     buttons: [{text: '取消'}, {text: '确定'}],
+    showWhichPage: 'init', // init: 初始化页面 list: 搜索结果页面 noData: 暂无数据页面 loading: 数据加载页面
+    productsList: [],
+    pageData: {
+      pageSize: 20,
+      currentPage: 1
+    },
+    showLoading: true,
+    isLoaded: false,
   },
 
   /**
@@ -70,23 +80,25 @@ Page({
   },
   // 搜索
   confirmSearch(e) {
-    if (this.data.historyTags.length >= 15) {
-      this.data.historyTags.pop();
-    }
-    if (e.detail.value) {
-      if (!this.data.historyTags.includes(e.detail.value)) {
-        this.data.historyTags.unshift(e.detail.value);
-        this.setData({
-          historyTags: this.data.historyTags
-        });
+    const value = e.detail.value;
+    if (value) {
+      this.setData({
+        showWhichPage: 'loading',
+      });
+      // 获取数据
+      this.getData(value);
+      // 处理搜索标签
+      const index = this.data.historyTags.findIndex(item => item === value);
+      if (index > -1) { // 包含在搜索历史中，则把这个标签放在最前面
+        this.data.historyTags.splice(index, 1);
+        this.data.historyTags.unshift(value);
+      } else { // 不包含在搜索历史中，则放进搜索历史中
+        this.data.historyTags.unshift(value);
       };
-    } else {
-      if (!this.data.historyTags.includes(this.data.searchKeyWord)) {
-        this.data.historyTags.unshift(this.data.searchKeyWord);
-        this.setData({
-          historyTags: this.data.historyTags
-        });
-      };
+      this.data.historyTags.length > 15 && this.data.historyTags.pop(); // 搜索生成的标签超过15个，则把最后一个删掉
+      this.setData({
+        historyTags: this.data.historyTags
+      });
     }
   },
   // 输入框输入内容
@@ -101,7 +113,7 @@ Page({
       searchValue: ''
     });
   },
-  // 历史搜索
+  // 点击历史搜索
   chooseTag(e) {
     const value = e.currentTarget.dataset.value;
     const index = e.currentTarget.dataset.index;
@@ -116,7 +128,7 @@ Page({
       historyTags: this.data.historyTags
     });
   },
-  // 清除历史搜索
+  // 清除历史搜索 -- 按钮
   clearHistory() {
     if(this.data.historyTags.length) {
       this.setData({
@@ -124,8 +136,9 @@ Page({
       });
     }
   },
+  // 清除历史搜索 -- 弹窗
   tapDialogButton(e) {
-    if(e.detail.index === 1) {
+    if(e.detail.index === 1) { // 确认
       this.setData({
         historyTags: []
       });
@@ -133,5 +146,96 @@ Page({
     this.setData({
       dialogShow: false
     });
-  }
+  },
+  // 获取商品数据
+  getData(value) {
+    wx.cloud.callFunction({ // 根据搜索内容查找对应的商品数据
+      name: 'search',
+      data: {
+        pageData: this.data.pageData,
+        searchKey: value,
+      },
+      success: res => {
+        console.log(res.result, '44444433333322222')
+        if(res && res.result && res.result.result && res.result.result.length) { // 有数据
+          const data = res.result.result;
+          data.forEach(item => {
+            const { heatIconList, notHeatIconList } = this.calculatingHeat(item);
+            const { newCurrentPrice, newOriginPrice } = this.calculatingPrice(item);
+            item.heatIconList = heatIconList;
+            item.notHeatIconList = notHeatIconList;
+            item.currentPrice = newCurrentPrice;
+            item.originPrice = newOriginPrice;
+            item.displayImg = item.img[0];
+            item.isOwn = item.uid === app.globalData.openid ? '1' : '0';
+          });
+          this.setData({
+            productsList: [...this.data.productsList, ...data],
+            showLoading: !!!data.length,
+            isLoaded: true,
+            showWhichPage: 'list',
+            productsList: data,
+          });
+        } else { // 无数据
+          this.setData({
+            showWhichPage: 'noData',
+          });
+        }
+      },
+      fail: e => {
+        console.log(e, 'error');
+        wx.showToast({
+          title: '服务繁忙，请稍后再试~',
+          icon: 'none',
+        });
+        this.setData({
+          showWhichPage: 'noData',
+        });
+      }
+    });
+  },
+  // 前往商品详情页面
+  toProductsDetail(e) {
+    const targetItem = e.currentTarget.dataset.item;
+    const groupId = app.globalData.openid.substr(0, 6) + targetItem._id.substr(0, 6) + targetItem.uid.substr(0, 6);
+    wx.navigateTo({
+      url: '../productDetail/productDetail',
+      success: function(res) {
+        res.eventChannel.emit('toProductDetail', { _id: targetItem._id, groupId: groupId, isOwn: targetItem.isOwn });
+      }
+    });
+  },
+  // 计算热度
+  calculatingHeat(item) {
+    const heatIconList = [];
+    const notHeatIconList = [];
+    let heat = 0;
+    const collectedArrLength = item.isCollected.length;
+    if(collectedArrLength > 0 && collectedArrLength <= 10) {
+      heat = 1;
+    } else if(collectedArrLength > 10 && collectedArrLength <= 20) {
+      heat = 2;
+    } else if(collectedArrLength > 20 && collectedArrLength <= 30) {
+      heat = 3;
+    } else if(collectedArrLength > 30 && collectedArrLength <= 40) {
+      heat = 4;
+    } else if(collectedArrLength > 40) {
+      heat = 5;
+    }
+    heatIconList.length = heat;
+    notHeatIconList.length = 5 - heat;
+    return {
+      heatIconList,
+      notHeatIconList,
+    }
+  },
+  // 计算价格
+  calculatingPrice(item) {
+    let newCurrentPrice = priceConversion(item.currentPrice);
+    let newOriginPrice = priceConversion(item.originPrice);
+    return {
+      newCurrentPrice,
+      newOriginPrice
+    }
+  },
 })
