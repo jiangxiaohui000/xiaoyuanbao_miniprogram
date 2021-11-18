@@ -27,23 +27,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    wx.cloud.callFunction({
-      name: 'searchKey',
-      data: {
-        uid: app.globalData.openid,
-        operate: 'get',
-      },
-      success: res => {
-        console.log(res, 'kkkkkkk')
-        if(res && res.result && res.result.result && res.result.result.data) {
-          this.setData({
-            historyTags: res.result.result.data
-          })
-        }
-      },
-      fail: e => {
-        console.log(e, 'error')
-      }
+    const searchKey = wx.getStorageSync('searchKey');
+    console.log(searchKey, '909090')
+    this.setData({
+      historyTags: searchKey ? searchKey : [],
     });
   },
 
@@ -72,17 +59,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    wx.cloud.callFunction({
-      name: 'searchKey',
-      data: {
-        uid: app.globalData.openid,
-        operate: '',
-        searchKey: this.data.historyTags
-      },
-      success: res => {
-        console.log(res, 'oooooo')
-      }
-    })
+
   },
 
   /**
@@ -107,7 +84,7 @@ Page({
   },
   // 搜索
   confirmSearch(e) {
-    const value = e.detail.value;
+    const value = typeof e === 'string' ? e : e.detail.value;
     if (value) {
       this.setData({
         showWhichPage: 'loading',
@@ -126,6 +103,7 @@ Page({
       this.setData({
         historyTags: this.data.historyTags
       });
+      wx.setStorage({ key: 'searchKey', data: this.data.historyTags });
     }
   },
   // 输入框输入内容
@@ -144,8 +122,9 @@ Page({
   chooseTag(e) {
     const value = e.currentTarget.dataset.value;
     const index = e.currentTarget.dataset.index;
+    this.confirmSearch(value);
     this.setData({
-      searchValue: value
+      searchValue: value,
     });
     if(index !== 0) {
       this.data.historyTags.splice(index, 1);
@@ -183,7 +162,7 @@ Page({
         searchKey: value,
       },
       success: res => {
-        console.log(res.result, '44444433333322222')
+        console.log(res.result, 'product-data')
         if(res && res.result && res.result.result && res.result.result.length) { // 有数据
           const data = res.result.result;
           data.forEach(item => {

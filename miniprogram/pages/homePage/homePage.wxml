@@ -51,7 +51,7 @@
     <view
       class="products-item"
       wx:for="{{productsList}}"
-      wx:key="_id"
+      wx:key="index"
       data-item="{{item}}"
       bindtap="toProductsDetail">
       <!-- 图片 -->
@@ -68,8 +68,8 @@
           </view>
           <view class="heat-container">
             热度：
-            <i wx:for="{{item.heatIconList}}" wx:key="index" class="iconfont icon-ziyuan" style="color: red;"></i>
-            <i wx:for="{{item.notHeatIconList}}" wx:key="index" class="iconfont icon-ziyuan"></i>
+            <i wx:for="{{item.heatIconList}}" wx:key="*this" class="iconfont icon-ziyuan" style="color: red;"></i>
+            <i wx:for="{{item.notHeatIconList}}" wx:key="*this" class="iconfont icon-ziyuan"></i>
           </view>
         </view>
       </view>

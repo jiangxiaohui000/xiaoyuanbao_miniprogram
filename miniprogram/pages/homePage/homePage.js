@@ -73,6 +73,7 @@ Page({
       },
       success: res => {
         wx.hideLoading();
+        wx.stopPullDownRefresh();
         if(res && res.result && res.result.data && res.result.data.data) {
           const data = res.result.data.data;
           data.forEach(item => {
@@ -104,7 +105,8 @@ Page({
       },
       fail: e => {
         console.log(e);
-        wx.hideLoading()
+        wx.hideLoading();
+        wx.stopPullDownRefresh();
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none'
@@ -254,9 +256,8 @@ Page({
   },
   // 下拉刷新
 	onPullDownRefresh() {
-    setTimeout(() => {
-      wx.stopPullDownRefresh()
-    }, 1000);
+    this.data.pageData.currentPage = 1;
+    this.initData();
   },
   // 触底加载更多
   onReachBottom() {
