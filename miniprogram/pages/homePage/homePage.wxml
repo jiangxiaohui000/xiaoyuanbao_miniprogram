@@ -29,7 +29,7 @@
       interval="3500"
       duration="400"
       circular="true">
-      <swiper-item wx:for="{{swiperImgs}}" wx:key="id">
+      <swiper-item wx:for="{{swiperImgs}}" wx:key="_id">
         <image src="{{item.img}}" mode="scaleToFill" data-item="{{item}}" bindtap="bannerClick"></image>
       </swiper-item>
     </swiper>
@@ -51,7 +51,7 @@
     <view
       class="products-item"
       wx:for="{{productsList}}"
-      wx:key="id"
+      wx:key="_id"
       data-item="{{item}}"
       bindtap="toProductsDetail">
       <!-- 图片 -->

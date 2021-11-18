@@ -1,7 +1,7 @@
 <!--pages/soldProducts/soldProducts.wxml-->
 <view wx:if="{{productsList.length}}">
   <scroll-view class="sold-container" scroll-y="true" enable-flex="true" bindscrolltolower="productScroll">
-    <view class="sold-item" wx:for="{{productsList}}" wx:key="id" data-item="{{item}}" bindtap="toProductsDetail">
+    <view class="sold-item" wx:for="{{productsList}}" wx:key="_id" data-item="{{item}}" bindtap="toProductsDetail">
       <!-- 图片 -->
       <view class="img-container">
         <image class="img" mode="aspectFill" lazy-load="true" src="{{item.displayImg}}" alt=""></image>

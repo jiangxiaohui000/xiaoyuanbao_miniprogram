@@ -2,29 +2,79 @@
 <view class="container">
   <!-- 搜索框 -->
   <view class="search">
+    <!-- 放大镜Icon -->
     <icon type='search' size="14"></icon>
-      <input
-        type="text"
-        value="{{searchValue}}"
-        placeholder="{{searchKeyWord}}"
-        confirm-type="search"
-        bindconfirm="confirmSearch"
-        bindinput="searchInput"
-        focus="true"
-        placeholder-style="font-size: 26rpx; color: #ccc"
-      />
-      <view class="clear-icon-container" bindtap="clearSearchValue">
-        <icon
-          bindtap="clearSearchValue"
-          wx:if="{{searchValue}}"
-          class="icon-cancel"
-          type="clear"
-          size="16"
-        ></icon>
-      </view>
+    <!-- 输入框 -->
+    <input
+      type="text"
+      value="{{searchValue}}"
+      placeholder="{{searchKeyWord}}"
+      confirm-type="search"
+      bindconfirm="confirmSearch"
+      bindinput="searchInput"
+      focus="true"
+      placeholder-style="font-size: 26rpx; color: #ccc"
+    />
+    <!-- 清除按钮 -->
+    <view class="clear-icon-container" bindtap="clearSearchValue">
+      <icon
+        bindtap="clearSearchValue"
+        wx:if="{{searchValue}}"
+        class="icon-cancel"
+        type="clear"
+        size="16"
+      ></icon>
+    </view>
   </view>
+  <!-- loading -->
+  <mp-loading type="circle" show="{{showWhichPage === 'loading'}}"></mp-loading>
+  <!-- 商品列表页 -->
+  <!-- <view class="product-container" wx:if="{{showWhichPage === 'list'}}">
+    <view class="product-item" wx:for="{{productsList}}" wx:key="_id">
+      <image src="{{item.img[0]}}" class="thumbnail"></image>
+      <view class="desc-box">
+        <text>{{item.desc}}</text>
+        <text>{{item.price}}</text>
+      </view>
+    </view>
+  </view> -->
+  <scroll-view class="products-container" wx:if="{{showWhichPage === 'list'}}" scroll-y="true" enable-flex="true">
+    <view
+      class="products-item"
+      wx:for="{{productsList}}"
+      wx:key="_id"
+      data-item="{{item}}"
+      bindtap="toProductsDetail">
+      <!-- 图片 -->
+      <view class="img-container">
+        <image class="img" mode="aspectFill" lazy-load="true" src="{{item.displayImg}}" alt=""></image>
+      </view>
+      <!-- 描述 -->
+      <view class="text-container">
+        <view class="products-desc">{{item.desc}}</view>
+        <view class="products-price">
+          <view>
+            <text class="products-current-price">￥{{item.currentPrice}}</text>
+            <text class="products-origin-price" wx:if="{{item.originPrice}}">￥{{item.originPrice}}</text>
+          </view>
+          <view class="heat-container">
+            热度：
+            <i wx:for="{{item.heatIconList}}" wx:key="index" class="iconfont icon-ziyuan" style="color: red;"></i>
+            <i wx:for="{{item.notHeatIconList}}" wx:key="index" class="iconfont icon-ziyuan"></i>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{isLoaded}}">
+      <mp-loading show="{{showLoading}}" type="circle"></mp-loading>
+      <view class="no-more" wx:if="{{!showLoading}}">
+        <i class="iconfont icon-Null-data"></i>
+        <text>没有更多啦~</text>
+      </view>  
+    </view>
+  </scroll-view>
   <!-- 搜索历史 -->
-  <view class="search-history">
+  <view class="search-history" wx:if="{{historyTags.length && showWhichPage === 'init'}}">
     <view class="search-history-top">
       <view class="history-title">历史搜索</view>
       <i class="iconfont icon-delete" bindtap="clearHistory"></i>
@@ -32,20 +82,20 @@
     <view
       class="history-tag"
       wx:for="{{historyTags}}"
-      wx:key="item"
+      wx:key="*this"
       data-value="{{item}}"
       data-index="{{index}}"
       bindtap="chooseTag"
     >{{item}}</view>
   </view>
   <!-- 热搜榜 -->
-  <view class="hot-search">
+  <view class="hot-search" wx:if="{{hotSearchData.length && showWhichPage === 'init'}}">
     <view style="color: #333; font-size: 30rpx;">热搜榜</view>
     <view class="hot-search-content">
       <view
         class="hot-search-content-item"
         wx:for="{{hotSearchData}}"
-        wx:key="item"
+        wx:key="*this"
         data-value="{{item}}"
         bindtap="chooseTag"
       >{{item}}</view>
@@ -53,7 +103,7 @@
   </view>
   <!-- 清空搜索历史确认框 -->
   <dialog
-    title="清空搜索历史？"
+    title="确定删除所有历史搜索记录？"
     show="{{dialogShow}}"
     mask="true"
     mask-closable="true"
