@@ -13,14 +13,16 @@ Page({
     searchKeyWord: '',
     dialogShow: false,
     buttons: [{text: '取消'}, {text: '确定'}],
-    showWhichPage: 'init', // init: 初始化页面 list: 搜索结果页面 noData: 暂无数据页面 loading: 数据加载页面
+    showWhichPage: 'init', // init: 初始化页面 list: 搜索结果页面 loading: 数据加载页面
     productsList: [],
     pageData: {
-      pageSize: 20,
+      pageSize: 6,
       currentPage: 1
     },
     showLoading: true,
     isLoaded: false,
+    hasSearchedData: true,
+    searchedValue: '',
   },
 
   /**
@@ -73,7 +75,14 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if(this.data.showLoading) {
+      this.data.pageData.currentPage += 1;
+      if(this.data.hasSearchedData) {
+        this.getData(this.data.searchedValue);  
+      } else {
+        this.getAllData();
+      }
+    }
   },
 
   /**
@@ -84,20 +93,20 @@ Page({
   },
   // 搜索
   confirmSearch(e) {
-    const value = typeof e === 'string' ? e : e.detail.value;
-    if (value) {
+    this.data.searchedValue = typeof e === 'string' ? e : e.detail.value;
+    if (this.data.searchedValue) {
       this.setData({
         showWhichPage: 'loading',
       });
       // 获取数据
-      this.getData(value);
+      this.getData(this.data.searchedValue);
       // 处理搜索标签
-      const index = this.data.historyTags.findIndex(item => item === value);
+      const index = this.data.historyTags.findIndex(item => item === this.data.searchedValue);
       if (index > -1) { // 包含在搜索历史中，则把这个标签放在最前面
         this.data.historyTags.splice(index, 1);
-        this.data.historyTags.unshift(value);
+        this.data.historyTags.unshift(this.data.searchedValue);
       } else { // 不包含在搜索历史中，则放进搜索历史中
-        this.data.historyTags.unshift(value);
+        this.data.historyTags.unshift(this.data.searchedValue);
       };
       this.data.historyTags.length > 15 && this.data.historyTags.pop(); // 搜索生成的标签超过15个，则把最后一个删掉
       this.setData({
@@ -148,6 +157,7 @@ Page({
       this.setData({
         historyTags: []
       });
+      wx.setStorage({ key: 'searchKey', data: [] });
     }
     this.setData({
       dialogShow: false
@@ -162,7 +172,11 @@ Page({
         searchKey: value,
       },
       success: res => {
-        console.log(res.result, 'product-data')
+        console.log(res, 'product-data')
+        this.setData({
+          showWhichPage: 'list'
+        });
+        this.data.hasSearchedData = !!res.result.result.length;
         if(res && res.result && res.result.result && res.result.result.length) { // 有数据
           const data = res.result.result;
           data.forEach(item => {
@@ -180,12 +194,9 @@ Page({
             showLoading: !!!data.length,
             isLoaded: true,
             showWhichPage: 'list',
-            productsList: data,
           });
         } else { // 无数据
-          this.setData({
-            showWhichPage: 'noData',
-          });
+          this.getAllData();
         }
       },
       fail: e => {
@@ -194,11 +205,50 @@ Page({
           title: '服务繁忙，请稍后再试~',
           icon: 'none',
         });
-        this.setData({
-          showWhichPage: 'noData',
-        });
       }
     });
+  },
+  // 没有搜索到数据，则展示所有数据
+  getAllData() {
+    wx.cloud.callFunction({
+      name: 'getProductsData',
+      data: {
+        pageData: this.data.pageData,
+        isSold: '0',
+        isOff: '0',
+        isDeleted: '0',
+      },
+      success: res => {
+        this.setData({
+          showWhichPage: 'list'
+        });
+        if(res && res.result && res.result.data && res.result.data.data) {
+          const data = res.result.data.data;
+          data.forEach(item => {
+            const { heatIconList, notHeatIconList } = this.calculatingHeat(item);
+            const { newCurrentPrice, newOriginPrice } = this.calculatingPrice(item);
+            item.heatIconList = heatIconList;
+            item.notHeatIconList = notHeatIconList;
+            item.currentPrice = newCurrentPrice;
+            item.originPrice = newOriginPrice;
+            item.displayImg = item.img[0];
+            item.isOwn = item.uid === app.globalData.openid ? '1' : '0';
+          });
+          this.setData({
+            productsList: [...this.data.productsList, ...data],
+            showLoading: !!!data.length,
+            isLoaded: true,
+          });
+        }
+      },
+      fail: e => {
+        console.log(e);
+        wx.showToast({
+          title: '服务繁忙，请稍后再试~',
+          icon: 'none'
+        })
+      }
+    })
   },
   // 前往商品详情页面
   toProductsDetail(e) {
