@@ -238,4 +238,10 @@ Page({
       newOriginPrice
     }
   },
+  // 取消搜索并返回上一级
+  searchCancel() {
+    wx.navigateBack({
+      delta: 1,
+    })
+  },
 })

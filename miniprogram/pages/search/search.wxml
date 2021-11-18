@@ -1,43 +1,38 @@
 <!--miniprogram/pages/search/index.wxml-->
 <view class="container">
   <!-- 搜索框 -->
-  <view class="search">
-    <!-- 放大镜Icon -->
-    <icon type='search' size="14"></icon>
-    <!-- 输入框 -->
-    <input
-      type="text"
-      value="{{searchValue}}"
-      placeholder="{{searchKeyWord}}"
-      confirm-type="search"
-      bindconfirm="confirmSearch"
-      bindinput="searchInput"
-      focus="true"
-      placeholder-style="font-size: 26rpx; color: #ccc"
-    />
-    <!-- 清除按钮 -->
-    <view class="clear-icon-container" bindtap="clearSearchValue">
-      <icon
-        bindtap="clearSearchValue"
-        wx:if="{{searchValue}}"
-        class="icon-cancel"
-        type="clear"
-        size="16"
-      ></icon>
+  <view class="search-box">
+    <view class="search">
+      <!-- 放大镜Icon -->
+      <icon type='search' size="14"></icon>
+      <!-- 输入框 -->
+      <input
+        type="text"
+        value="{{searchValue}}"
+        placeholder="{{searchKeyWord}}"
+        confirm-type="search"
+        bindconfirm="confirmSearch"
+        bindinput="searchInput"
+        focus="true"
+        placeholder-style="font-size: 26rpx; color: #ccc"
+      />
+      <!-- 清除按钮 -->
+      <view class="clear-icon-container" bindtap="clearSearchValue">
+        <icon
+          bindtap="clearSearchValue"
+          wx:if="{{searchValue}}"
+          class="icon-cancel"
+          type="clear"
+          size="16"
+        ></icon>
+      </view>
     </view>
+    <!-- 取消搜索并返回上一级 -->
+    <view class="search-cancel" bindtap="searchCancel">取消</view>
   </view>
   <!-- loading -->
   <mp-loading type="circle" show="{{showWhichPage === 'loading'}}"></mp-loading>
   <!-- 商品列表页 -->
-  <!-- <view class="product-container" wx:if="{{showWhichPage === 'list'}}">
-    <view class="product-item" wx:for="{{productsList}}" wx:key="_id">
-      <image src="{{item.img[0]}}" class="thumbnail"></image>
-      <view class="desc-box">
-        <text>{{item.desc}}</text>
-        <text>{{item.price}}</text>
-      </view>
-    </view>
-  </view> -->
   <scroll-view class="products-container" wx:if="{{showWhichPage === 'list'}}" scroll-y="true" enable-flex="true">
     <view
       class="products-item"
