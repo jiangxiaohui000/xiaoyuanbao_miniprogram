@@ -27,7 +27,24 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    wx.cloud.callFunction({
+      name: 'searchKey',
+      data: {
+        uid: app.globalData.openid,
+        operate: 'get',
+      },
+      success: res => {
+        console.log(res, 'kkkkkkk')
+        if(res && res.result && res.result.result && res.result.result.data) {
+          this.setData({
+            historyTags: res.result.result.data
+          })
+        }
+      },
+      fail: e => {
+        console.log(e, 'error')
+      }
+    });
   },
 
   /**
@@ -55,7 +72,17 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    wx.cloud.callFunction({
+      name: 'searchKey',
+      data: {
+        uid: app.globalData.openid,
+        operate: '',
+        searchKey: this.data.historyTags
+      },
+      success: res => {
+        console.log(res, 'oooooo')
+      }
+    })
   },
 
   /**
