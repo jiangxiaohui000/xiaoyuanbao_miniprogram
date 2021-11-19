@@ -32,12 +32,19 @@
   </view>
   <!-- loading -->
   <mp-loading type="circle" show="{{showWhichPage === 'loading'}}"></mp-loading>
+  <!-- 没有搜索数据 -->
+  <view class="no-search-data" wx:if="{{!hasSearchedData}}">
+    <i class="iconfont icon-zanwushuju" style="font-size: 100rpx; opacity: 0.5;"></i>
+    <text style="font-size: 28rpx; color: #616161;">没有找到相关商品</text>
+    <text style="font-size: 24rpx; color: #d1d1d1;">“修改筛选条件试试”</text>
+    <text style="font-size: 26rpx; margin-top: 16rpx;">— 猜你喜欢 —</text>
+  </view>
   <!-- 商品列表页 -->
   <scroll-view class="products-container" wx:if="{{showWhichPage === 'list'}}" scroll-y="true" enable-flex="true">
     <view
       class="products-item"
       wx:for="{{productsList}}"
-      wx:key="_id"
+      wx:key="index"
       data-item="{{item}}"
       bindtap="toProductsDetail">
       <!-- 图片 -->

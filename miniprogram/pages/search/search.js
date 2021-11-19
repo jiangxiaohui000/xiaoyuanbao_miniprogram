@@ -16,8 +16,8 @@ Page({
     showWhichPage: 'init', // init: 初始化页面 list: 搜索结果页面 loading: 数据加载页面
     productsList: [],
     pageData: {
-      pageSize: 6,
-      currentPage: 1
+      pageSize: 20,
+      currentPage: 1,
     },
     showLoading: true,
     isLoaded: false,
@@ -30,7 +30,7 @@ Page({
    */
   onLoad: function (options) {
     const searchKey = wx.getStorageSync('searchKey');
-    console.log(searchKey, '909090')
+    console.log(searchKey, 'searchKey');
     this.setData({
       historyTags: searchKey ? searchKey : [],
     });
@@ -78,7 +78,7 @@ Page({
     if(this.data.showLoading) {
       this.data.pageData.currentPage += 1;
       if(this.data.hasSearchedData) {
-        this.getData(this.data.searchedValue);  
+        this.getData(this.data.searchedValue);
       } else {
         this.getAllData();
       }
@@ -97,9 +97,11 @@ Page({
     if (this.data.searchedValue) {
       this.setData({
         showWhichPage: 'loading',
+        productsList: [],
       });
-      // 获取数据
-      this.getData(this.data.searchedValue);
+      this.data.pageData.currentPage = 1;
+      // 检查是否有搜索数据
+      this.checkData(this.data.searchedValue);
       // 处理搜索标签
       const index = this.data.historyTags.findIndex(item => item === this.data.searchedValue);
       if (index > -1) { // 包含在搜索历史中，则把这个标签放在最前面
@@ -163,6 +165,34 @@ Page({
       dialogShow: false
     });
   },
+  // 检查是否有搜索结果
+  checkData(value) {
+    wx.cloud.callFunction({
+      name: 'search',
+      data: {
+        pageData: this.data.pageData,
+        searchKey: value,
+      },
+      success: res => {
+        console.log(res, 'product-count')
+        if(res && res.result && res.result.count) {
+          const total = res.result.count.total;
+          this.data.hasSearchedData = Boolean(total);
+          this.data.hasSearchedData ? this.getData(value) : this.getAllData();
+          this.setData({
+            hasSearchedData: this.data.hasSearchedData,
+          });
+        }
+      },
+      fail: e => {
+        console.log(e);
+        wx.showToast({
+          title: '服务繁忙，请稍后再试~',
+          icon: 'none'
+        });
+      }
+    })
+  },
   // 获取商品数据
   getData(value) {
     wx.cloud.callFunction({ // 根据搜索内容查找对应的商品数据
@@ -176,9 +206,9 @@ Page({
         this.setData({
           showWhichPage: 'list'
         });
-        this.data.hasSearchedData = !!res.result.result.length;
-        if(res && res.result && res.result.result && res.result.result.length) { // 有数据
+        if(res && res.result && res.result.result && res.result.count) {
           const data = res.result.result;
+          const count = res.result.count.total;
           data.forEach(item => {
             const { heatIconList, notHeatIconList } = this.calculatingHeat(item);
             const { newCurrentPrice, newOriginPrice } = this.calculatingPrice(item);
@@ -191,12 +221,10 @@ Page({
           });
           this.setData({
             productsList: [...this.data.productsList, ...data],
-            showLoading: !!!data.length,
+            showLoading: Boolean(data.length) && count - data.length > 0,
             isLoaded: true,
             showWhichPage: 'list',
           });
-        } else { // 无数据
-          this.getAllData();
         }
       },
       fail: e => {
@@ -219,11 +247,13 @@ Page({
         isDeleted: '0',
       },
       success: res => {
+        console.log(res, 'product-all-data')
         this.setData({
           showWhichPage: 'list'
         });
         if(res && res.result && res.result.data && res.result.data.data) {
           const data = res.result.data.data;
+          const count = res.result.count.total;
           data.forEach(item => {
             const { heatIconList, notHeatIconList } = this.calculatingHeat(item);
             const { newCurrentPrice, newOriginPrice } = this.calculatingPrice(item);
@@ -236,7 +266,7 @@ Page({
           });
           this.setData({
             productsList: [...this.data.productsList, ...data],
-            showLoading: !!!data.length,
+            showLoading: Boolean(data.length) && count - data.length > 0,
             isLoaded: true,
           });
         }
