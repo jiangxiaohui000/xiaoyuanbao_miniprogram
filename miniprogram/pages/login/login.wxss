@@ -23,6 +23,6 @@ page {
   text-align: center;
   line-height: 80rpx;
   color: #fff;
-  background-color: #07c160;
+  background-color: #3CB371;
   font-size: 34rpx;
 }

@@ -57,11 +57,12 @@ page {
   border-radius: 20rpx;
   margin: 0 6rpx 0 0;
   padding: 0;
+  background-color: #3CB371;
 }
 .hidden-search {
   width: 100rpx;
   height: 60rpx;
-  border: 2rpx solid #07c160;
+  border: 2rpx solid #3CB371;
   border-radius: 30rpx;
   position: fixed;
   top: 30rpx;
@@ -220,6 +221,6 @@ page {
 }
 .icon-dingwei::before {
   font-size: 48rpx;
-  color: #07c160;
+  color: #3CB371;
   margin-right: 20rpx;
 }

@@ -18,7 +18,7 @@
 	text-align: center;
 	line-height: 100rpx;
 	border-radius: 50%;
-	background-color: #07c160;
+	background-color: #3CB371;
 }
 
 .sys-message-detail {
@@ -61,7 +61,7 @@
 	width: 16rpx;
 	height: 16rpx;
 	border-radius: 50%;
-	background-color: #07c160;
+	background-color: #3CB371;
 }
 
 .sys-message-time, .message-time {
@@ -170,7 +170,7 @@
 }
 
 .not-login-container button {
-	background-color: #07c160;
+	background-color: #3CB371;
 	color: #fff;
 }
 

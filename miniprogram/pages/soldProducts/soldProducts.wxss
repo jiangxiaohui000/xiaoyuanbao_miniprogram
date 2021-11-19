@@ -54,7 +54,7 @@
 }
 
 .sold-item .resold-button {
-  color: #07c160;
+  color: #3CB371;
 }
 
 .no-data {

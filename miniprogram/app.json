@@ -25,7 +25,7 @@
   ],
   "tabBar": {
     "color": "#7A7E83",
-    "selectedColor": "#07c160",
+    "selectedColor": "#3CB371",
     "borderStyle": "black",
     "backgroundColor": "#ffffff",
     "list": [
@@ -53,7 +53,7 @@
   "window": {
     "backgroundColor": "#ffffff",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#07c160",
+    "navigationBarBackgroundColor": "#3CB371",
     "navigationBarTitleText": "校园宝",
     "navigationBarTextStyle": "white"
   },

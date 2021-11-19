@@ -55,13 +55,12 @@ Page({
 						this.data.collectedText = '收藏';
 						this.data.collectedIcon = 'icon-shoucang';
 					}
-					this.data.productInfo.ctime = dayjs(this.data.productInfo.ctime).format('YYYY-MM-DD HH:mm:ss');
+					this.data.productInfo.ctime = dayjs(this.data.productInfo.ctime).format('YYYY-MM-DD HH:mm');
 					this.data.productInfo.currentPrice = priceConversion(this.data.productInfo.currentPrice);
 					this.setData({
 						collectedText: this.data.collectedText,
 						collectedIcon: this.data.collectedIcon,
 						productInfo: this.data.productInfo,
-						// isOwn: this.data.productInfo.uid == app.globalData.openid,
 						// productTags: this.data.productTags,
 					})
 				}

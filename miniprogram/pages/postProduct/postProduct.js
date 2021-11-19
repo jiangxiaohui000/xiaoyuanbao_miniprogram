@@ -162,7 +162,7 @@ Page({
                     this.setData({
                       resultText: '上传失败，请重试！',
                       toptipsShow: true,
-                      toptipsType: 'info',
+                      toptipsType: 'error',
                     });
                   }
 								}

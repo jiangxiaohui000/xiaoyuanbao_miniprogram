@@ -19,7 +19,7 @@
 }
 .search-cancel {
   font-size: 30rpx;
-  color: #7384A7;
+  color: #3CB371;
   width: 80rpx;
   height: 70rpx;
   line-height: 70rpx;
@@ -32,7 +32,7 @@
   display: flex;
   align-items: center;
   border-radius: 40rpx;
-  border: 2rpx solid #07c160;
+  border: 2rpx solid #3CB371;
 }
 
 .search input {

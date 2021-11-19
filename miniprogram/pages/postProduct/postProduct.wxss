@@ -84,7 +84,7 @@
 }
 .price-input {
   flex: 1;
-  color: #07c160;
+  color: #3CB371;
   font-size: 30rpx;
 }
 .classify {
@@ -131,7 +131,7 @@
   color: #999;
 }
 .classify-item-active {
-  background-color: #07c160;
+  background-color: #3CB371;
   color: #fff;
 }
 .brand-input {
@@ -155,7 +155,7 @@
   height: 80rpx;
   line-height: 80rpx;
   text-align: center;
-  background-color: #07c160;
+  background-color: #3CB371;
   position: fixed;
   left: 0;
   bottom: 0;

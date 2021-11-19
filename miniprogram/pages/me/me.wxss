@@ -11,7 +11,7 @@ page {
   height: 160rpx;
   width: 100%;
   margin-top: 0;
-  background-color: #07c160;
+  background-color: #3CB371;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -27,7 +27,7 @@ page {
   border-radius: 26rpx;
   display: flex;
   align-items: center;
-  background-color: #07c160;
+  background-color: #3CB371;
   justify-content: space-around;
   margin-right: 20rpx;
   border: 2px solid #fff;
@@ -36,6 +36,7 @@ page {
 .user-name {
   font-size: 36rpx;
   margin-bottom: 16rpx;
+  color: #fff;
 }
 .user-info-avatar {
   width: 100rpx;
@@ -199,7 +200,7 @@ page {
 .dialog-box-inner input {
   flex: 1;
   text-align: left;
-  color: #07c160;
+  color: #3CB371;
   border: 1px solid #eee;
   border-radius: 10rpx;
   padding: 5rpx;
@@ -234,7 +235,7 @@ page {
 .icon-gouwujianying::before,
 .icon-pingjia::before {
   font-size: 30rpx;
-  color: #07c160;
+  color: #3CB371;
 }
 .icon-maichu::before {
   font-size: 45rpx;

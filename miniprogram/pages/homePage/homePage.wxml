@@ -17,14 +17,14 @@
     hidden="{{scrollTop > 40 ? false: true}}"
     bindtap="gotoSearch"
   >
-    <icon type='search' size="16" color="#07c160"></icon>
+    <icon type='search' size="16" color="#3CB371"></icon>
   </view>
   <!-- 轮播图 -->
   <view class="banner">
     <swiper
       indicator-dots="true"
       indicator-color="#fff"
-      indicator-active-color="#07c160"
+      indicator-active-color="#3CB371"
       autoplay="true"
       interval="3500"
       duration="400"
