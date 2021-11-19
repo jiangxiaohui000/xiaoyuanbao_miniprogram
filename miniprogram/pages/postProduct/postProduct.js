@@ -175,8 +175,8 @@ Page({
 							console.log(e, 'uploadfile fail');
 							wx.hideLoading();
 							wx.showToast({
-								title: '上传失败，请重试！',
-								icon: 'error'
+								title: '上传失败，请再试一次',
+								icon: 'none'
 							});
 						}
 					})
@@ -314,7 +314,10 @@ Page({
                   data: params,
                   success: res => {
                     console.log(res, 'postProduct-success')
-                    wx.showToast({ title: '发布成功' });
+                    wx.showToast({
+                      title: '发布成功',
+                      icon: 'success',
+                    });
                     const pages = getCurrentPages(); // 获取页面栈
                     const prevPage = pages[pages.length - 2]; // 跳转之前的页面
                     prevPage.setData({

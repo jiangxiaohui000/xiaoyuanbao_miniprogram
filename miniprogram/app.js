@@ -39,8 +39,8 @@ App({
       }).catch(e => {
         console.log(e);
         wx.showToast({
-          title: '登录异常，请稍后再试！',
-          icon: 'error',
+          title: '登录异常，请稍后再试~',
+          icon: 'none',
         })
       })
     }

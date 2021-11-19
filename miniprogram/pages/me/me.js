@@ -255,7 +255,10 @@ Page({
 				this.setData({
 					openid: this.data.openid,
 				});
-				wx.showToast({ title: '登录成功' });
+				wx.showToast({
+					title: '登录成功',
+					icon: 'success',
+				});
 				wx.showLoading();
 				this.initData();
 				const timer = setTimeout(() => { // 然后判断当前有没有拿到真实的用户信息
@@ -388,7 +391,7 @@ Page({
 								wx.hideLoading();
 								wx.showToast({
 									title: '图片检查失败，请稍后再试',
-									icon: 'error'
+									icon: 'none'
 								});
 							})
 						},
@@ -406,8 +409,8 @@ Page({
 			fail: e => {
 				console.error(e);
 				wx.showToast({
-					title: '未获取到有效图片',
-					icon: 'error'
+					title: '未获取到有效图片，请再试一次',
+					icon: 'none'
 				});
 			}
 		})
@@ -472,6 +475,7 @@ Page({
 												});
 												wx.showToast({
 													title: '已上架',
+													icon: 'success',
 												})
 											}
 										},
@@ -479,7 +483,7 @@ Page({
 											console.log(e, 'error2')
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
-												icon: 'error'
+												icon: 'none'
 											})
 										}
 									})
@@ -496,6 +500,7 @@ Page({
 								if(res.confirm) {
 									wx.showToast({
 										title: '删除成功',
+										icon: 'success',
 									})
 								}
 							}
@@ -558,6 +563,7 @@ Page({
 						});
 						wx.showToast({
 							title: '已修改',
+							icon: 'success',
 						})
 					} else {
 						wx.showToast({
@@ -614,6 +620,7 @@ Page({
 												this.getSoldData();
 												wx.showToast({
 													title: '恭喜~',
+													icon: 'none',
 												})
 											}
 										},
@@ -621,7 +628,7 @@ Page({
 											console.log(e, 'error1')
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
-												icon: 'error'
+												icon: 'none'
 											})
 										}
 									})
@@ -654,6 +661,7 @@ Page({
 												});
 												wx.showToast({
 													title: '下架成功',
+													icon: 'success',
 												})
 											}
 										},
@@ -661,7 +669,7 @@ Page({
 											console.log(e, 'error2')
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
-												icon: 'error'
+												icon: 'none',
 											})
 										}
 									})
@@ -691,6 +699,7 @@ Page({
 												this.getReleasedData();
 												wx.showToast({
 													title: '删除成功',
+													icon: 'success',
 												});
 											}
 										},
@@ -698,7 +707,7 @@ Page({
 											console.log(e, 'error3')
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
-												icon: 'error'
+												icon: 'none',
 											})
 										}
 									})

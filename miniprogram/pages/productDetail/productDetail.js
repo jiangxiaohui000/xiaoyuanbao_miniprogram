@@ -119,8 +119,8 @@ Page({
 											productInfo: this.data.productInfo,
 										});
 										wx.showToast({
-											icon: 'success',
 											title: '已取消',
+											icon: 'success',
 										});
 									},
 									fail: e => {
@@ -189,8 +189,8 @@ Page({
 											productInfo: this.data.productInfo,
 										});
 										wx.showToast({
-											icon: 'success',
 											title: '已收藏',
+											icon: 'success',
 										});
 									},
 									fail: e => {

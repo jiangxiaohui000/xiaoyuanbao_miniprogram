@@ -64,8 +64,8 @@ Component({
 						fail: e => {
 							console.error('[上传文件] 失败：', e)
 							wx.showToast({
-								icon: 'none',
 								title: '上传失败',
+								icon: 'error',
 							})
 						},
 						complete: () => {
