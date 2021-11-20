@@ -44,8 +44,8 @@ Page({
 		toptipsType: '',
 		resultText: '',
     pageData: {
-      pageSize: 5,
-      currentPage: 1
+      pageSize: 20,
+      currentPage: 1,
     },
 		showLoading: false,
 		openid: '',
@@ -337,7 +337,7 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
-				wx.showLoading({ title: '努力传输中...' });
+				wx.showLoading({ title: '请稍候...' });
 				const filePathArr = []; // 传给发布页面的文件路径
 				const fileIdArr = []; // 传给发布页面的文件ID
 				const imgSecCheckArr = [];
@@ -350,9 +350,10 @@ Page({
 						success: res => { // 文件上传成功
 							const fileID = res.fileID;
 							fileIdArr.push(fileID);
+							wx.showLoading({ title: '正在传输...' });
 							wx.cloud.callFunction({ // 3 图片安全检查
 								name: 'imgSecCheck',
-								data: { img: fileID },
+								data: { fileID: fileID },
 							}).then(res => {
 								console.log(res, 'img check')
 								imgSecCheckArr.push(res);
@@ -443,7 +444,6 @@ Page({
 			wx.showActionSheet({
 				itemList: ['编辑', '重新上架', '删除'],
 				success: res => {
-					console.log(res, '---')
 					if(res.tapIndex === 0) { // 编辑
 						const params = JSON.stringify(e.currentTarget.dataset.item);
 						wx.navigateTo({
@@ -498,9 +498,33 @@ Page({
 							confirmColor: '#f00',
 							success: res => {
 								if(res.confirm) {
-									wx.showToast({
-										title: '删除成功',
-										icon: 'success',
+									wx.cloud.callFunction({
+										name: 'updateProductsData',
+										data: {
+											uid: this.data.openid,
+											_id: this.data.currentDataId,
+											isDeleted: '1',
+										},
+										success: res => {
+											console.log(res, '9038409jr')
+											if(res && res.result && res.result.status && res.result.status == 200) {
+												this.data.pageData.currentPage = 1;
+												this.data.productsList = [];
+												wx.showLoading();
+												this.getReleasedData();
+												wx.showToast({
+													title: '删除成功',
+													icon: 'success',
+												});
+											}
+										},
+										fail: e => {
+											console.log(e, 'error3')
+											wx.showToast({
+												title: '服务繁忙，请稍后再试~',
+												icon: 'none',
+											})
+										}
 									})
 								}
 							}

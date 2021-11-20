@@ -7,20 +7,16 @@ cloud.init({
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext();
-  const file = await cloud.downloadFile({
-    fileID: event.img
+  const file = await cloud.downloadFile({ // 从云存储空间下载文件
+    fileID: event.fileID
   });
   try {
     const result = await cloud.openapi.security.imgSecCheck({
       media: {
         contentType: 'image/jpeg',
-        value: file.fileContent
+        value: file.fileContent // 文件内容 数据类型：Buffer
       }
     });
-    // cloud.deleteFile({
-    //   fileList: [event.img]
-    // });
     return result;
   } catch (error) {
     return error;

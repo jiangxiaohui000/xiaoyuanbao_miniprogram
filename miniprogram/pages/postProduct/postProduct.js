@@ -121,7 +121,7 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: (res) => {
-				wx.showLoading({ title: '努力传输中...' });
+				wx.showLoading({ title: '请稍候...' });
         const filePathArr = [];
         const fileIdArr = [];
 				const imgSecCheckArr = [];
@@ -134,9 +134,10 @@ Page({
 						success: res => {
               const fileID = res.fileID;
               fileIdArr.push(fileID);
+							wx.showLoading({ title: '正在传输...' });
 							wx.cloud.callFunction({ // 图片安全检查
 								name: 'imgSecCheck',
-								data: { img: fileID },
+								data: { fileID: fileID },
 							}).then(res => {
 								console.log(res, 'img check success')
 								imgSecCheckArr.push(res);

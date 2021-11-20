@@ -24,7 +24,7 @@ Page({
     notHeatIconList: [],
     pageData: {
       pageSize: 20,
-      currentPage: 1
+      currentPage: 1,
     },
     showLoading: true,
     isLoaded: false,

@@ -10,8 +10,8 @@ Page({
   data: {
     productsList: [],
     pageData: {
-      pageSize: 10,
-      currentPage: 1
+      pageSize: 20,
+      currentPage: 1,
     },
     showLoading: false,
     hasResole: false,
