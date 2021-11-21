@@ -7,7 +7,7 @@ Page({
     logged: false,
     takeSession: false,
     requestResult: '',
-    // chatRoomEnvId: 'release-f8415a',
+    chatRoomEnvId: 'xiaoyuanbao',
     chatRoomCollection: 'chatroom',
     chatRoomGroupId: '',
     chatInfo: '',

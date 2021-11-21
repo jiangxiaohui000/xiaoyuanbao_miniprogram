@@ -7,7 +7,7 @@ Page({
   data: {
     productDesc: '',
     imageList: [],
-    releaseDisabled: true,
+    releaseDisabled: true, // 商品描述，图片，价格是必填的，其他选填
     price: '',
     originPrice: '',
     resultText: '',
