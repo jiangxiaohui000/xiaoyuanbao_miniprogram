@@ -29,11 +29,30 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    // 获取历史搜索
     const searchKey = wx.getStorageSync('searchKey');
     console.log(searchKey, 'searchKey');
     this.setData({
       historyTags: searchKey ? searchKey : [],
     });
+    // 获取热搜榜
+    wx.cloud.callFunction({
+      name: 'searchHotKey',
+      success: res => {
+        if(res && res.result && res.result.result && res.result.result.data) {
+          this.setData({
+            hotSearchData: res.result.result.data
+          });
+        }
+      },
+      fail: e => {
+        console.log(e);
+        wx.showToast({
+          title: '服务繁忙，请稍后再试~',
+          icon: 'none',
+        });
+      }
+    })
   },
 
   /**

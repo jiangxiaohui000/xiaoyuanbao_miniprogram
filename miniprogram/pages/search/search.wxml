@@ -97,10 +97,10 @@
       <view
         class="hot-search-content-item"
         wx:for="{{hotSearchData}}"
-        wx:key="*this"
-        data-value="{{item}}"
+        wx:key="index"
+        data-value="{{item.hotKey}}"
         bindtap="chooseTag"
-      >{{item}}</view>
+      >{{item.hotKey}}</view>
     </view>
   </view>
   <!-- 清空搜索历史确认框 -->
