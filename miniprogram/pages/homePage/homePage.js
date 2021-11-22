@@ -47,7 +47,7 @@ Page({
         this.getUserLocation(res, _this); // 获取用户位置信息
       }
     });
-    wx.showLoading({ title: '加载中...' });
+    wx.showLoading();
     this.initData();
   },
   onShow() {
