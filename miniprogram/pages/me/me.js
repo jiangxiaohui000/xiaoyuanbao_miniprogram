@@ -325,10 +325,10 @@ Page({
 		const _this = this;
 		if(!this.data.openid) { // 未登录
 			wx.showModal({
-				title: '提示',
+				title: '未登录',
 				content: '点击左侧登录按钮，登录后继续发布',
 				showCancel: false,
-				confirmText: '我知道啦'
+				confirmText: '我知道了'
 			});
 			return;
 		}
@@ -336,7 +336,8 @@ Page({
 			count: 9,
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
-			success: (res) => {
+			success: res => {
+				console.log(res, 'chooseImage-res')
 				wx.showLoading({ title: '请稍候...' });
 				const filePathArr = []; // 传给发布页面的文件路径
 				const fileIdArr = []; // 传给发布页面的文件ID

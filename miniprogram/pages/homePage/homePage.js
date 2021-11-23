@@ -125,10 +125,10 @@ Page({
         fail (e) { // 未获取到经纬度
           console.log(e, 'fail')
           wx.showModal({
-            title: '小宝没有找到你~',
-            content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
+            title: '未授权位置信息',
+            content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
             showCancel: false,
-            confirmText: '我知道啦'
+            confirmText: '我知道了'
           })
         }
       })
@@ -148,8 +148,8 @@ Page({
         fail: () => { // 用户未同意授权位置信息
           console.log('用户未同意授权位置信息');
           wx.showModal({
-            title: '',
-            content: '糟糕...我不知道您在哪儿，请授权给我位置信息，小宝会为您提供更好的服务',
+            title: '未授权位置信息',
+            content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
             success: (tip) => {
               if (tip.confirm) {
                 wx.openSetting({ // 调起客户端小程序设置界面，返回用户设置的操作结果
@@ -162,10 +162,10 @@ Page({
                       })
                     } else {
                       wx.showModal({
-                        title: '提示',
-                        content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
+                        title: '未授权位置信息',
+                        content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
                         showCancel: false,
-                        confirmText: '我知道啦'
+                        confirmText: '我知道了'
                       })
                     }
                   },
@@ -173,8 +173,8 @@ Page({
                 });
               } else {
                 wx.showModal({
-                  title: '您拒绝了我...',
-                  content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
+                  title: '未授权位置信息',
+                  content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
                   showCancel: false,
                   confirmText: '我知道啦'
                 })
@@ -207,8 +207,8 @@ Page({
                 })
               } else {
                 wx.showModal({
-                  title: '提示',
-                  content: '请点击左上角位置图标，让小宝知道您在哪儿吧~',
+                  title: '未授权位置信息',
+                  content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
                   showCancel: false,
                   confirmText: '好的~'
                 })
@@ -248,6 +248,10 @@ Page({
       },
       fail: e => { // 腾讯位置服务出错
         console.log(e, 'fail')
+        wx.showToast({
+          title: '服务繁忙，请稍后再试~',
+          icon: 'none',
+        });
         _this.setData({
           locationFlash: false
         });

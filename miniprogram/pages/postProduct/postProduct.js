@@ -115,12 +115,11 @@ Page({
   },
   // 上传图片
 	addImage: function () {
-		// 选择图片
-		wx.chooseImage({
+		wx.chooseImage({ // 1,选择图片
 			count: 9 - this.data.imageList.length,
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
-			success: (res) => {
+			success: res => {
 				wx.showLoading({ title: '请稍候...' });
         const filePathArr = [];
         const fileIdArr = [];
@@ -128,21 +127,21 @@ Page({
         const len = res.tempFilePaths.length;
 				res.tempFilePaths.forEach((item, index) => {
 					filePathArr.push(item);
-					wx.cloud.uploadFile({ // 上传文件
+					wx.cloud.uploadFile({ // 2,上传文件
 						cloudPath: 'temp/' + new Date().getTime() + "-post-" + Math.floor(Math.random() * 1000),
 						filePath: item,
 						success: res => {
               const fileID = res.fileID;
               fileIdArr.push(fileID);
 							wx.showLoading({ title: '正在传输...' });
-							wx.cloud.callFunction({ // 图片安全检查
+							wx.cloud.callFunction({ // 3,图片安全检查
 								name: 'imgSecCheck',
 								data: { fileID: fileID },
 							}).then(res => {
 								console.log(res, 'img check success')
 								imgSecCheckArr.push(res);
 								if(len == index + 1) {
-									if(imgSecCheckArr.every(item => item.result.errCode == 0)) { // 通过
+									if(imgSecCheckArr.every(item => item.result.errCode == 0)) { // 检查通过
 										wx.hideLoading();
                     this.data.imageList.push(...filePathArr);
                     this.data.fileIdArr.push(...fileIdArr);
@@ -151,7 +150,7 @@ Page({
                       imgUrls: this.data.imageList,
                       releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
                     })
-									} else if(imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 未通过
+									} else if(imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 检查未通过
 										wx.hideLoading();
 										this.setData({
 											resultText: '不得上传违法违规内容，请重新选择！',
