@@ -114,6 +114,9 @@ Page({
         this.getUserLocation(res, _this); // 获取用户位置信息
       }
     });
+    wx.enableAlertBeforeUnload({
+      message: '确定退出吗？\n退出后已编辑的内容将不会被保存'
+    });
   },
   // 上传图片
 	addImage: function () {
@@ -231,7 +234,7 @@ Page({
 	},
   // 图片预览
   imgPreview(e) {
-    wx.showLoading({ title: '正在打开' });
+    wx.showLoading();
     this.setData({
       currentImgIndex: e.currentTarget.dataset.index,
     });
@@ -496,7 +499,9 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    if(this.data.productDesc || this.data.imageList.length || this.data.price) {
+      wx.disableAlertBeforeUnload();
+    }
   },
 
   /**
