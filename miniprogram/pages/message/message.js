@@ -77,7 +77,7 @@ Page({
   login() {
     app.login(res => this.data.openid = res);
     if(this.data.openid) {
-      wx.showLoading();
+      wx.showLoading({ title: '加载中...' });
       this.initData();
       this.setData({
         openid: this.data.openid

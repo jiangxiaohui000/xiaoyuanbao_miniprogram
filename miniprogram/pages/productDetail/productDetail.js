@@ -21,7 +21,7 @@ Page({
 	 * 生命周期函数--监听页面加载
 	 */
 	onLoad: function () {
-		wx.showLoading();
+		wx.showLoading({ title: '加载中...' });
 		let eventChannel = this.getOpenerEventChannel();
 		eventChannel.on('toProductDetail', (data) => {
 			console.log(data, 'data');

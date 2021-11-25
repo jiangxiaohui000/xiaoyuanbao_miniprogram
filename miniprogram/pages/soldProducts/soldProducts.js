@@ -24,7 +24,7 @@ Page({
    */
   onLoad: function (options) {
     this.data.uid = app.globalData.openid;
-    wx.showLoading();
+    wx.showLoading({ title: '加载中...' });
     this.initData();
   },
 

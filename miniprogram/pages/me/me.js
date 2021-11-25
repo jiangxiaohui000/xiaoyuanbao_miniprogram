@@ -82,7 +82,7 @@ Page({
 				userInfo: this.data.userInfo,
 				authorizationApplicationDialogShow: !this.data.hasUserInfo,
 			});
-			wx.showLoading();
+			wx.showLoading({ title: '加载中...' });
 			this.initData();
 		} else { // 未登录
 			this.data.userInfo.nickName = '点击登录';
