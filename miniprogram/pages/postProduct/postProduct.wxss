@@ -76,15 +76,30 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  font-size: 24rpx;
+}
+.location-noauthorization {
+  color: #999;
+  height: 26rpx;
+  line-height: 26rpx;
+}
+.location-authorization {
+  color: blue;
+  height: 26rpx;
+  width: 110rpx;
+  text-align: center;
+  line-height: 26rpx;
 }
 .location-box {
   display: flex;
+  align-items: center;
 }
 .location-tip {
   padding: 6rpx;
-  font-size: 24rpx;
-  background-color: #dadada;
-  color: #0a0a0a;
+  font-size: 20rpx;
+  background-color: #e2e1e1;
+  color: #424242;
+  border-radius: 10rpx;
 }
 .icon-weizhi::before {
   font-size: 30rpx;

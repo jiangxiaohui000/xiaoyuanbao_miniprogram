@@ -30,10 +30,10 @@
   <view class="location-container-noaddress" wx:if="{{!userAddress}}">
     <view class="location-box">
       <i class="iconfont icon-weizhi"></i>
-      <text class="location-address">位置未授权</text>
-      <text class="location-address" bindtap="getLocation">点击授权</text>  
+      <text class="location-address location-noauthorization">位置未授权</text>
+      <text class="location-address location-authorization" bindtap="authorizeLocation">点击授权</text>  
     </view>
-    <view class="location-tip">tip: 授权位置信息，可以更好地让身边的人看到您发布的宝贝</view>
+    <view class="location-tip">tip: 授权位置信息可以更好地让身边的人看到您发布的宝贝</view>
   </view>
   <!-- 价格 -->
   <view class="price" style="margin-top: 20rpx;">

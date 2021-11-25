@@ -418,7 +418,7 @@ Page({
   },
   // 自动获取用户位置
   getUserLocation(res, _this) {
-    if(res.authSetting['scope.userLocation']) { // 用户默认同意授权位置信息
+    if(res.authSetting['scope.userLocation']) { // 用户授权位置信息
       wx.getLocation({
         type: 'wgs84',
         success: res => { // 先获取到经纬度
@@ -446,6 +446,29 @@ Page({
       fail: e => { // 腾讯位置服务出错
         console.log(e, 'fail')
       }
+    });
+  },
+  // 引导开启位置授权
+  authorizeLocation() {
+    const _this = this;
+    wx.openSetting({
+      success: data => {
+        if (data.authSetting["scope.userLocation"]) { // 已授权位置信息
+          wx.chooseLocation({
+            success: res => {
+              this.useQQMap(res.latitude, res.longitude, _this);
+            }
+          })
+        }
+      },
+      fail: () => {
+        wx.showModal({
+          title: '提示',
+          content: '服务繁忙，请稍后再试~',
+          showCancel: false,
+          confirmText: '好的~'
+        })
+      },
     });
   },
   /**
