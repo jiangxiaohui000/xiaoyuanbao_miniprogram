@@ -104,6 +104,7 @@ Page({
 			this.getReleasedData();
 			this.getSoldData();
 		}
+		wx.disableAlertBeforeUnload();
 	},
 	// 数据初始化
 	initData() {
