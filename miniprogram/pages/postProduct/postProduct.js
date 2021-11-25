@@ -60,7 +60,9 @@ Page({
     brandTagShow: false,
     userAddress: '',
     userInfo: '',
-    fileIdArr: [],
+    fileIdArr: [], // 上传后返回的文件ID
+    tempFilePaths: [], // 图片临时文件
+    imgSecCheckArr: [], // 安全检查结果
   },
   /**
    * 生命周期函数--监听页面加载
@@ -121,71 +123,111 @@ Page({
 			sourceType: ['album', 'camera'],
 			success: res => {
 				wx.showLoading({ title: '请稍候...' });
-        const filePathArr = [];
-        const fileIdArr = [];
-				const imgSecCheckArr = [];
-        const len = res.tempFilePaths.length;
-				res.tempFilePaths.forEach((item, index) => {
-					filePathArr.push(item);
-					wx.cloud.uploadFile({ // 2,上传文件
-						cloudPath: 'temp/' + new Date().getTime() + "-post-" + Math.floor(Math.random() * 1000),
-						filePath: item,
-						success: res => {
-              const fileID = res.fileID;
-              fileIdArr.push(fileID);
-							wx.showLoading({ title: '正在传输...' });
-							wx.cloud.callFunction({ // 3,图片安全检查
-								name: 'imgSecCheck',
-								data: { fileID: fileID },
-							}).then(res => {
-								console.log(res, 'img check success')
-								imgSecCheckArr.push(res);
-								if(len == index + 1) {
-									if(imgSecCheckArr.every(item => item.result.errCode == 0)) { // 检查通过
-										wx.hideLoading();
-                    this.data.imageList.push(...filePathArr);
-                    this.data.fileIdArr.push(...fileIdArr);
-                    this.setData({
-                      imageList: this.data.imageList,
-                      imgUrls: this.data.imageList,
-                      releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
-                    })
-									} else if(imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 检查未通过
-										wx.hideLoading();
-										this.setData({
-											resultText: '不得上传违法违规内容，请重新选择！',
-                      toptipsShow: true,
-                      toptipsType: 'error',
-										});
-									} else {
-                    wx.hideLoading();
-                    this.setData({
-                      resultText: '上传失败，请重试！',
-                      toptipsShow: true,
-                      toptipsType: 'error',
-                    });
-                  }
-								}
-							}).catch(e => {
-								console.log(e, 'imgSecCheck fail');
-								wx.hideLoading();
-							})
-						},
-						fail: e => {
-							console.log(e, 'uploadfile fail');
-							wx.hideLoading();
-							wx.showToast({
-								title: '上传失败，请再试一次',
-								icon: 'none'
-							});
-						}
-					})
+        this.data.imgSecCheckArr = [];
+        const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
+				const tempFilesLength = res.tempFiles.length; // 临时文件数量
+				this.data.tempFilePaths = res.tempFilePaths; // 临时文件路径
+			  tempFiles.forEach((item, index) => {
+          const size = item.size;
+          const path = item.path;
+          if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
+						console.log('图片大于1M')
+						wx.compressImage({ src: path,	quality: 20 }).then(compressResult => {
+							const handledPath = compressResult.tempFilePath;
+							this.imgSecCheck(handledPath, tempFilesLength, index);
+						})
+					} else {
+						console.log('图片小于1M'); // 图片大小小于1M，直接进行安全检查
+						this.imgSecCheck(path, tempFilesLength, index);
+          }
 				});
 			},
 			fail: e => {
 				console.error(e, 'choose img fail');
+				// wx.showToast({
+				// 	title: '未获取到有效图片，请再试一次',
+				// 	icon: 'none'
+				// });
 			}
 		})
+	},
+	// 图片安全检查
+	imgSecCheck(filePath, tempFilesLength, index) {
+		wx.cloud.callFunction({ // 2 图片安全检查
+			name: 'imgSecCheck',
+			data: {
+				imgData: wx.cloud.CDN({
+					type: 'filePath',
+					filePath: filePath
+				})
+			}
+		}).then(secCheckResult => {
+			console.log(secCheckResult, 'img check')
+			this.data.imgSecCheckArr.push(secCheckResult); // 将检查结果放进数组
+			console.log(tempFilesLength, index, this.data.imgSecCheckArr, 'tempFilesLength_index_imgSecCheckArr');
+			if(tempFilesLength == index + 1) { // 等遍历到最后一个数据，然后检查每一个返回的结果
+				if(this.data.imgSecCheckArr.every(item => item.result.errCode === 0)) { // 检查通过
+					this.data.tempFilePaths.forEach((item, index1) => { // 遍历临时文件，将每一个文件上传到云存储
+						this.uploadImg(item, index1, tempFilesLength); // 上传图片
+          });
+				} else if(this.data.imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 检查未通过
+					wx.hideLoading();
+					this.setData({
+						resultText: '不得上传违法违规内容，请重新选择！',
+						toptipsShow: true,
+						toptipsType: 'error',
+					});
+				} else { // 检查异常
+					wx.hideLoading();
+					this.setData({
+						resultText: '服务异常，请稍后再试~',
+						toptipsShow: true,
+						toptipsType: 'error',
+					});
+				}
+			}
+		}).catch(e => {
+			console.log(e, 'imgSecCheck fail');
+			wx.hideLoading();
+			wx.showToast({
+				title: '服务繁忙，请稍后再试~',
+				icon: 'none'
+			});
+		});
+	},
+	// 将图片上传
+	uploadImg(item, index1, tempFilesLength) {
+		wx.cloud.uploadFile({ // 3 上传文件
+			cloudPath: 'temp/' + new Date().getTime() + "-post-" + Math.floor(Math.random() * 1000),
+			filePath: item,
+			success: uploadFileResult => { // 文件上传成功
+				console.log(uploadFileResult, 'uploadFileResult')
+				const fileID = uploadFileResult.fileID;
+				this.data.fileIdArr.push(fileID);
+        wx.hideLoading();
+        console.log(tempFilesLength, 'tempFilesLength')
+        console.log(this.data.fileIdArr, 'fileIdArr')
+        console.log(index1, 'index1')
+        if(tempFilesLength === index1 + 1) { // 等数据遍历结束，全部放进数组
+          console.log(3333333)
+          this.data.imageList.push(...this.data.tempFilePaths);
+          this.setData({
+            imageList: this.data.imageList,
+            imgUrls: this.data.imageList,
+            releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
+          });
+          console.log(this.data.imageList, this.data.fileIdArr, '------------------')
+				}
+			},
+			fail: e => { // 文件上传失败
+				console.log(e, 'uploadfile fail');
+				wx.hideLoading();
+				wx.showToast({
+					title: '上传失败，请稍后再试~',
+					icon: 'error'
+				});
+			}
+		});
 	},
   // 图片预览
   imgPreview(e) {
@@ -284,6 +326,7 @@ Page({
         wx.hideLoading();
         const { errCode } = res.result;
         if(errCode == 0) {
+          console.log(this.data.fileIdArr, '1234567890')
           const tempFileList = [];
           wx.cloud.getTempFileURL({ // 根据fileID获取临时URL
             fileList: this.data.fileIdArr,
