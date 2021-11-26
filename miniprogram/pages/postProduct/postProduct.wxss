@@ -59,7 +59,7 @@
   display: flex;
   align-items: center;
   height: 50rpx;
-  max-width: 450rpx;
+  max-width: 500rpx;
   overflow: hidden;
   background-color: #eee;
   padding: 0 10rpx;

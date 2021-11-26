@@ -108,15 +108,15 @@ Page({
   getUserLocation(res, _this) {
     if(res.authSetting['scope.userLocation']) { // 用户默认同意授权位置信息
       wx.getLocation({
-        type: 'wgs84',
+        type: 'gcj02',
         success: res => { // 先获取到经纬度
           this.useQQMap(res.latitude, res.longitude, _this);
         },
         fail (e) { // 未获取到经纬度
           console.log(e, 'fail')
           wx.showModal({
-            title: '未授权位置信息',
-            content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
+            title: '位置获取失败',
+            content: '请点击左上角位置图标选择一下位置吧~',
             showCancel: false,
             confirmText: '我知道了'
           })
@@ -225,7 +225,7 @@ Page({
     qqmapsdk.reverseGeocoder({ // 再通过腾讯位置服务获取到地理位置
       location: { latitude, longitude },
       success: res => {
-        // console.log('location service', res);
+        console.log('location service', res);
         _this.setData({
           userAddress: res.result.formatted_addresses.recommend,
           locationFlash: false,

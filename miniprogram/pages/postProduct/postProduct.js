@@ -63,6 +63,8 @@ Page({
     fileIdArr: [], // 上传后返回的文件ID
     tempFilePaths: [], // 图片临时文件
     imgSecCheckArr: [], // 安全检查结果
+    longitude: '', // 经度
+    latitude: '', // 纬度
   },
   /**
    * 生命周期函数--监听页面加载
@@ -354,12 +356,15 @@ Page({
                   isDeleted: false,
                   isSold: false,
                   uid: app.globalData.openid,
+                  latitude: (this.data.latitude).toFixed(2),
+                  longitude: (this.data.longitude).toFixed(2),
                 }
                 wx.cloud.callFunction({ // 调用发布接口
                   name: 'postProduct',
                   data: params,
                   success: res => {
                     console.log(res, 'postProduct-success')
+                    wx.disableAlertBeforeUnload();
                     wx.showToast({
                       title: '发布成功',
                       icon: 'success',
@@ -423,8 +428,10 @@ Page({
   getUserLocation(res, _this) {
     if(res.authSetting['scope.userLocation']) { // 用户授权位置信息
       wx.getLocation({
-        type: 'wgs84',
+        type: 'gcj02',
         success: res => { // 先获取到经纬度
+          this.data.latitude = res.latitude;
+          this.data.longitude = res.longitude;
           this.useQQMap(res.latitude, res.longitude, _this);
         },
         fail (e) { // 未获取到经纬度

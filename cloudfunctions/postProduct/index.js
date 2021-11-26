@@ -26,6 +26,8 @@ exports.main = async (event, context) => {
       uid: event.uid,
       avatar: event.avatar,
       nickName: event.nickName,
+      latitude: event.latitude,
+      longitude: event.longitude,
     }
   })
 
