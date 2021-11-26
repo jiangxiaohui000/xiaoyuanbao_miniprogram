@@ -49,17 +49,7 @@ Page({
     });
     wx.showLoading({ title: '加载中...' });
     this.initData();
-  },
-  onShow() {
-  //   const pages = getCurrentPages(); // 获取页面栈
-	// 	const currPage = pages[pages.length - 1]; // 跳转之后的页面
-	// 	if(currPage.data.hasOperatedCollection) { // 用户修改了收藏
-	// 		this.setData({
-	// 			productsList: [],
-	// 		});
-	// 		wx.showLoading();
-	// 		this.initData();
-	// 	}
+		wx.disableAlertBeforeUnload();
   },
   // 数据初始化
   initData() {

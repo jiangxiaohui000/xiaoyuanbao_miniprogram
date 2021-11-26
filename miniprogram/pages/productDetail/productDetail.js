@@ -14,8 +14,6 @@ Page({
 		groupId: '',
 		needAdaptIphoneX: false,
 		_id: '',
-		// originIsCollectedLength: 0,
-		// currentIsCollectedLength: 0,
 	},
 	/**
 	 * 生命周期函数--监听页面加载
@@ -46,7 +44,6 @@ Page({
 				wx.hideLoading()
 				if(res && res.result && res.result.data && res.result.data.data && res.result.data.data.length) {
 					this.data.productInfo = res.result.data.data[0];
-					// this.data.originIsCollectedLength = this.data.productInfo.isCollected.length;
 					this.data.collectedStatus = this.data.productInfo.isCollected.includes(app.globalData.openid);
 					if(this.data.productInfo.isCollected.filter(item => item == app.globalData.openid).length) {
 						this.data.collectedText = '已收藏';
@@ -80,7 +77,6 @@ Page({
 			wx.showLoading();
 			const index = this.data.productInfo.isCollected.findIndex(item => item === app.globalData.openid);
 			this.data.productInfo.isCollected.splice(index, 1);
-			// this.data.currentIsCollectedLength = this.data.productInfo.isCollected.length;
 			console.log(this.data.productInfo.isCollected, '4947444')
 			wx.cloud.callFunction({ // 先更新商品数据
 				name: 'updateProductsData',
@@ -152,7 +148,6 @@ Page({
 		} else { // 当前未收藏，点击收藏
 			wx.showLoading();
 			this.data.productInfo.isCollected.push(app.globalData.openid);
-			// this.data.currentIsCollectedLength = this.data.productInfo.isCollected.length;
 			wx.cloud.callFunction({ // 先更新商品数据
 				name: 'updateProductsData',
 				data: {
@@ -293,11 +288,7 @@ Page({
 	 * 生命周期函数--监听页面卸载
 	 */
 	onUnload: function () {
-		// const pages = getCurrentPages(); // 获取页面栈
-    // const prevPage = pages[pages.length - 2]; // 跳转之前的页面
-    // prevPage.setData({
-    //   hasOperatedCollection: this.data.originIsCollectedLength !== this.data.currentIsCollectedLength,
-    // });
+
 	},
 
 	/**
