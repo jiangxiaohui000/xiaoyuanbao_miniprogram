@@ -15,6 +15,12 @@ exports.main = async (event, context) => {
   event.isSold && params.push({ isSold: event.isSold === '1' });
   event.isOff && params.push({ isOff: event.isOff === '1' });
   event.isDeleted && params.push({ isDeleted: event.isDeleted === '1' });
+  if(event.userLatitude && event.userLongitude) {
+    const param = {
+      location: _.geoNear({ geometry: db.Geo.Point(+event.userLongitude, +event.userLatitude), minDistance: 0, maxDistance: 500 })
+    }
+    params.push(param);
+  }
   if(event._id) {
     if(typeof event._id === 'string') {
       params.push({ _id: event._id });

@@ -37,7 +37,7 @@
     <view wx:if="{{productsList.length}}">
       <!-- 发布商品列表 -->
       <view
-        class="products-item"
+        class="me-products-item"
         wx:for="{{productsList}}"
         wx:key="_id"
         data-item="{{item}}"

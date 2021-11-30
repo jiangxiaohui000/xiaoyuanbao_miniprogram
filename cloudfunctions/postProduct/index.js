@@ -28,6 +28,7 @@ exports.main = async (event, context) => {
       nickName: event.nickName,
       latitude: event.latitude,
       longitude: event.longitude,
+      location: db.Geo.Point(+event.longitude, +event.latitude),
     }
   })
 

@@ -328,9 +328,8 @@ Page({
         name: 'msgSecCheck',
         data: { content: this.data.productDesc }
       }).then(res => {
-        wx.hideLoading();
         const { errCode } = res.result;
-        if(errCode == 0) {
+        if(errCode == 0) { // 信息安全检查成功
           console.log(this.data.fileIdArr, '1234567890')
           const tempFileList = [];
           wx.cloud.getTempFileURL({ // 根据fileID获取临时URL
@@ -356,14 +355,15 @@ Page({
                   isDeleted: false,
                   isSold: false,
                   uid: app.globalData.openid,
-                  latitude: (this.data.latitude).toFixed(2),
-                  longitude: (this.data.longitude).toFixed(2),
+                  latitude: this.data.latitude,
+                  longitude: this.data.longitude,
                 }
                 wx.cloud.callFunction({ // 调用发布接口
                   name: 'postProduct',
                   data: params,
                   success: res => {
                     console.log(res, 'postProduct-success')
+                    wx.hideLoading();
                     wx.disableAlertBeforeUnload();
                     wx.showToast({
                       title: '发布成功',
@@ -383,6 +383,7 @@ Page({
                   },
                   fail: e => {
                     console.log(e);
+                    wx.hideLoading();
                     wx.showToast({
                       title: '服务繁忙，请稍后再试~',
                       icon: 'none'
@@ -393,9 +394,15 @@ Page({
             },
             fail: e => {
               console.log(e);
+              wx.hideLoading();
+              wx.showToast({
+                title: '服务繁忙，请稍后再试~',
+                icon: 'none'
+              });
             }
-          })
-        } else if(errCode == 87014) {
+          });
+        } else if(errCode == 87014) { // 发布违规内容
+          wx.hideLoading();
           this.setData({
             resultText: '不得发布违法违规内容，请重新输入！',
             toptipsShow: true,
@@ -405,6 +412,10 @@ Page({
       }).catch(e => {
         console.log(e, 'msgSecCheck fail')
         wx.hideLoading();
+        wx.showToast({
+          title: '服务繁忙，请稍后再试~',
+          icon: 'none'
+        });
       })
     }
   },
@@ -442,6 +453,7 @@ Page({
   },
   // 使用腾讯位置服务
   useQQMap(latitude, longitude, _this) {
+    console.log(latitude, longitude, 'qqqqqqqqqqq')
     const qqmapsdk = new QQMapWX({
       key: 'A4BBZ-RMHYU-LDQVQ-BZDUV-EOPZO-5BFWK'
     });
@@ -466,6 +478,8 @@ Page({
         if (data.authSetting["scope.userLocation"]) { // 已授权位置信息
           wx.chooseLocation({
             success: res => {
+              this.data.latitude = res.latitude;
+              this.data.longitude = res.longitude;
               this.useQQMap(res.latitude, res.longitude, _this);
             }
           })

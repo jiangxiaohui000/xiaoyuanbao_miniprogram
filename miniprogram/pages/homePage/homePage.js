@@ -30,6 +30,9 @@ Page({
     isLoaded: false,
     openid: '',
     isOwn: '0',
+    userLongitude: '', // 用户经度
+    userLatitude: '', // 用户纬度
+    noRelevantData: false, // 没有相关地理位置数据
   },
 
   onLoad() {
@@ -48,11 +51,10 @@ Page({
       }
     });
     wx.showLoading({ title: '加载中...' });
-    this.initData();
 		wx.disableAlertBeforeUnload();
   },
   // 数据初始化
-  initData() {
+  initData(userLongitude, userLatitude) {
     wx.cloud.callFunction({
       name: 'getProductsData',
       data: {
@@ -60,11 +62,14 @@ Page({
         isSold: '0',
         isOff: '0',
         isDeleted: '0',
+        userLongitude: userLongitude,
+        userLatitude: userLatitude,
       },
       success: res => {
+        console.log(res, 'success-getProductData')
         wx.hideLoading();
         wx.stopPullDownRefresh();
-        if(res && res.result && res.result.data && res.result.data.data) {
+        if(res && res.result && res.result.data && res.result.data.data && res.result.data.data.length) { // 查找到数据
           const data = res.result.data.data;
           data.forEach(item => {
             const { heatIconList, notHeatIconList } = this.calculatingHeat(item);
@@ -91,6 +96,8 @@ Page({
               img: '../../images/banner3.jpg'
             }]
           });
+        } else { // 没有相关数据
+          this.initData('', '');
         }
       },
       fail: e => {
@@ -110,10 +117,14 @@ Page({
       wx.getLocation({
         type: 'gcj02',
         success: res => { // 先获取到经纬度
+          this.data.userLongitude = res.longitude;
+          this.data.userLatitude = res.latitude;
+          this.initData(this.data.userLongitude, this.data.userLatitude);
           this.useQQMap(res.latitude, res.longitude, _this);
         },
         fail (e) { // 未获取到经纬度
           console.log(e, 'fail')
+          this.initData('', '');
           wx.showModal({
             title: '位置获取失败',
             content: '请点击左上角位置图标选择一下位置吧~',
@@ -128,15 +139,20 @@ Page({
         success: () => { // 用户同意授权位置信息
           wx.chooseLocation({
             success: res => {
+              this.data.userLongitude = res.longitude;
+              this.data.userLatitude = res.latitude;
+              this.initData(this.data.userLongitude, this.data.userLatitude);
               this.useQQMap(res.latitude, res.longitude, _this)
             },
-            fail: res => {
-              console.log('打开地图选择位置取消', res);
+            fail: error => {
+              console.log('打开地图选择位置取消', error);
+              this.initData('', '');
             }
           })
         },
         fail: () => { // 用户未同意授权位置信息
           console.log('用户未同意授权位置信息');
+          wx.hideLoading();
           wx.showModal({
             title: '未授权位置信息',
             content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
@@ -147,10 +163,14 @@ Page({
                     if (data.authSetting["scope.userLocation"]) {
                       wx.chooseLocation({
                         success: res => {
+                          this.data.userLongitude = res.longitude;
+                          this.data.userLatitude = res.latitude;
+                          this.initData(this.data.userLongitude, this.data.userLatitude);
                           this.useQQMap(res.latitude, res.longitude, _this);
                         }
                       })
                     } else {
+                      this.initData('', '');
                       wx.showModal({
                         title: '未授权位置信息',
                         content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
@@ -159,9 +179,13 @@ Page({
                       })
                     }
                   },
-                  fail: () => {},
+                  fail: error => {
+                    console.log(error, 'ee');
+                    this.initData('', '');
+                  },
                 });
               } else {
+                this.initData('', '');
                 wx.showModal({
                   title: '未授权位置信息',
                   content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
@@ -183,6 +207,11 @@ Page({
         if(res.authSetting['scope.userLocation']) {
           wx.chooseLocation({
             success: res => {
+              console.log(res, '877748374837648768')
+              this.data.productsList = [];
+              this.data.userLongitude = res.longitude;
+              this.data.userLatitude = res.latitude;
+              this.initData(this.data.userLongitude, this.data.userLatitude);
               this.useQQMap(res.latitude, res.longitude, _this);
             }
           })
@@ -192,10 +221,15 @@ Page({
               if (data.authSetting["scope.userLocation"]) { // 已授权位置信息
                 wx.chooseLocation({
                   success: res => {
+                    this.data.productsList = [];
+                    this.data.userLongitude = res.longitude;
+                    this.data.userLatitude = res.latitude;
+                    this.initData(this.data.userLongitude, this.data.userLatitude);
                     this.useQQMap(res.latitude, res.longitude, _this);
                   }
                 })
               } else {
+                wx.hideLoading();
                 wx.showModal({
                   title: '未授权位置信息',
                   content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
@@ -204,7 +238,9 @@ Page({
                 })
               }
             },
-            fail: () => {
+            fail: error => {
+              console.log(error, 'eeeee');
+              this.initData('', '');
               wx.showModal({
                 title: '提示',
                 content: '服务繁忙，请稍后再试~',
@@ -250,14 +286,15 @@ Page({
   },
   // 下拉刷新
 	onPullDownRefresh() {
+    this.data.productsList = [];
     this.data.pageData.currentPage = 1;
-    this.initData();
+    this.initData(this.data.userLongitude, this.data.userLatitude);
   },
   // 触底加载更多
   onReachBottom() {
     if(this.data.showLoading) {
       this.data.pageData.currentPage += 1;
-      this.initData();  
+      this.initData(this.data.userLongitude, this.data.userLatitude);
     }
   },
   // 页面滚动
