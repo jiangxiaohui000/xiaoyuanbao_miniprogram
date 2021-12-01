@@ -1,0 +1,34 @@
+/* pages/feedback/feedback.wxss */
+.container {
+  width: 100%;
+  padding: 0 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+.contact-input, .content-input {
+  width: calc(100% - 20rpx);
+  border-radius: 10rpx;
+  border: 1px solid #aaa;
+  background-color: #efefef;
+  padding: 10rpx;
+  font-size: 24rpx;
+  color: #888;
+}
+.title-input {
+  height: 60rpx;
+}
+.text {
+  font-size: 26rpx;
+  color: #6a6a6a;
+  margin: 20rpx 10rpx;
+}
+.button {
+  position: fixed;
+  bottom: 30rpx;
+  width: 80%;
+  left: 50%;
+  margin-left: -40%;
+}

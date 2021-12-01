@@ -110,3 +110,6 @@
 
 <!-- 提示 -->
 <mp-toptips msg="{{resultText}}" type="{{toptipsType}}" show="{{toptipsShow}}" delay="3000"></mp-toptips>
+
+<!-- 问题反馈 -->
+<text class="feedback" bindtap="feedback">问题\n反馈</text>

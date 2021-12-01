@@ -805,4 +805,10 @@ Page({
 			});
 		}
 	},
+	// 问题反馈
+	feedback() {
+		wx.navigateTo({
+			url: '../feedback/feedback',
+		});
+	},
 })

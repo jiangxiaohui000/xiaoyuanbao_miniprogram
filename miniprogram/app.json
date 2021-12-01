@@ -21,7 +21,8 @@
     "pages/postProduct/postProduct",
     "pages/login/login",
     "pages/soldProducts/soldProducts",
-    "pages/collectedProducts/collectedProducts"
+    "pages/collectedProducts/collectedProducts",
+    "pages/feedback/feedback"
   ],
   "tabBar": {
     "color": "#7A7E83",

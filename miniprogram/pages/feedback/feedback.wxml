@@ -1,0 +1,16 @@
+<!--pages/feedback/feedback.wxml-->
+<view class="container">
+  <text class="text">内容</text>
+  <textarea
+    class="content-input"
+    rows="100"
+    placeholder="遇到问题？有好的意见或建议？都请告诉我吧~"
+    maxlength="500"
+    confirm-type="done"
+    bindblur="confirmContent"
+    show-confirm-bar="false"
+  ></textarea>
+  <text class="text">联系方式（选填）</text>
+  <input type="text" class="contact-input" placeholder="手机号/邮箱" bindblur="confirmContact" />
+  <button class="button" type="primary" bindtap="submit">提交</button>
+</view>

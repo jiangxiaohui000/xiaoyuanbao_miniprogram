@@ -242,3 +242,19 @@ page {
   font-size: 45rpx;
   color: #fff;
 }
+.feedback {
+  position: fixed;
+  right: 0;
+  bottom: 150rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  line-height: 30rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #aaa;
+  font-size: 20rpx;
+  color: #565656;
+  background-color: #ccc;
+}
