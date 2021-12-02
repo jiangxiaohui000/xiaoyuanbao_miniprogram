@@ -207,31 +207,33 @@ Page({
     const _this = this;
     wx.getSetting({
       success: res => {
-        if(res.authSetting['scope.userLocation']) {
+        if(res.authSetting['scope.userLocation']) { // 用户授权位置
           wx.chooseLocation({
             success: res => {
               console.log(res, '877748374837648768')
               this.data.productsList = [];
+              this.data.initCount = 0;
               this.data.userLongitude = res.longitude;
               this.data.userLatitude = res.latitude;
               this.initData(this.data.userLongitude, this.data.userLatitude);
               this.useQQMap(res.latitude, res.longitude, _this);
             }
           })
-        } else {
+        } else { // 用户未授权位置，打开设置，让用户授权
           wx.openSetting({
             success: data => {
               if (data.authSetting["scope.userLocation"]) { // 已授权位置信息
                 wx.chooseLocation({
                   success: res => {
                     this.data.productsList = [];
+                    this.data.initCount = 0;
                     this.data.userLongitude = res.longitude;
                     this.data.userLatitude = res.latitude;
                     this.initData(this.data.userLongitude, this.data.userLatitude);
                     this.useQQMap(res.latitude, res.longitude, _this);
                   }
                 })
-              } else {
+              } else { // 没有授权位置，弹出提示
                 wx.hideLoading();
                 wx.showModal({
                   title: '未授权位置信息',
@@ -243,6 +245,8 @@ Page({
             },
             fail: error => {
               console.log(error, 'eeeee');
+              this.data.productsList = [];
+              this.data.initCount = 0;
               this.initData('', '');
               wx.showModal({
                 title: '提示',
@@ -291,6 +295,7 @@ Page({
 	onPullDownRefresh() {
     this.data.productsList = [];
     this.data.pageData.currentPage = 1;
+    this.data.initCount = 0;
     this.initData(this.data.userLongitude, this.data.userLatitude);
   },
   // 触底加载更多
