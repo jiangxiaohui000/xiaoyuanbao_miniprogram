@@ -49,6 +49,9 @@ Page({
     wx.getSetting({
       success: res => {
         this.getUserLocation(res, _this); // 获取用户位置信息，然后再去取数据
+        if(!res.authSetting['scope.userLocation']) {
+          app.globalData.userLocation = '';
+        }
       }
     });
     wx.showLoading({ title: '加载中...' });
@@ -269,6 +272,11 @@ Page({
       location: { latitude, longitude },
       success: res => {
         console.log('location service', res);
+        app.globalData.userLocation = {
+          longitude: longitude,
+          latitude: latitude,
+          address: res.result.formatted_addresses.recommend,
+        }
         _this.setData({
           userAddress: res.result.formatted_addresses.recommend,
           locationFlash: false,

@@ -65,6 +65,7 @@ Page({
     imgSecCheckArr: [], // 安全检查结果
     longitude: '', // 经度
     latitude: '', // 纬度
+    userLocation: '',
   },
   /**
    * 生命周期函数--监听页面加载
@@ -83,7 +84,7 @@ Page({
         price: this.data.price,
         originPrice: this.data.originPrice,
         releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
-      })
+      });
     }
     let eventChannel = this.getOpenerEventChannel();
     // 发布
@@ -110,12 +111,19 @@ Page({
         releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
       })
     });
-    const _this = this;
-    wx.getSetting({
-      success: res => {
-        this.getUserLocation(res, _this); // 获取用户位置信息
-      }
-    });
+    if(app.globalData.userLocation) {
+      this.data.userLocation = app.globalData.userLocation;
+      this.setData({
+        userAddress: this.data.userLocation.address,
+      });
+    } else {
+      const _this = this;
+      wx.getSetting({
+        success: res => {
+          this.getUserLocation(res, _this); // 获取用户位置信息
+        }
+      });  
+    }
     wx.enableAlertBeforeUnload({
       message: '确定退出吗？\n退出后已编辑的内容将不会被保存'
     });
@@ -347,7 +355,7 @@ Page({
                   classify: this.data.selectedClassify,
                   brandName: this.data.brandName,
                   finenessTag: this.data.selectedTag,
-                  userAddress: this.data.userAddress,
+                  userAddress: this.data.userLocation ? this.data.userLocation.address : this.data.userAddress,
                   avatar: this.data.userInfo.avatarUrl,
                   nickName: this.data.userInfo.nickName,
                   isCollected: [],
@@ -355,8 +363,8 @@ Page({
                   isDeleted: false,
                   isSold: false,
                   uid: app.globalData.openid,
-                  latitude: this.data.latitude,
-                  longitude: this.data.longitude,
+                  latitude:  this.data.userLocation ? this.data.userLocation.latitude : this.data.latitude,
+                  longitude:  this.data.userLocation ? this.data.userLocation.longitude : this.data.longitude,
                 }
                 wx.cloud.callFunction({ // 调用发布接口
                   name: 'postProduct',
@@ -445,7 +453,7 @@ Page({
           this.data.longitude = res.longitude;
           this.useQQMap(res.latitude, res.longitude, _this);
         },
-        fail (e) { // 未获取到经纬度
+        fail: e => { // 未获取到经纬度
           console.log(e, 'fail')
         }
       })
