@@ -12,6 +12,7 @@
       <button type="primary" class="search-button">搜 索</button>
     </view>
   </view>
+  <!-- 滚动时出现的搜索图标 -->
   <view
     class="hidden-search"
     hidden="{{scrollTop > 40 ? false: true}}"
@@ -46,6 +47,11 @@
       >{{item}}</view>
     </scroll-view>
   </view> -->
+  <!-- 没有用户地理位置相关数据时给出的提示 -->
+  <view class="noRelevantData" wx:if="{{!hasRelevantData}}">
+    <text>您身边1000米内没有相关商品</text>
+    <text>为您推荐以下宝贝</text>
+  </view>
   <!-- 商品列表 -->
   <view class="products-container">
     <view

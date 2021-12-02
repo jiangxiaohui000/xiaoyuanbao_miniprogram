@@ -32,7 +32,8 @@ Page({
     isOwn: '0',
     userLongitude: '', // 用户经度
     userLatitude: '', // 用户纬度
-    noRelevantData: false, // 没有相关地理位置数据
+    hasRelevantData: true, // 有相关地理位置数据
+    initCount: 0, // 统计initData执行的次数，在第一次执行时，判断有没有用户地理位置相关数据
   },
 
   onLoad() {
@@ -47,7 +48,7 @@ Page({
     const _this = this;
     wx.getSetting({
       success: res => {
-        this.getUserLocation(res, _this); // 获取用户位置信息
+        this.getUserLocation(res, _this); // 获取用户位置信息，然后再去取数据
       }
     });
     wx.showLoading({ title: '加载中...' });
@@ -55,6 +56,7 @@ Page({
   },
   // 数据初始化
   initData(userLongitude, userLatitude) {
+    this.data.initCount++;
     wx.cloud.callFunction({
       name: 'getProductsData',
       data: {
@@ -84,6 +86,7 @@ Page({
           this.setData({
             productsList: [...this.data.productsList, ...data],
             showLoading: !!!data.length,
+            hasRelevantData: this.data.initCount === 1 && data.length,
             isLoaded: true,
             swiperImgs: [{
               _id: 1,

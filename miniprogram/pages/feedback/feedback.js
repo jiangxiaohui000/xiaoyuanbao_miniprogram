@@ -75,9 +75,13 @@ Page({
       });
       return;
     }
+    const regexp_phone = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/;
+    const regexp_email = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const result1 = regexp_phone.test(this.data.contactInfo);
+    const result2 = regexp_email.test(this.data.contactInfo);
     const params = {
       content: this.data.content,
-      contactInformation: this.data.contactInfo,
+      contactInformation: result1 || result2 ? this.data.contactInfo : '',
       uid: app.globalData.openid,
     };
     wx.showLoading();

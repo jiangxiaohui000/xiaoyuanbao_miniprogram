@@ -17,7 +17,7 @@ exports.main = async (event, context) => {
   event.isDeleted && params.push({ isDeleted: event.isDeleted === '1' });
   if(event.userLatitude && event.userLongitude) {
     const param = {
-      location: _.geoNear({ geometry: db.Geo.Point(+event.userLongitude, +event.userLatitude), minDistance: 0, maxDistance: 500 })
+      location: _.geoNear({ geometry: db.Geo.Point(+event.userLongitude, +event.userLatitude), minDistance: 0, maxDistance: 1000 })
     }
     params.push(param);
   }
