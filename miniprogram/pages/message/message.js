@@ -5,9 +5,9 @@ const { checkNetworkStatus } = require('../../utils/checkNetworkStatus');
 Page({
   data: {
     openid: '',
-    chatList: [],
+    messageList: [],
     dataIsReady: false,
-    // chatList: [{
+    // messageList: [{
     //   _id: 1,
     //   product_id: 22222,
     //   name: '快乐的小甜甜',
@@ -38,20 +38,20 @@ Page({
   },
   onShow() {
     if(this.data.dataIsReady) {
-      console.log(3333)
+      console.log(11111)
     }
   },
   // 数据初始化
   initData() {
     wx.cloud.callFunction({
-      name: 'getChatsData',
+      name: 'getMessageData',
       data: {},
       success: res => {
         console.log(res, 'message-data')
         this.data.dataIsReady = true;
         const result = res.result.result.data;
         this.setData({
-          chatList: result,
+          messageList: result,
         });
       },
       fail: e => {
@@ -65,12 +65,12 @@ Page({
         wx.hideLoading();
       }
     })
-    this.data.chatList.map(item => {
+    this.data.messageList.map(item => {
       item.mtime = timeFormatter(item.mtime);
       return item;
     });
     this.setData({
-      chatList: this.data.chatList
+      messageList: this.data.messageList
     })
   },
   // 登录
@@ -104,17 +104,17 @@ Page({
   },
   // 删除聊天
   slideDelete(e) {
-    const index = this.data.chatList.findIndex(item => item._id === e.currentTarget.dataset._id);
-    this.data.chatList.splice(index, 1);
+    const index = this.data.messageList.findIndex(item => item._id === e.currentTarget.dataset._id);
+    this.data.messageList.splice(index, 1);
     this.setData({
-      chatList: this.data.chatList
+      messageList: this.data.messageList
     });
   },
   // 设置 movable-view 位移
   setXMove(index, xmove) {
-    this.data.chatList[index].xmove = xmove;
+    this.data.messageList[index].xmove = xmove;
     this.setData({
-      chatList: this.data.chatList
+      messageList: this.data.messageList
     });
   },
   // 处理 movable-view 位移
@@ -155,6 +155,7 @@ Page({
 	// 下拉刷新
 	onPullDownRefresh() {
     console.log(3333)
+    this.initData();
     // wx.stopPullDownRefresh({
     //   success: (res) => {},
     // })

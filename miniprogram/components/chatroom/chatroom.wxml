@@ -24,7 +24,7 @@
       id="item-{{index}}"
       class="message {{openId == item._openid ? 'message__self' : ''}}"
     >
-      <image class="avatar" src="{{item.avatar}}" mode="scaleToFill"></image>
+      <image class="avatar" src="{{item.avatarUrl}}" mode="scaleToFill"></image>
       <view class="main">
         <view class="nickname">{{item.nickName}}</view>
         <block wx:if="{{item.msgType === 'image'}}">
@@ -58,7 +58,6 @@
         confirm-type="send"
         bindconfirm="onConfirmSendText"
         bindfocus="onBindFocus"
-        focus="sendFocus"
         cursor-spacing="20"
         value="{{textInputValue}}"
       ></input>

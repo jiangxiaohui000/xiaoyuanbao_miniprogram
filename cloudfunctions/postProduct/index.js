@@ -24,7 +24,7 @@ exports.main = async (event, context) => {
       classify: event.classify,
       brand: event.brandName,
       uid: event.uid,
-      avatar: event.avatar,
+      avatarUrl: event.avatarUrl,
       nickName: event.nickName,
       latitude: event.latitude,
       longitude: event.longitude,

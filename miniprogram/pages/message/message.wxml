@@ -2,9 +2,9 @@
   <!-- 已登录 -->
   <view wx:if="{{openid}}">
     <!-- 聊天列表 -->
-    <view wx:if="{{chatList.length}}">
+    <view wx:if="{{messageList.length}}">
       <view
-        wx:for="{{chatList}}"
+        wx:for="{{messageList}}"
         wx:key="id"
         class="message-item"
         data-item="{{item}}"

@@ -14,9 +14,6 @@ Component({
     onGetUserInfo: {
       type: null,
     },
-    // getOpenID: {
-    //   type: Object,
-    // },
     openid: String,
   },
 
@@ -28,17 +25,13 @@ Component({
     scrollToMessage: '',
     hasKeyboard: false,
     // keyboardHeight: 0,
-    sendFocus: false,
+    // sendFocus: false,
   },
 
   methods: {
     onGetUserInfo(e) {
       this.properties.onGetUserInfo(e)
     },
-
-    // getOpenID() { 
-    //   return this.properties.getOpenID() 
-    // },
 
     mergeCommonCriteria(criteria) {
       return {
@@ -49,7 +42,6 @@ Component({
     // 初始化数据
     async initRoom() {
       this.try(async () => {
-        // await this.initOpenID()
         this.data.openId = this.properties.openid;
 
         const { envId, collection } = this.properties
@@ -72,15 +64,6 @@ Component({
         } : {})
       }, '初始化失败')
     },
-    // 获取用户openId
-    // async initOpenID() {
-    //   return this.try(async () => {
-    //     const openId = await this.getOpenID()
-    //     this.setData({
-    //       openId,
-    //     })
-    //   }, '初始化 openId 失败')
-    // },
     // 消息监听
     async initWatch(criteria) {
       this.try(() => {
@@ -164,7 +147,7 @@ Component({
         const doc = {
           _id: `${Math.random()}_${Date.now()}`,
           groupId: this.data.groupId,
-          avatar: this.data.userInfo.avatarUrl,
+          avatarUrl: this.data.userInfo.avatarUrl,
           nickName: this.data.userInfo.nickName,
           msgType: 'text',
           textContent: e.detail.value,
@@ -198,7 +181,7 @@ Component({
               }
             } else return chat
           }),
-          sendFocus: true,
+          // sendFocus: true,
         })
       }, '发送文字失败')
     },
@@ -212,7 +195,7 @@ Component({
           const doc = {
             _id: `${Math.random()}_${Date.now()}`,
             groupId: this.data.groupId,
-            avatar: this.data.userInfo.avatarUrl,
+            avatarUrl: this.data.userInfo.avatarUrl,
             nickName: this.data.userInfo.nickName,
             msgType: 'image',
             sendTime: new Date(),

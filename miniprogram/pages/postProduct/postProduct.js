@@ -356,7 +356,7 @@ Page({
                   brandName: this.data.brandName,
                   finenessTag: this.data.selectedTag,
                   userAddress: this.data.userLocation ? this.data.userLocation.address : this.data.userAddress,
-                  avatar: this.data.userInfo.avatarUrl,
+                  avatarUrl: this.data.userInfo.avatarUrl,
                   nickName: this.data.userInfo.nickName,
                   isCollected: [],
                   isOff: false,

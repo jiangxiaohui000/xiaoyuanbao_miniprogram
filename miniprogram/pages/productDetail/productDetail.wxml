@@ -3,7 +3,7 @@
 <!-- 用户信息 -->
 <view class="user-info" wx:if="{{productInfo}}">
   <view class="left-info">
-    <image class="user-avatar" src="{{productInfo.avatar}}" mode="aspectFit"></image>
+    <image class="user-avatar" src="{{productInfo.avatarUrl}}" mode="aspectFit"></image>
     <view class="user-name">
       <text class="user-name-name">{{productInfo.nickName}}</text>
       <text class="user-name-time">发布时间：{{productInfo.ctime}}</text>
