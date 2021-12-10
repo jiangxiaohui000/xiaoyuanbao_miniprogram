@@ -14,6 +14,7 @@ Page({
 		groupId: '',
 		needAdaptIphoneX: false,
 		_id: '',
+		uid: '',
 	},
 	/**
 	 * 生命周期函数--监听页面加载
@@ -30,7 +31,8 @@ Page({
 		});
 		this.setData({
 			needAdaptIphoneX: app.globalData.needAdaptIphoneX
-		})
+		});
+		app.globalData.openid && (this.data.uid = app.globalData.openid);
 	},
 	// 数据初始化
 	initData(id) {
@@ -44,8 +46,8 @@ Page({
 				wx.hideLoading()
 				if(res && res.result && res.result.data && res.result.data.data && res.result.data.data.length) {
 					this.data.productInfo = res.result.data.data[0];
-					this.data.collectedStatus = this.data.productInfo.isCollected.includes(app.globalData.openid);
-					if(this.data.productInfo.isCollected.filter(item => item == app.globalData.openid).length) {
+					this.data.collectedStatus = this.data.productInfo.isCollected.includes(this.data.uid);
+					if(this.data.productInfo.isCollected.filter(item => item == this.data.uid).length) {
 						this.data.collectedText = '已收藏';
 						this.data.collectedIcon = 'icon-shoucang1';
 					} else {
@@ -75,14 +77,14 @@ Page({
 	collectProducts() {
 		if (this.data.collectedStatus) { // 当前已收藏，点击取消收藏
 			wx.showLoading();
-			const index = this.data.productInfo.isCollected.findIndex(item => item === app.globalData.openid);
+			const index = this.data.productInfo.isCollected.findIndex(item => item === this.data.uid);
 			this.data.productInfo.isCollected.splice(index, 1);
 			console.log(this.data.productInfo.isCollected, '4947444')
 			wx.cloud.callFunction({ // 先更新商品数据
 				name: 'updateProductsData',
 				data: {
 					_id: this.data._id,
-					uid: app.globalData.openid,
+					uid: this.data.uid,
 					isCollected: this.data.productInfo.isCollected,
 				},
 				success: res => {
@@ -90,7 +92,7 @@ Page({
 					wx.cloud.callFunction({ // 获取用户数据，拿到用户收藏商品的数据
 						name: 'getUserData',
 						data: {
-							uid: app.globalData.openid
+							uid: this.data.uid
 						},
 						success: res => {
 							console.log(res, '435763735467')
@@ -101,7 +103,7 @@ Page({
 								wx.cloud.callFunction({ // 更新用户收藏商品的数据
 									name: 'updateUserData',
 									data: {
-										uid: app.globalData.openid,
+										uid: this.data.uid,
 										collectedProducts: collectedProducts,
 									},
 									success: res => {
@@ -147,12 +149,12 @@ Page({
 			});
 		} else { // 当前未收藏，点击收藏
 			wx.showLoading();
-			this.data.productInfo.isCollected.push(app.globalData.openid);
+			this.data.productInfo.isCollected.push(this.data.uid);
 			wx.cloud.callFunction({ // 先更新商品数据
 				name: 'updateProductsData',
 				data: {
 					_id: this.data._id,
-					uid: app.globalData.openid,
+					uid: this.data.uid,
 					isCollected: this.data.productInfo.isCollected,
 				},
 				success: res => {
@@ -160,7 +162,7 @@ Page({
 					wx.cloud.callFunction({ // 获取用户数据，拿到用户收藏商品的数据
 						name: 'getUserData',
 						data: {
-							uid: app.globalData.openid,
+							uid: this.data.uid,
 						},
 						success: res => {
 							console.log(res.result.data,'8444434')
@@ -170,7 +172,7 @@ Page({
 								wx.cloud.callFunction({ // 更新用户收藏商品的数据
 									name: 'updateUserData',
 									data: {
-										uid: app.globalData.openid,
+										uid: this.data.uid,
 										collectedProducts: collectedProducts,
 									},
 									success: res => {
@@ -242,9 +244,41 @@ Page({
 		wx.showModal({
 			title: '',
 			content: '确定要删除吗?',
-			success (res) {
+			success: (res) => {
 				if (res.confirm) {
-					console.log('用户点击确定')
+					wx.showLoading({
+						title: '删除中...'
+					});
+					wx.cloud.callFunction({
+						name: 'updateProductsData',
+						data: {
+							uid: this.data.uid,
+							_id: this.data._id,
+							isDeleted: '1',
+						},
+						success: res => {
+							console.log(res, '9038409jr')
+							wx.hideLoading();
+							if(res && res.result && res.result.status && res.result.status == 200) {
+								wx.showToast({
+									title: '删除成功',
+									icon: 'success',
+								});
+								wx.nextTick(() => {
+									wx.navigateBack({
+										delta: 1,
+									});	
+								});
+							}
+						},
+						fail: e => {
+							console.log(e, 'error3')
+							wx.showToast({
+								title: '服务繁忙，请稍后再试~',
+								icon: 'none',
+							})
+						}
+					})
 				}
 			}
 		});
@@ -255,13 +289,7 @@ Page({
 		wx.previewImage({
 			urls: this.data.productInfo.img,
 			current: e.currentTarget.dataset.img,
-			success: res => {
-				console.log(res, 'success')
-			},
-			fail: e => {
-				console.log(e, 'error')
-			}
-		})
+		});
 	},
 	/**
 	 * 生命周期函数--监听页面初次渲染完成

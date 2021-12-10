@@ -338,7 +338,7 @@ Page({
       }).then(res => {
         const { errCode } = res.result;
         if(errCode == 0) { // 信息安全检查成功
-          console.log(this.data.fileIdArr, '1234567890')
+          console.log(this.data.fileIdArr, 'fileIdArr')
           const tempFileList = [];
           wx.cloud.getTempFileURL({ // 根据fileID获取临时URL
             fileList: this.data.fileIdArr,
@@ -531,6 +531,7 @@ Page({
     if(this.data.productDesc || this.data.imageList.length || this.data.price) {
       wx.disableAlertBeforeUnload();
     }
+    this.data.fileIdArr = [];
   },
 
   /**

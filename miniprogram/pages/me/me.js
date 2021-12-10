@@ -398,10 +398,9 @@ Page({
 					});
 				} else { // 检查异常
 					wx.hideLoading();
-					this.setData({
-						resultText: '服务异常，请稍后再试~',
-						toptipsShow: true,
-						toptipsType: 'error',
+					wx.showToast({
+						title: '服务繁忙，请稍后再试~',
+						icon: 'none'
 					});
 				}
 			}
