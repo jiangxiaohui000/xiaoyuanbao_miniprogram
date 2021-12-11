@@ -62,6 +62,7 @@
   height: 60rpx;
   border-radius: 5rpx;
   margin: 15rpx;
+  margin-top: 0;
 }
 
 .body .message .main {

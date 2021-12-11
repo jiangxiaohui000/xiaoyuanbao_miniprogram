@@ -24,9 +24,11 @@
       id="item-{{index}}"
       class="message {{openId == item._openid ? 'message__self' : ''}}"
     >
-      <image class="avatar" src="{{item.avatarUrl}}" mode="scaleToFill"></image>
+      <!-- <image class="avatar" src="{{item.avatarUrl}}" mode="scaleToFill"></image> -->
+      <open-data class="avatar" type="userAvatarUrl"></open-data>
       <view class="main">
-        <view class="nickname">{{item.nickName}}</view>
+        <!-- <view class="nickname">{{item.nickName}}</view> -->
+        <open-data class="nickname" type="userNickName"></open-data>
         <block wx:if="{{item.msgType === 'image'}}">
           <view class="image-wrapper">
             <view class="loading" wx:if="{{item.writeStatus > -1}}">{{item.writeStatus}}%</view>
@@ -51,7 +53,7 @@
 
   <!-- message sender -->
   <view class="footer">
-    <view class="message-sender" wx:if="{{userInfo}}">
+    <view class="message-sender" wx:if="{{openId}}">
       <input 
         class="text-input"
         type="text"
@@ -70,7 +72,7 @@
       ></image>
     </view>
 
-    <view class="message-sender" wx:if="{{!userInfo}}">
+    <view class="message-sender" wx:if="{{!openId}}">
       <button 
         open-type="getUserInfo" 
         bindgetuserinfo="onGetUserInfo"

@@ -5,8 +5,6 @@
     collection="{{chatRoomCollection}}"
     groupId="{{chatRoomGroupId}}"
     chatInfo="{{chatInfo}}"
-    userInfo="{{userInfo}}"
-    onGetUserInfo="{{onGetUserInfo}}"
     openid="{{openid}}"
   ></chatroom>
 </view>

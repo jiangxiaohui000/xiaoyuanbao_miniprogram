@@ -253,8 +253,8 @@ page {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #aaa;
   font-size: 20rpx;
   color: #565656;
-  background-color: #ccc;
+  background-color: #fff;
+  box-shadow: 0 0 10rpx #999;
 }

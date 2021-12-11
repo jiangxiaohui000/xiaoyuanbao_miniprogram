@@ -10,10 +10,13 @@ Component({
     collection: String,
     groupId: String,
     chatInfo: null,
-    userInfo: null,
-    onGetUserInfo: {
-      type: null,
-    },
+    // userInfo: null,
+    // onGetUserInfo: {
+    //   type: null,
+    // },
+    // getOpenID: {
+    //   type: null,
+    // },
     openid: String,
   },
 
@@ -29,9 +32,9 @@ Component({
   },
 
   methods: {
-    onGetUserInfo(e) {
-      this.properties.onGetUserInfo(e)
-    },
+    // onGetUserInfo(e) {
+    //   this.properties.onGetUserInfo(e)
+    // },
 
     mergeCommonCriteria(criteria) {
       return {
@@ -43,7 +46,6 @@ Component({
     async initRoom() {
       this.try(async () => {
         this.data.openId = this.properties.openid;
-
         const { envId, collection } = this.properties
         const db = this.db = wx.cloud.database({
           env: envId,
@@ -57,6 +59,7 @@ Component({
         this.setData({
           chats: initList.reverse(),
           scrollTop: 10000,
+          openId: this.data.openId,
         })
 
         this.initWatch(initList.length ? {
@@ -90,7 +93,6 @@ Component({
         })
       }, '初始化监听失败')
     },
-
     onRealtimeMessageSnapshot(snapshot) {
       console.info(`收到消息`, snapshot)
 
@@ -147,8 +149,8 @@ Component({
         const doc = {
           _id: `${Math.random()}_${Date.now()}`,
           groupId: this.data.groupId,
-          avatarUrl: this.data.userInfo.avatarUrl,
-          nickName: this.data.userInfo.nickName,
+          // avatarUrl: this.data.userInfo.avatarUrl,
+          // nickName: this.data.userInfo.nickName,
           msgType: 'text',
           textContent: e.detail.value,
           sendTime: new Date(),
@@ -183,6 +185,26 @@ Component({
           }),
           // sendFocus: true,
         })
+
+        wx.cloud.callFunction({
+          name: 'addMessageData',
+          data: {
+            groupId: this.data.groupId,
+            productId: this.data.chatInfo.productId,
+            nickName: this.data.chatInfo.nickName,
+            avatarUrl: this.data.chatInfo.avatarUrl,
+            ctime: this.data.chats[0].sendTimeTS,
+            mtime: this.data.chats[this.data.chats.length - 1].sendTimeTS,
+            img: this.data.chatInfo.img,
+            price: this.data.chatInfo.price,
+          },
+          success: res => {
+            console.log(res, '333333322222')
+          },
+          fail: e => {
+            console.log(e, 'errrrrrrr')
+          }
+        })
       }, '发送文字失败')
     },
     // 发送图片
@@ -195,8 +217,8 @@ Component({
           const doc = {
             _id: `${Math.random()}_${Date.now()}`,
             groupId: this.data.groupId,
-            avatarUrl: this.data.userInfo.avatarUrl,
-            nickName: this.data.userInfo.nickName,
+            // avatarUrl: this.data.userInfo.avatarUrl,
+            // nickName: this.data.userInfo.nickName,
             msgType: 'image',
             sendTime: new Date(),
             sendTimeTS: Date.now(), // fallback
@@ -289,7 +311,6 @@ Component({
         })
       }
     },
-
     async try(fn, title) {
       try {
         await fn()
@@ -297,7 +318,6 @@ Component({
         this.showError(title, e)
       }
     },
-
     showError(title, content, confirmText, confirmCallback) {
       console.error(title, content)
       wx.showModal({
@@ -323,7 +343,6 @@ Component({
       }).exec()
     }
   },
-
   ready() {
     global.chatroom = this;
     this.initRoom();

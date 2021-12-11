@@ -221,8 +221,9 @@ Page({
 	// 聊一聊
 	gotoChatRoom() {
 		const data = this.data.productInfo;
+		console.log(data, '---------')
 		wx.navigateTo({
-      url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&nickName=${data.nickName}&groupId=${this.data.groupId}`,
+      url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&nickName=${data.nickName}&avatarUrl=${data.avatarUrl}&groupId=${this.data.groupId}&productId=${data._id}`,
     })
 	},
 	// 编辑

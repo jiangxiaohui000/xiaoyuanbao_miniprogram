@@ -7,30 +7,6 @@ Page({
     openid: '',
     messageList: [],
     dataIsReady: false,
-    // messageList: [{
-    //   _id: 1,
-    //   product_id: 22222,
-    //   name: '快乐的小甜甜',
-    //   ctime: 1624977918502,
-    //   mtime: 1624979958802,
-    //   info: '便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了，便宜点吧，太贵了',
-    //   logo: '../../images/touxiang1.jpeg',
-    //   img: '../../images/touxiang1.jpeg',
-    //   price: 111,
-    //   hasUnreadMessage: false,
-    // }, {
-    //   _id: 2,
-    //   product_id: 22222,
-    //   name: '雨中追逐',
-    //   ctime: 1624632305000,
-    //   mtime: 1624979919802,
-    //   info: '项目中常常有这种需要我们对溢出文本进行显示的操作，单行多行的情况都有的情况都有的情况都有的情况都有',
-    //   logo: '../../images/touxiang2.jpeg',
-    //   img: '../../images/touxiang2.jpeg',
-    //   price: 11,
-    //   hasUnreadMessage: true,
-    //   openid: '',
-    // }],
   },
   onLoad() {
     checkNetworkStatus(); // 网络状态检测
@@ -50,6 +26,9 @@ Page({
         console.log(res, 'message-data')
         this.data.dataIsReady = true;
         const result = res.result.result.data;
+        result.forEach(item => {
+          item.handledMTime = timeFormatter(item.mtime);
+        });
         this.setData({
           messageList: result,
         });
@@ -64,14 +43,7 @@ Page({
       complete: () => {
         wx.hideLoading();
       }
-    })
-    this.data.messageList.map(item => {
-      item.mtime = timeFormatter(item.mtime);
-      return item;
     });
-    this.setData({
-      messageList: this.data.messageList
-    })
   },
   // 登录
   login() {
@@ -94,7 +66,7 @@ Page({
     console.log(e, 'chatItem');
     const item = e.currentTarget.dataset.item;
     wx.navigateTo({
-      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&nickName=${item.nickName}`,
+      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&nickName=${item.nickName}&avatarUrl=${data.avatarUrl}&groupId=${this.data.groupId}&productId=${data._id}`,
       // success: res => {
       //   res.eventChannel.on('chat', res => {
       //     console.log(res, 'emit')
@@ -156,8 +128,5 @@ Page({
 	onPullDownRefresh() {
     console.log(3333)
     this.initData();
-    // wx.stopPullDownRefresh({
-    //   success: (res) => {},
-    // })
 	},
 })

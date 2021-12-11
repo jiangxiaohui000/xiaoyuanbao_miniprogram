@@ -76,7 +76,7 @@ Page({
 		openid && (this.data.openid = openid);
 		!openid && this.login(); // 微信账号登录
 		if(this.data.openid) { // 已登录
-			this.data.userInfo.nickName = this.data.hasUserInfo ? wx.getStorageSync('nickName') : '校园宝用户';
+			this.data.userInfo.nickName = this.data.hasUserInfo ? wx.getStorageSync('nickName') : '微信用户';
 			this.data.userInfo.avatarUrl = this.data.hasUserInfo ? wx.getStorageSync('avatarUrl') : '../../images/user-unlogin.png';
 			this.setData({
 				userInfo: this.data.userInfo,
@@ -318,7 +318,7 @@ Page({
 		if(e.detail.index) { // 授权
 			this.onGetUserInfo();
 		} else { // 未授权
-			this.data.userInfo.nickName = this.data.openid ? '已登录用户' : '点击登录';
+			this.data.userInfo.nickName = this.data.openid ? '微信用户' : '点击登录';
 			this.setData({
 				userInfo: this.data.userInfo,
 			})
