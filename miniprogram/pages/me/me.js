@@ -280,7 +280,7 @@ Page({
 			}	
 		}
 	},
-	// 获取用户信息(nickName / avatarUrl)
+	// 获取用户信息(nickName avatarUrl)
 	onGetUserInfo() {
 		if(!this.data.hasUserInfo) {
 			wx.getUserProfile({

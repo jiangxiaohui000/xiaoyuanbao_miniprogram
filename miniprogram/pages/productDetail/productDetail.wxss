@@ -86,18 +86,12 @@ page {
 }
 .product-detail-img-container {
   width: 100%;
-  height: 500rpx;
   margin-top: 30rpx;
-  border-radius: 10rpx;
-  overflow: hidden;
 }
 .product-detail-img {
   width: 100%;
   height: 100%;
-  /* position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%); */
+  border-radius: 10rpx;
 }
 .features {
   height: 100rpx;
