@@ -3,8 +3,19 @@
     style="width: 100%; height: 100%"
     envId="{{chatRoomEnvId}}"
     collection="{{chatRoomCollection}}"
-    groupId="{{chatRoomGroupId}}"
+    groupId="{{groupId}}"
     chatInfo="{{chatInfo}}"
     openid="{{openid}}"
   ></chatroom>
+
+  <!-- 获取用户信息弹窗 -->
+  <mp-dialog
+    title="授权申请"
+    show="{{authorizationApplicationDialogShow}}"
+    bindbuttontap="tapAuthorizationButton"
+    buttons="{{[{text: '拒绝'}, {text: '授权'}]}}"
+  >
+    <view style="font-size: 26rpx; padding: 20rpx 0;">申请获取您的公开信息（昵称、头像等）</view>
+    <view style="font-size: 26rpx; padding: 20rpx 0;">您的昵称和头像仅用作展示</view>
+  </mp-dialog>
 </view>

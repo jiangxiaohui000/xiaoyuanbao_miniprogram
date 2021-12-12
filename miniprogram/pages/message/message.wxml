@@ -23,10 +23,10 @@
             bindchange="handleMovableChange"
           >
             <!-- 头像 -->
-            <image class="message-head-portrait" src="{{item.avatarUrl}}" mode="aspectFill" lazy-load="false"></image>
+            <image class="message-head-portrait" src="{{item.buyer_avatarUrl}}" mode="aspectFill" lazy-load="false"></image>
             <!-- 昵称 消息 -->
             <view class="message-content">
-              <view class="message-nickName">{{item.nickName}}</view>
+              <view class="message-nickName">{{item.buyer_nickName}}</view>
               <!-- <view class="message-info">{{item.desc}}</view> -->
               <view class="message-time">{{item.handledMTime}}</view>
             </view>

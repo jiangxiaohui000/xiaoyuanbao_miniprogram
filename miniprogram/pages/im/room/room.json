@@ -1,5 +1,6 @@
 {
   "usingComponents": {
+    "mp-dialog": "weui-miniprogram/dialog/dialog",
     "chatroom": "/components/chatroom/chatroom"
   },
   "enablePullDownRefresh": false

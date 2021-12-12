@@ -15,6 +15,7 @@ Page({
   onShow() {
     if(this.data.dataIsReady) {
       console.log(11111)
+      this.initData();
     }
   },
   // 数据初始化
@@ -66,12 +67,7 @@ Page({
     console.log(e, 'chatItem');
     const item = e.currentTarget.dataset.item;
     wx.navigateTo({
-      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&nickName=${item.nickName}&avatarUrl=${data.avatarUrl}&groupId=${this.data.groupId}&productId=${data._id}`,
-      // success: res => {
-      //   res.eventChannel.on('chat', res => {
-      //     console.log(res, 'emit')
-      //   })
-      // }
+      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}`,
     })
   },
   // 删除聊天

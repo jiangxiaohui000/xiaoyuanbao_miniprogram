@@ -10,13 +10,6 @@ Component({
     collection: String,
     groupId: String,
     chatInfo: null,
-    // userInfo: null,
-    // onGetUserInfo: {
-    //   type: null,
-    // },
-    // getOpenID: {
-    //   type: null,
-    // },
     openid: String,
   },
 
@@ -32,10 +25,6 @@ Component({
   },
 
   methods: {
-    // onGetUserInfo(e) {
-    //   this.properties.onGetUserInfo(e)
-    // },
-
     mergeCommonCriteria(criteria) {
       return {
         groupId: this.data.groupId,
@@ -185,14 +174,17 @@ Component({
           }),
           // sendFocus: true,
         })
-
+        // 如果当前聊天没有添加到消息数据里，则添加进去
         wx.cloud.callFunction({
           name: 'addMessageData',
           data: {
             groupId: this.data.groupId,
             productId: this.data.chatInfo.productId,
-            nickName: this.data.chatInfo.nickName,
-            avatarUrl: this.data.chatInfo.avatarUrl,
+            buyer_nickName: this.data.chatInfo.buyer_nickName,
+            buyer_avatarUrl: this.data.chatInfo.buyer_avatarUrl,
+            seller_nickName: this.data.chatInfo.seller_nickName,
+            seller_avatarUrl: this.data.chatInfo.seller_avatarUrl,
+            isOwn: this.data.chatInfo.isOwn,
             ctime: this.data.chats[0].sendTimeTS,
             mtime: this.data.chats[this.data.chats.length - 1].sendTimeTS,
             img: this.data.chatInfo.img,
@@ -348,7 +340,7 @@ Component({
     this.initRoom();
     this.fatalRebuildCount = 0;
     wx.setNavigationBarTitle({
-      title: this.data.chatInfo.nickName
+      title: this.data.chatInfo.seller_nickName
     });
     this.setData({
       scrollToMessage: `item-${this.data.chats.length}`, // 进入到页面时，自动滚到最下面

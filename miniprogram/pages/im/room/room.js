@@ -3,61 +3,112 @@ const app = getApp()
 Page({
   data: {
     avatarUrl: './user-unlogin.png',
-    // userInfo: null,
     logged: false,
     takeSession: false,
     requestResult: '',
     chatRoomEnvId: 'xiaoyuanbao',
     chatRoomCollection: 'chatroom',
-    chatRoomGroupId: '',
+    groupId: '',
     chatInfo: '',
-    // functions for used in chatroom components
-    // onGetUserInfo: null,
-    // getOpenID: null,
     openid: '',
+    authorizationApplicationDialogShow: false,
+    buyer_nickName: '',
+    buyer_avatarUrl: '',
+    hasUserInfo: false,
   },
 
   onLoad: function(options) {
-    console.log(options, 'room options')
-    console.log(app.globalData.openid, 'app.globalData.openid')
-    // let eventChannel = this.getOpenerEventChannel();
-    // eventChannel.emit('chat', '1111')
-    this.setData({
-      chatInfo: {
-        nickName: options.nickName,
-        avatarUrl: options.avatarUrl,
-        img: options.img,
-        price: options.price,
-        productId: options.productId,
-      },
-      chatRoomGroupId: options.groupId,
-      openid: app.globalData.openid,
-    });
-    // 获取用户信息
-    // wx.getSetting({
-    //   success: res => {
-    //     if (res.authSetting['scope.userInfo']) {
-    //       // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-    //       wx.getUserInfo({
-    //         success: res => {
-    //           this.setData({
-    //             avatarUrl: res.userInfo.avatarUrl,
-    //             userInfo: res.userInfo
-    //           })
-    //         }
-    //       })
-    //     }
-    //   }
-    // })
-
-    // this.setData({
-    //   onGetUserInfo: this.onGetUserInfo,
-    //   getOpenID: this.getOpenID,
-    // })
-
+    console.log(options, 'room.js options')
+    console.log(app.globalData.openid, 'room.js app.globalData.openid')
+    this.getSystemInfo();
+		this.data.buyer_nickName = wx.getStorageSync('nickName');
+    this.data.buyer_avatarUrl = wx.getStorageSync('avatarUrl');
+    this.data.openid = app.globalData.openid;
+    this.data.groupId = options.groupId;
+    this.data.chatInfo = {
+      seller_nickName: options.seller_nickName,
+      seller_avatarUrl: options.seller_avatarUrl,
+      img: options.img,
+      price: options.price,
+      productId: options.productId,
+      isOwn: options.isOwn,
+    };
+    if(this.data.openid) { // 登录了
+      this.data.authorizationApplicationDialogShow = !this.data.buyer_nickName || !this.data.buyer_avatarUrl; // 没有昵称或者头像，则弹窗提示授权
+      this.data.hasUserInfo = this.data.buyer_nickName && this.data.buyer_avatarUrl; // 同时有昵称和头像则表示有用户信息
+      if(!this.data.hasUserInfo) { // 没有用户信息则赋值默认值
+        this.data.buyer_nickName = '微信用户';
+        this.data.buyer_avatarUrl = 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLgo5ychFeqjfjsLia7HnyymiawHq6b5guj0RNKID3EmN9ticOwBTutRB3v8ibA8sYxNr5icJ7IZSZibc2A/0';
+        this.data.chatInfo.buyer_nickName = this.data.buyer_nickName;
+        this.data.chatInfo.buyer_avatarUrl = this.data.buyer_avatarUrl;
+      }
+      this.setData({
+        chatInfo: this.data.chatInfo,
+        groupId: this.data.groupId,
+        openid: this.data.openid,
+        authorizationApplicationDialogShow: this.data.authorizationApplicationDialogShow,
+      });
+    }
+  },
+	// 弹窗 -- 获取授权
+	tapAuthorizationButton(e) {
+		this.setData({
+			authorizationApplicationDialogShow: false,
+		});
+		if(e.detail.index) { // 同意授权
+			this.onGetUserInfo();
+		} else { // 拒绝授权
+      this.data.buyer_nickName = '微信用户';
+      this.data.buyer_avatarUrl = 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLgo5ychFeqjfjsLia7HnyymiawHq6b5guj0RNKID3EmN9ticOwBTutRB3v8ibA8sYxNr5icJ7IZSZibc2A/0';
+      this.data.chatInfo.buyer_nickName = this.data.buyer_nickName;
+      this.data.chatInfo.buyer_avatarUrl = this.data.buyer_avatarUrl;
+      this.data.hasUserInfo = false;
+      this.setData({
+        chatInfo: this.data.chatInfo,
+        groupId: this.data.groupId,
+        openid: this.data.openid,
+      });
+		}
+	},
+	// 获取用户信息(nickName avatarUrl)
+	onGetUserInfo() {
+		if(!this.data.hasUserInfo) {
+			wx.getUserProfile({
+				desc: '用于展示用户信息',
+				success: res => {
+					if(res && res.userInfo) {
+						let avatarUrl = res.userInfo.avatarUrl;
+						avatarUrl = avatarUrl.split("/");
+						avatarUrl[avatarUrl.length - 1] = 0;
+						this.data.buyer_avatarUrl = avatarUrl.join('/');
+            this.data.buyer_nickName = res.userInfo.nickName;
+            this.data.chatInfo.buyer_nickName = this.data.buyer_nickName;
+            this.data.chatInfo.buyer_avatarUrl = this.data.buyer_avatarUrl;
+						wx.setStorageSync('avatarUrl', this.data.buyer_avatarUrl);
+            wx.setStorageSync('nickName', this.data.buyer_nickName);
+            this.data.hasUserInfo = true;
+            this.setData({
+              chatInfo: this.data.chatInfo,
+              groupId: this.data.groupId,
+              openid: this.data.openid,
+            });
+					}
+				},
+				fail: e => {
+					console.log(e, 'getUserInfo-fail');
+					wx.showToast({
+						title: '服务繁忙，请稍后再试~',
+						icon: 'none',
+					})
+				},
+			})
+		}
+  },
+  // 获取系统信息
+  getSystemInfo() {
     wx.getSystemInfo({
       success: res => {
-        console.log('system info', res)
+        // console.log('system info', res)
         if (res.safeArea) {
           const { top, bottom } = res.safeArea
           this.setData({
@@ -68,26 +119,4 @@ Page({
       },
     })
   },
-
-  // getOpenID: async function() {
-  //   if (this.openid) {
-  //     return this.openid
-  //   }
-
-  //   const { result } = await wx.cloud.callFunction({
-  //     name: 'login',
-  //   })
-
-  //   return result.openid
-  // },
-
-  // onGetUserInfo: function(e) {
-  //   if (!this.logged && e.detail.userInfo) {
-  //     this.setData({
-  //       logged: true,
-  //       avatarUrl: e.detail.userInfo.avatarUrl,
-  //       userInfo: e.detail.userInfo
-  //     })
-  //   }
-  // },
 })
