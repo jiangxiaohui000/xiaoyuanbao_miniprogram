@@ -72,11 +72,34 @@ Page({
   },
   // 删除聊天
   slideDelete(e) {
-    const index = this.data.messageList.findIndex(item => item._id === e.currentTarget.dataset._id);
-    this.data.messageList.splice(index, 1);
-    this.setData({
-      messageList: this.data.messageList
-    });
+    const index = this.data.messageList.findIndex(item => item._id === e.currentTarget.dataset.id);
+    wx.cloud.callFunction({
+      name: 'removeMessageData',
+      data: {
+        _id: e.currentTarget.dataset.id,
+      },
+      success: res => {
+        console.log(res, '333333333333')
+        if(res && res.result && res.result.result && res.result.result.stats && res.result.result.stats.removed) {
+          this.data.messageList.splice(index, 1);
+          this.setData({
+            messageList: this.data.messageList
+          });
+          wx.showToast({
+            title: '删除成功',
+            icon: 'none',
+          })
+        }
+      },
+      fail: e => {
+        console.log(e, 'delete-fail');
+        wx.showToast({
+          title: '删除失败，请稍后再试~',
+          icon: 'none',
+        });
+      }
+    })
+    
   },
   // 设置 movable-view 位移
   setXMove(index, xmove) {
