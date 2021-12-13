@@ -7,7 +7,7 @@ Page({
     takeSession: false,
     requestResult: '',
     chatRoomEnvId: 'xiaoyuanbao',
-    chatRoomCollection: 'chatroom',
+    chatRoomCollection: 'data_chat',
     groupId: '',
     chatInfo: '',
     openid: '',
@@ -20,6 +20,7 @@ Page({
   onLoad: function(options) {
     console.log(options, 'room.js options')
     console.log(app.globalData.openid, 'room.js app.globalData.openid')
+    console.log(wx.getStorageSync('nickName'),wx.getStorageSync('avatarUrl'), 'wx.getStorageSync')
     this.getSystemInfo();
 		this.data.buyer_nickName = wx.getStorageSync('nickName');
     this.data.buyer_avatarUrl = wx.getStorageSync('avatarUrl');
@@ -28,6 +29,8 @@ Page({
     this.data.chatInfo = {
       seller_nickName: options.seller_nickName,
       seller_avatarUrl: options.seller_avatarUrl,
+      buyer_nickName: this.data.buyer_nickName,
+      buyer_avatarUrl: this.data.buyer_avatarUrl,
       img: options.img,
       price: options.price,
       productId: options.productId,
@@ -42,6 +45,7 @@ Page({
         this.data.chatInfo.buyer_nickName = this.data.buyer_nickName;
         this.data.chatInfo.buyer_avatarUrl = this.data.buyer_avatarUrl;
       }
+      console.log('room.js this.data.chatInfo', this.data.chatInfo)
       this.setData({
         chatInfo: this.data.chatInfo,
         groupId: this.data.groupId,

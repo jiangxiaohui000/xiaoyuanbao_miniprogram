@@ -67,19 +67,21 @@ Page({
     console.log(e, 'chatItem');
     const item = e.currentTarget.dataset.item;
     wx.navigateTo({
-      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}`,
+      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}&isOwn=${item.isOwn}`,
     })
   },
   // 删除聊天
   slideDelete(e) {
-    const index = this.data.messageList.findIndex(item => item._id === e.currentTarget.dataset.id);
+    // console.log(e, '111111122222222')
+    const target = e.currentTarget.dataset;
+    const index = this.data.messageList.findIndex(item => item._id === target.id);
     wx.cloud.callFunction({
       name: 'removeMessageData',
       data: {
-        _id: e.currentTarget.dataset.id,
+        _id: target.id,
       },
       success: res => {
-        console.log(res, '333333333333')
+        // console.log(res, '333333333333')
         if(res && res.result && res.result.result && res.result.result.stats && res.result.result.stats.removed) {
           this.data.messageList.splice(index, 1);
           this.setData({
@@ -88,6 +90,12 @@ Page({
           wx.showToast({
             title: '删除成功',
             icon: 'none',
+          });
+          wx.cloud.callFunction({ // 删除消息后，再删除该消息下所有的聊天数据
+            name: 'removeChatsData',
+            data: {
+              groupId: target.id,
+            },
           })
         }
       },
