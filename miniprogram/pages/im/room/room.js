@@ -47,6 +47,8 @@ Page({
       buyer_avatarUrl: this.data.buyer_avatarUrl,
       seller_nickName: options.seller_nickName,
       seller_avatarUrl: options.seller_avatarUrl,
+      buyer_nickName: this.data.buyer_nickName,
+      buyer_avatarUrl: this.data.buyer_avatarUrl,
       img: options.img,
       price: options.price,
       productId: options.productId,

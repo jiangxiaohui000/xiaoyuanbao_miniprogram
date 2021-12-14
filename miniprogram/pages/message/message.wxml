@@ -37,7 +37,7 @@
             </view>
           </movable-view>
         </movable-area>
-        <view class="slide-delete" data-id="{{item.id}}" catchtap="slideDelete">删除</view>
+        <view class="slide-delete" data-id="{{item._id}}" catchtap="slideDelete">删除</view>
       </view>  
     </view>
     <!-- 暂无数据 -->
