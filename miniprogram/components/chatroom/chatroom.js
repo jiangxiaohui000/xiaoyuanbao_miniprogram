@@ -12,7 +12,6 @@ Component({
     chatInfo: null,
     openid: String,
   },
-
   data: {
     chats: [],
     textInputValue: '',
@@ -23,8 +22,19 @@ Component({
     // keyboardHeight: 0,
     // sendFocus: false,
   },
-
+  ready() {
+    // global.chatroom = this;
+    this.initRoom();
+    this.fatalRebuildCount = 0;
+    wx.setNavigationBarTitle({
+      title: this.properties.chatInfo.seller_nickName
+    });
+    this.setData({
+      scrollToMessage: `item-${this.data.chats.length}`, // 进入到页面时，自动滚到最下面
+    });
+  },
   methods: {
+    // 云函数参数合并
     mergeCommonCriteria(criteria) {
       return {
         groupId: this.data.groupId,
@@ -175,20 +185,21 @@ Component({
           // sendFocus: true,
         })
         // 如果当前聊天没有添加到消息数据里，则添加进去
+        console.log(this.properties.chatInfo, 'aaaaaaaaaa')
         wx.cloud.callFunction({
           name: 'addMessageData',
           data: {
             groupId: this.data.groupId,
-            productId: this.data.chatInfo.productId,
-            buyer_nickName: this.data.chatInfo.buyer_nickName,
-            buyer_avatarUrl: this.data.chatInfo.buyer_avatarUrl,
-            seller_nickName: this.data.chatInfo.seller_nickName,
-            seller_avatarUrl: this.data.chatInfo.seller_avatarUrl,
-            isOwn: this.data.chatInfo.isOwn,
+            productId: this.properties.chatInfo.productId,
+            buyer_nickName: this.properties.chatInfo.buyer_nickName,
+            buyer_avatarUrl: this.properties.chatInfo.buyer_avatarUrl,
+            seller_nickName: this.properties.chatInfo.seller_nickName,
+            seller_avatarUrl: this.properties.chatInfo.seller_avatarUrl,
+            uid: this.properties.chatInfo.uid,
             ctime: this.data.chats[0].sendTimeTS,
             mtime: this.data.chats[this.data.chats.length - 1].sendTimeTS,
-            img: this.data.chatInfo.img,
-            price: this.data.chatInfo.price,
+            img: this.properties.chatInfo.img,
+            price: this.properties.chatInfo.price,
           },
           success: res => {
             console.log(res, '333333322222')
@@ -333,17 +344,6 @@ Component({
           console.log('获取焦点时1111')
         }
       }).exec()
-    }
-  },
-  ready() {
-    global.chatroom = this;
-    this.initRoom();
-    this.fatalRebuildCount = 0;
-    wx.setNavigationBarTitle({
-      title: this.data.chatInfo.seller_nickName
-    });
-    this.setData({
-      scrollToMessage: `item-${this.data.chats.length}`, // 进入到页面时，自动滚到最下面
-    });
+    },
   },
 })

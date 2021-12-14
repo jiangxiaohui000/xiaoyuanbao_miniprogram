@@ -7,9 +7,9 @@ Page({
     takeSession: false,
     requestResult: '',
     chatRoomEnvId: 'xiaoyuanbao',
-    chatRoomCollection: 'chatroom',
+    chatRoomCollection: 'data_chat',
     groupId: '',
-    chatInfo: '',
+    chatInfo: {},
     openid: '',
     authorizationApplicationDialogShow: false,
     buyer_nickName: '',
@@ -20,35 +20,44 @@ Page({
   onLoad: function(options) {
     console.log(options, 'room.js options')
     console.log(app.globalData.openid, 'room.js app.globalData.openid')
+    console.log(wx.getStorageSync('nickName'),wx.getStorageSync('avatarUrl'), 'room.js getStorageSync')
     this.getSystemInfo();
 		this.data.buyer_nickName = wx.getStorageSync('nickName');
     this.data.buyer_avatarUrl = wx.getStorageSync('avatarUrl');
     this.data.openid = app.globalData.openid;
     this.data.groupId = options.groupId;
+    if(!this.data.openid) { // 未登录
+      app.login(res => this.setData({ openid: res })); // 调用全局登录方法获取openid
+			if(this.data.openid) { // 拿到openid后判断为已登录状态
+				wx.setStorageSync('openid', this.data.openid);
+        app.globalData.openid = this.data.openid;
+        this.setData({
+          openid: this.data.openid,
+        });
+			}
+    }
+    this.data.authorizationApplicationDialogShow = !this.data.buyer_nickName || !this.data.buyer_avatarUrl; // 没有昵称或者头像，则弹窗提示授权
+    this.data.hasUserInfo = this.data.buyer_nickName && this.data.buyer_avatarUrl; // 同时有昵称和头像则表示有用户信息
+    if(!this.data.hasUserInfo) { // 没有用户信息则赋值默认值
+      this.data.buyer_nickName = '微信用户';
+      this.data.buyer_avatarUrl = 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLgo5ychFeqjfjsLia7HnyymiawHq6b5guj0RNKID3EmN9ticOwBTutRB3v8ibA8sYxNr5icJ7IZSZibc2A/0';
+    }
     this.data.chatInfo = {
+      buyer_nickName: this.data.buyer_nickName,
+      buyer_avatarUrl: this.data.buyer_avatarUrl,
       seller_nickName: options.seller_nickName,
       seller_avatarUrl: options.seller_avatarUrl,
       img: options.img,
       price: options.price,
       productId: options.productId,
-      isOwn: options.isOwn,
+      uid: options.uid,
     };
-    if(this.data.openid) { // 登录了
-      this.data.authorizationApplicationDialogShow = !this.data.buyer_nickName || !this.data.buyer_avatarUrl; // 没有昵称或者头像，则弹窗提示授权
-      this.data.hasUserInfo = this.data.buyer_nickName && this.data.buyer_avatarUrl; // 同时有昵称和头像则表示有用户信息
-      if(!this.data.hasUserInfo) { // 没有用户信息则赋值默认值
-        this.data.buyer_nickName = '微信用户';
-        this.data.buyer_avatarUrl = 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLgo5ychFeqjfjsLia7HnyymiawHq6b5guj0RNKID3EmN9ticOwBTutRB3v8ibA8sYxNr5icJ7IZSZibc2A/0';
-        this.data.chatInfo.buyer_nickName = this.data.buyer_nickName;
-        this.data.chatInfo.buyer_avatarUrl = this.data.buyer_avatarUrl;
-      }
-      this.setData({
-        chatInfo: this.data.chatInfo,
-        groupId: this.data.groupId,
-        openid: this.data.openid,
-        authorizationApplicationDialogShow: this.data.authorizationApplicationDialogShow,
-      });
-    }
+    this.setData({
+      chatInfo: this.data.chatInfo,
+      groupId: this.data.groupId,
+      openid: this.data.openid,
+      authorizationApplicationDialogShow: this.data.authorizationApplicationDialogShow,
+    });
   },
 	// 弹窗 -- 获取授权
 	tapAuthorizationButton(e) {
@@ -60,9 +69,17 @@ Page({
 		} else { // 拒绝授权
       this.data.buyer_nickName = '微信用户';
       this.data.buyer_avatarUrl = 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLgo5ychFeqjfjsLia7HnyymiawHq6b5guj0RNKID3EmN9ticOwBTutRB3v8ibA8sYxNr5icJ7IZSZibc2A/0';
-      this.data.chatInfo.buyer_nickName = this.data.buyer_nickName;
-      this.data.chatInfo.buyer_avatarUrl = this.data.buyer_avatarUrl;
       this.data.hasUserInfo = false;
+      this.data.chatInfo = {
+        buyer_nickName: this.data.buyer_nickName,
+        buyer_avatarUrl: this.data.buyer_avatarUrl,
+        seller_nickName: options.seller_nickName,
+        seller_avatarUrl: options.seller_avatarUrl,
+        img: options.img,
+        price: options.price,
+        productId: options.productId,
+        uid: options.uid,
+      };
       this.setData({
         chatInfo: this.data.chatInfo,
         groupId: this.data.groupId,
@@ -82,8 +99,16 @@ Page({
 						avatarUrl[avatarUrl.length - 1] = 0;
 						this.data.buyer_avatarUrl = avatarUrl.join('/');
             this.data.buyer_nickName = res.userInfo.nickName;
-            this.data.chatInfo.buyer_nickName = this.data.buyer_nickName;
-            this.data.chatInfo.buyer_avatarUrl = this.data.buyer_avatarUrl;
+            this.data.chatInfo = {
+              buyer_nickName: this.data.buyer_nickName,
+              buyer_avatarUrl: this.data.buyer_avatarUrl,
+              seller_nickName: options.seller_nickName,
+              seller_avatarUrl: options.seller_avatarUrl,
+              img: options.img,
+              price: options.price,
+              productId: options.productId,
+              uid: options.uid,
+            };
 						wx.setStorageSync('avatarUrl', this.data.buyer_avatarUrl);
             wx.setStorageSync('nickName', this.data.buyer_nickName);
             this.data.hasUserInfo = true;

@@ -11,8 +11,7 @@ exports.main = async (event, context) => {
   const params = {};
   event.id && (params.id = event.id);
   params._openid = "{openid}";
-  const result = await db.collection('chatroom').where(params).get();
-  console.log(result, '439isjdddddd')
+  const result = await db.collection('data_chat').where(params).get();
 
   return {
     result

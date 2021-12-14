@@ -277,7 +277,7 @@ Page({
 					}
 				}, 1000);
 				clearTimeout(timer);
-			}	
+			}
 		}
 	},
 	// 获取用户信息(nickName avatarUrl)

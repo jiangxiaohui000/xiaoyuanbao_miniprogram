@@ -29,6 +29,7 @@ Page({
         const result = res.result.result.data;
         result.forEach(item => {
           item.handledMTime = timeFormatter(item.mtime);
+          item.isOwn = item.uid == this.data.openid;
         });
         this.setData({
           messageList: result,
@@ -67,7 +68,7 @@ Page({
     console.log(e, 'chatItem');
     const item = e.currentTarget.dataset.item;
     wx.navigateTo({
-      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}`,
+      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}$uid=${item.uid}`,
     })
   },
   // 删除聊天

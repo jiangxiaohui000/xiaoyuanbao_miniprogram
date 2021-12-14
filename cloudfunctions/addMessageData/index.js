@@ -24,7 +24,7 @@ exports.main = async (event, context) => {
       mtime: event.mtime,
       img: event.img,
       price: event.price,
-      isOwn: event.isOwn,
+      uid: event.uid,
     }
   })
 

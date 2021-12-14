@@ -63,7 +63,6 @@
         cursor-spacing="20"
         value="{{textInputValue}}"
       ></input>
-
       <image 
         src="./photo.png"
         class="btn-send-image"
@@ -72,13 +71,12 @@
       ></image>
     </view>
 
-    <view class="message-sender" wx:if="{{!openId}}">
+    <!-- <view class="message-sender" wx:if="{{!openId}}">
       <button 
-        open-type="getUserInfo" 
-        bindgetuserinfo="onGetUserInfo"
+        bindtap="login"
         class="user-info"
       >请先登录后参与聊天</button>
-    </view>
+    </view> -->
   </view>
 
 </view>
