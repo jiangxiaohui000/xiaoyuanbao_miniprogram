@@ -27,18 +27,21 @@ Page({
       },
       success: res => {
         console.log(res, 'message-data')
+        wx.stopPullDownRefresh();
         this.data.dataIsReady = true;
         const result = res.result.result.data;
         result.forEach(item => {
           item.handledMTime = timeFormatter(item.mtime);
-          item.isOwn = item.uid == this.data.openid;
+          item.isOwn = item.seller_uid == this.data.openid;
         });
+        console.log(result, 'message-result')
         this.setData({
           messageList: result,
         });
       },
       fail: e => {
         console.log(e, 'getChatsData-error');
+        wx.stopPullDownRefresh();
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none'
@@ -70,7 +73,7 @@ Page({
     console.log(e, 'chatItem');
     const item = e.currentTarget.dataset.item;
     wx.navigateTo({
-      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}$seller_uid=${item.uid}`,
+      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}&seller_uid=${item.seller_uid}`,
     })
   },
   // 删除聊天

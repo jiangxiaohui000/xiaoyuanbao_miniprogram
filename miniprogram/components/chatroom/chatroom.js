@@ -24,10 +24,12 @@ Component({
   },
   ready() {
     // global.chatroom = this;
+    console.log('this.properties.chatInfo', this.properties.chatInfo)
+    console.log('this.properties.openid', this.properties.openid)
     this.initRoom();
     this.fatalRebuildCount = 0;
     wx.setNavigationBarTitle({
-      title: this.properties.chatInfo.seller_nickName
+      title: this.properties.openid === this.properties.chatInfo.seller_uid ? this.properties.chatInfo.buyer_nickName : this.properties.chatInfo.seller_nickName
     });
     this.setData({
       scrollToMessage: `item-${this.data.chats.length}`, // 进入到页面时，自动滚到最下面

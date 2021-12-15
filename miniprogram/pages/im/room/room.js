@@ -47,11 +47,10 @@ Page({
     this.data.chatInfo = {
       buyer_nickName: this.data.buyer_nickName,
       buyer_avatarUrl: this.data.buyer_avatarUrl,
+      buyer_uid: this.data.openid,
       seller_nickName: options.seller_nickName,
       seller_avatarUrl: options.seller_avatarUrl,
       seller_uid: options.seller_uid,
-      buyer_nickName: this.data.buyer_nickName,
-      buyer_avatarUrl: this.data.buyer_avatarUrl,
       img: options.img,
       price: options.price,
       productId: options.productId,
@@ -77,6 +76,7 @@ Page({
       this.data.chatInfo = {
         buyer_nickName: this.data.buyer_nickName,
         buyer_avatarUrl: this.data.buyer_avatarUrl,
+        buyer_uid: this.data.openid,
         seller_nickName: this.data.roomOptions.seller_nickName,
         seller_avatarUrl: this.data.roomOptions.seller_avatarUrl,
         seller_uid: this.data.roomOptions.seller_uid,
@@ -106,6 +106,7 @@ Page({
             this.data.chatInfo = {
               buyer_nickName: this.data.buyer_nickName,
               buyer_avatarUrl: this.data.buyer_avatarUrl,
+              buyer_uid: this.data.openid,
               seller_nickName: this.data.roomOptions.seller_nickName,
               seller_avatarUrl: this.data.roomOptions.seller_avatarUrl,
               seller_uid: this.data.roomOptions.seller_uid,
