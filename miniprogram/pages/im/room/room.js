@@ -15,12 +15,14 @@ Page({
     buyer_nickName: '',
     buyer_avatarUrl: '',
     hasUserInfo: false,
+    roomOptions: null,
   },
 
   onLoad: function(options) {
     console.log(options, 'room.js options')
     console.log(app.globalData.openid, 'room.js app.globalData.openid')
     console.log(wx.getStorageSync('nickName'),wx.getStorageSync('avatarUrl'), 'room.js getStorageSync')
+    this.data.roomOptions = options;
     this.getSystemInfo();
 		this.data.buyer_nickName = wx.getStorageSync('nickName');
     this.data.buyer_avatarUrl = wx.getStorageSync('avatarUrl');
@@ -47,12 +49,12 @@ Page({
       buyer_avatarUrl: this.data.buyer_avatarUrl,
       seller_nickName: options.seller_nickName,
       seller_avatarUrl: options.seller_avatarUrl,
+      seller_uid: options.seller_uid,
       buyer_nickName: this.data.buyer_nickName,
       buyer_avatarUrl: this.data.buyer_avatarUrl,
       img: options.img,
       price: options.price,
       productId: options.productId,
-      uid: options.uid,
     };
     this.setData({
       chatInfo: this.data.chatInfo,
@@ -75,12 +77,12 @@ Page({
       this.data.chatInfo = {
         buyer_nickName: this.data.buyer_nickName,
         buyer_avatarUrl: this.data.buyer_avatarUrl,
-        seller_nickName: options.seller_nickName,
-        seller_avatarUrl: options.seller_avatarUrl,
-        img: options.img,
-        price: options.price,
-        productId: options.productId,
-        uid: options.uid,
+        seller_nickName: this.data.roomOptions.seller_nickName,
+        seller_avatarUrl: this.data.roomOptions.seller_avatarUrl,
+        seller_uid: this.data.roomOptions.seller_uid,
+        img: this.data.roomOptions.img,
+        price: this.data.roomOptions.price,
+        productId: this.data.roomOptions.productId,
       };
       this.setData({
         chatInfo: this.data.chatInfo,
@@ -104,12 +106,12 @@ Page({
             this.data.chatInfo = {
               buyer_nickName: this.data.buyer_nickName,
               buyer_avatarUrl: this.data.buyer_avatarUrl,
-              seller_nickName: options.seller_nickName,
-              seller_avatarUrl: options.seller_avatarUrl,
-              img: options.img,
-              price: options.price,
-              productId: options.productId,
-              uid: options.uid,
+              seller_nickName: this.data.roomOptions.seller_nickName,
+              seller_avatarUrl: this.data.roomOptions.seller_avatarUrl,
+              seller_uid: this.data.roomOptions.seller_uid,
+              img: this.data.roomOptions.img,
+              price: this.data.roomOptions.price,
+              productId: this.data.roomOptions.productId,
             };
 						wx.setStorageSync('avatarUrl', this.data.buyer_avatarUrl);
             wx.setStorageSync('nickName', this.data.buyer_nickName);

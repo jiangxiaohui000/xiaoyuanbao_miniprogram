@@ -8,7 +8,17 @@ cloud.init({
 // 云函数入口函数
 exports.main = async (event, context) => {
   const db = cloud.database();
-  const result = await db.collection('data_message').where({}).get();
+  const _ = db.command;
+  const result = await db.collection('data_message').where(
+    _.or([
+      {
+        seller_uid: _.eq(event.uid)
+      },
+      {
+        buyer_uid: _.eq(event.uid)
+      }
+    ])
+  ).get();
 
   return {
     result

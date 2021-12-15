@@ -22,7 +22,9 @@ Page({
   initData() {
     wx.cloud.callFunction({
       name: 'getMessageData',
-      data: {},
+      data: {
+        uid: this.data.openid,
+      },
       success: res => {
         console.log(res, 'message-data')
         this.data.dataIsReady = true;
@@ -68,7 +70,7 @@ Page({
     console.log(e, 'chatItem');
     const item = e.currentTarget.dataset.item;
     wx.navigateTo({
-      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}$uid=${item.uid}`,
+      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}$seller_uid=${item.uid}`,
     })
   },
   // 删除聊天

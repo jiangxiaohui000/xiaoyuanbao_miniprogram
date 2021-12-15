@@ -184,6 +184,7 @@ Component({
           }),
           // sendFocus: true,
         })
+
         // 如果当前聊天没有添加到消息数据里，则添加进去
         console.log(this.properties.chatInfo, 'aaaaaaaaaa')
         wx.cloud.callFunction({
@@ -193,21 +194,16 @@ Component({
             productId: this.properties.chatInfo.productId,
             buyer_nickName: this.properties.chatInfo.buyer_nickName,
             buyer_avatarUrl: this.properties.chatInfo.buyer_avatarUrl,
+            buyer_uid: this.data.openId,
             seller_nickName: this.properties.chatInfo.seller_nickName,
             seller_avatarUrl: this.properties.chatInfo.seller_avatarUrl,
-            uid: this.properties.chatInfo.uid,
+            seller_uid: this.properties.chatInfo.seller_uid,
             ctime: this.data.chats[0].sendTimeTS,
             mtime: this.data.chats[this.data.chats.length - 1].sendTimeTS,
             img: this.properties.chatInfo.img,
             price: this.properties.chatInfo.price,
           },
-          success: res => {
-            console.log(res, '333333322222')
-          },
-          fail: e => {
-            console.log(e, 'errrrrrrr')
-          }
-        })
+        });
       }, '发送文字失败')
     },
     // 发送图片
@@ -254,6 +250,26 @@ Component({
                     imgFileID: res.fileID,
                   },
                 })
+
+                // 如果当前聊天没有添加到消息数据里，则添加进去
+                console.log(this.properties.chatInfo, 'bbbbbbbbbb')
+                wx.cloud.callFunction({
+                  name: 'addMessageData',
+                  data: {
+                    groupId: this.data.groupId,
+                    productId: this.properties.chatInfo.productId,
+                    buyer_nickName: this.properties.chatInfo.buyer_nickName,
+                    buyer_avatarUrl: this.properties.chatInfo.buyer_avatarUrl,
+                    buyer_uid: this.data.openId,
+                    seller_nickName: this.properties.chatInfo.seller_nickName,
+                    seller_avatarUrl: this.properties.chatInfo.seller_avatarUrl,
+                    seller_uid: this.properties.chatInfo.seller_uid,
+                    ctime: this.data.chats[0].sendTimeTS,
+                    mtime: this.data.chats[this.data.chats.length - 1].sendTimeTS,
+                    img: this.properties.chatInfo.img,
+                    price: this.properties.chatInfo.price,
+                  },
+                });
               }, '发送图片失败')
             },
             fail: e => {

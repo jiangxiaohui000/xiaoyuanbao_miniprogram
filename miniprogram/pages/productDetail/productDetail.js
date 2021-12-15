@@ -223,7 +223,7 @@ Page({
 		const data = this.data.productInfo;
 		console.log(data, '---------')
 		wx.navigateTo({
-			url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&seller_nickName=${data.nickName}&seller_avatarUrl=${data.avatarUrl}&groupId=${this.data.groupId}&productId=${data._id}&uid=${data.uid}`,
+			url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&seller_nickName=${data.nickName}&seller_avatarUrl=${data.avatarUrl}&groupId=${this.data.groupId}&productId=${data._id}&seller_uid=${data.uid}`,
     })
 	},
 	// 编辑

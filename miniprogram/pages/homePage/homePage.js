@@ -322,7 +322,10 @@ Page({
   // 前往商品详情页面
   toProductsDetail(e) {
     const targetItem = e.currentTarget.dataset.item;
-    const groupId = app.globalData.openid.substr(0, 6) + targetItem._id.substr(0, 6) + targetItem.uid.substr(0, 6);
+    // 用买方、卖方、商品的ID组成一个groupId
+    const groupId = `${app.globalData.openid}${targetItem._id}${targetItem.uid}`;
+    // console.log('homePage groupId', groupId);
+    // console.log('homePage...........', app.globalData.openid, targetItem._id, targetItem.uid);
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {
