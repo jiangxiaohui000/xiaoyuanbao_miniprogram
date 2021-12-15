@@ -341,14 +341,22 @@ Page({
 			sourceType: ['album', 'camera'],
 			success: res => {
 				console.log(res, 'chooseImage-res')
-				wx.showLoading({
-					title: '请稍候...',
-					mask: true,
-				});
 				const imgSecCheckArr = []; // 图片安全检查结果
 				const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
 				const tempFilesLength = res.tempFiles.length; // 临时文件数量
 				this.data.tempFilePaths = res.tempFilePaths; // 临时文件路径
+				if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
+					this.setData({
+						toptipsShow: true,
+						resultText: '图片大小不得超过 5MB，请重新选择',
+						toptipsType: 'info',
+					});
+					return;
+				}
+				wx.showLoading({
+					title: '请稍候...',
+					mask: true,
+				});
 				tempFiles.forEach((item, index) => { // 遍历临时文件数组，将每一个数据进行安全检查
 					const size = item.size;
 					const path = item.path;
@@ -358,8 +366,8 @@ Page({
 							const handledPath = compressResult.tempFilePath;
 							this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, index);
 						})
-					} else {
-						console.log('图片小于1M'); // 图片大小小于1M，直接进行安全检查
+					} else { // 图片大小小于1M，直接进行安全检查
+						console.log('图片小于1M');
 						this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, index);
 					}
 				});
