@@ -21,7 +21,6 @@
         <icon
           bindtap="clearSearchValue"
           wx:if="{{searchValue}}"
-          class="icon-cancel"
           type="clear"
           size="16"
         ></icon>

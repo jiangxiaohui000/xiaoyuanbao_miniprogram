@@ -85,6 +85,7 @@ page {
   overflow-x: hidden;
   background-color: #fff;
   padding-left: 10rpx;
+  -webkit-overflow-scrolling: touch
 }
 .me-products-item {
   height: 180rpx;

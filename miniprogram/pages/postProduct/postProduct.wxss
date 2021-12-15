@@ -8,6 +8,7 @@
   position: relative;
   overflow-y: scroll;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch
 }
 .text-area-box {
   width: 100%;
@@ -142,6 +143,7 @@
   flex-wrap: nowrap;
   overflow-x: scroll;
   flex: 4;
+  -webkit-overflow-scrolling: touch
 }
 .classify-item-container::-webkit-scrollbar {
   display: none;

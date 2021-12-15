@@ -57,6 +57,9 @@ Page({
     wx.showLoading({ title: '加载中...' });
 		wx.disableAlertBeforeUnload();
   },
+  onUnload() {
+    clearTimeout(this.data.timer);
+  },
   // 数据初始化
   initData(userLongitude, userLatitude) {
     this.data.initCount++;

@@ -2,7 +2,7 @@
 	overflow: hidden;
 }
 
-.sys-message {
+/* .sys-message {
 	overflow: hidden;
 	height: 118rpx;
 	border-bottom: 1rpx solid #ccc;
@@ -67,7 +67,7 @@
 .sys-message-time, .message-time {
 	color: #aaa;
 	font-size: 24rpx;
-}
+} */
 
 .message-item {
 	height: 160rpx;
