@@ -17,7 +17,6 @@
     "pages/im/room/room",
     "pages/productDetail/productDetail",
     "pages/search/search",
-    "pages/personalInformation/personalInformation",
     "pages/postProduct/postProduct",
     "pages/login/login",
     "pages/soldProducts/soldProducts",
