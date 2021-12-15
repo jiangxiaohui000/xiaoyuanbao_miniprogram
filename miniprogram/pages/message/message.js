@@ -72,8 +72,20 @@ Page({
   gotoChatItem(e) {
     console.log(e, 'chatItem');
     const item = e.currentTarget.dataset.item;
+    const productInfo = JSON.stringify({
+      img: item.img,
+      price: item.price,
+      productId: item.productId,
+      seller_nickName: item.seller_nickName,
+      seller_avatarUrl: item.seller_avatarUrl,
+      seller_uid: item.seller_uid,
+      buyer_nickName: item.buyer_nickName,
+      buyer_avatarUrl: item.buyer_avatarUrl,
+      buyer_uid: item.buyer_uid,
+    });
     wx.navigateTo({
-      url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}&seller_uid=${item.seller_uid}`,
+      // url: `/pages/im/room/room?img=${item.img}&price=${item.price}&seller_nickName=${item.seller_nickName}&seller_avatarUrl=${item.seller_avatarUrl}&groupId=${item._id}&productId=${item._id}&seller_uid=${item.seller_uid}`,
+      url: `/pages/im/room/room?groupId=${item._id}&productInfo=${productInfo}`,
     })
   },
   // 删除聊天

@@ -222,9 +222,23 @@ Page({
 	gotoChatRoom() {
 		const data = this.data.productInfo;
 		console.log(data, '---------')
+		const nickName = wx.getStorageSync('nickName');
+		const avatarUrl = wx.getStorageSync('avatarUrl');
+		const productInfo = JSON.stringify({
+      img: data.img[0],
+      price: data.currentPrice,
+      productId: data._id,
+      seller_nickName: data.nickName,
+      seller_avatarUrl: data.avatarUrl,
+      seller_uid: data.uid,
+      buyer_nickName: nickName,
+      buyer_avatarUrl: avatarUrl,
+      buyer_uid: this.data.uid,
+    });
 		wx.navigateTo({
-			url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&seller_nickName=${data.nickName}&seller_avatarUrl=${data.avatarUrl}&groupId=${this.data.groupId}&productId=${data._id}&seller_uid=${data.uid}`,
-    })
+			// url: `/pages/im/room/room?img=${data.img[0]}&price=${data.currentPrice}&seller_nickName=${data.nickName}&seller_avatarUrl=${data.avatarUrl}&groupId=${this.data.groupId}&productId=${data._id}&seller_uid=${data.uid}`,
+			url: `/pages/im/room/room?groupId=${this.data.groupId}&productInfo=${productInfo}`,
+    });
 	},
 	// 编辑
 	edit() {

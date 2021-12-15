@@ -15,19 +15,25 @@ Page({
     buyer_nickName: '',
     buyer_avatarUrl: '',
     hasUserInfo: false,
-    roomOptions: null,
+    productInfo: null,
   },
 
   onLoad: function(options) {
     console.log(options, 'room.js options')
     console.log(app.globalData.openid, 'room.js app.globalData.openid')
-    console.log(wx.getStorageSync('nickName'),wx.getStorageSync('avatarUrl'), 'room.js getStorageSync')
-    this.data.roomOptions = options;
+    // console.log(wx.getStorageSync('nickName'),wx.getStorageSync('avatarUrl'), 'room.js getStorageSync')
     this.getSystemInfo();
-		this.data.buyer_nickName = wx.getStorageSync('nickName');
-    this.data.buyer_avatarUrl = wx.getStorageSync('avatarUrl');
     this.data.openid = app.globalData.openid;
     this.data.groupId = options.groupId;
+    this.data.productInfo = JSON.parse(options.productInfo);
+    this.data.buyer_nickName = this.data.productInfo.buyer_nickName;
+    this.data.buyer_avatarUrl = this.data.productInfo.buyer_avatarUrl;
+    // const nickName = wx.getStorageSync('nickName');
+    // const avatarUrl = wx.getStorageSync('avatarUrl');
+    // if(options.seller_uid !== this.data.openid) { // 如果传过来的卖家ID不是当前账户的openID，则存储的昵称和头像是买家的
+    //  	this.data.buyer_nickName = nickName;
+    //   this.data.buyer_avatarUrl = avatarUrl;
+    // }
     if(!this.data.openid) { // 未登录
       app.login(res => this.setData({ openid: res })); // 调用全局登录方法获取openid
 			if(this.data.openid) { // 拿到openid后判断为已登录状态
@@ -48,12 +54,12 @@ Page({
       buyer_nickName: this.data.buyer_nickName,
       buyer_avatarUrl: this.data.buyer_avatarUrl,
       buyer_uid: this.data.openid,
-      seller_nickName: options.seller_nickName,
-      seller_avatarUrl: options.seller_avatarUrl,
-      seller_uid: options.seller_uid,
-      img: options.img,
-      price: options.price,
-      productId: options.productId,
+      seller_nickName: this.data.productInfo.seller_nickName,
+      seller_avatarUrl: this.data.productInfo.seller_avatarUrl,
+      seller_uid: this.data.productInfo.seller_uid,
+      img: this.data.productInfo.img,
+      price: this.data.productInfo.price,
+      productId: this.data.productInfo.productId,
     };
     this.setData({
       chatInfo: this.data.chatInfo,
@@ -77,12 +83,12 @@ Page({
         buyer_nickName: this.data.buyer_nickName,
         buyer_avatarUrl: this.data.buyer_avatarUrl,
         buyer_uid: this.data.openid,
-        seller_nickName: this.data.roomOptions.seller_nickName,
-        seller_avatarUrl: this.data.roomOptions.seller_avatarUrl,
-        seller_uid: this.data.roomOptions.seller_uid,
-        img: this.data.roomOptions.img,
-        price: this.data.roomOptions.price,
-        productId: this.data.roomOptions.productId,
+        seller_nickName: this.data.productInfo.seller_nickName,
+        seller_avatarUrl: this.data.productInfo.seller_avatarUrl,
+        seller_uid: this.data.productInfo.seller_uid,
+        img: this.data.productInfo.img,
+        price: this.data.productInfo.price,
+        productId: this.data.productInfo.productId,
       };
       this.setData({
         chatInfo: this.data.chatInfo,
@@ -107,12 +113,12 @@ Page({
               buyer_nickName: this.data.buyer_nickName,
               buyer_avatarUrl: this.data.buyer_avatarUrl,
               buyer_uid: this.data.openid,
-              seller_nickName: this.data.roomOptions.seller_nickName,
-              seller_avatarUrl: this.data.roomOptions.seller_avatarUrl,
-              seller_uid: this.data.roomOptions.seller_uid,
-              img: this.data.roomOptions.img,
-              price: this.data.roomOptions.price,
-              productId: this.data.roomOptions.productId,
+              seller_nickName: this.data.productInfo.seller_nickName,
+              seller_avatarUrl: this.data.productInfo.seller_avatarUrl,
+              seller_uid: this.data.productInfo.seller_uid,
+              img: this.data.productInfo.img,
+              price: this.data.productInfo.price,
+              productId: this.data.productInfo.productId,
             };
 						wx.setStorageSync('avatarUrl', this.data.buyer_avatarUrl);
             wx.setStorageSync('nickName', this.data.buyer_nickName);
