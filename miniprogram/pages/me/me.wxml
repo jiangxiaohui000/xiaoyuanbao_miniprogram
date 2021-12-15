@@ -88,7 +88,7 @@
   bindbuttontap="tapAuthorizationButton"
   buttons="{{[{text: '拒绝'}, {text: '授权'}]}}"
 >
-  <view style="font-size: 26rpx; padding: 20rpx 0;">申请获取您的公开信息（昵称、头像等）</view>
+  <view style="font-size: 26rpx; padding: 20rpx 0;">申请获取您的公开信息（昵称、头像）</view>
   <view style="font-size: 26rpx; padding: 20rpx 0;">您的昵称和头像仅用作展示</view>
 </mp-dialog>
 

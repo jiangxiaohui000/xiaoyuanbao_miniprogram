@@ -146,8 +146,9 @@ page {
 }
 .me-products-item .icon-lianxi-yixiajia {
   position: absolute;
-  left: 0;
+  right: 0;
   top: -17px;
+  transform: rotate(90deg);
 }
 .no-data {
   height: 500rpx;

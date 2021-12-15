@@ -506,6 +506,7 @@ Page({
 							content: '确定重新上架吗？',
 							success: res => {
 								if(res.confirm) {
+									wx.showLoading();
 									wx.cloud.callFunction({
 										name: 'updateProductsData',
 										data: {
@@ -515,11 +516,11 @@ Page({
 										},
 										success: res => {
 											console.log(res, '9999999')
+											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												const data = res.result.data;
-												this.data.productsList.map(item => {
+												this.data.productsList.forEach(item => {
 													(item._id === data._id) && (item.isOff = data.isOff === '0' ? false : true);
-													return item;
 												});
 												this.setData({
 													productsList: this.data.productsList,
@@ -532,6 +533,7 @@ Page({
 										},
 										fail: e => {
 											console.log(e, 'error2')
+											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
 												icon: 'none'
@@ -549,6 +551,7 @@ Page({
 							confirmColor: '#f00',
 							success: res => {
 								if(res.confirm) {
+									wx.showLoading();
 									wx.cloud.callFunction({
 										name: 'updateProductsData',
 										data: {
@@ -558,6 +561,7 @@ Page({
 										},
 										success: res => {
 											console.log(res, '9038409jr')
+											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												this.data.pageData.currentPage = 1;
 												this.data.productsList = [];
@@ -571,6 +575,7 @@ Page({
 										},
 										fail: e => {
 											console.log(e, 'error3')
+											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
 												icon: 'none',
@@ -714,8 +719,9 @@ Page({
 						wx.showModal({
 							title: '确定要下架吗？',
 							content: '商品下架后可以再次上架',
-							success: (res) => {
+							success: res => {
 								if(res.confirm) {
+									wx.showLoading();
 									wx.cloud.callFunction({
 										name: 'updateProductsData',
 										data: {
@@ -725,12 +731,14 @@ Page({
 										},
 										success: res => {
 											console.log(res, '9999999')
+											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												const data = res.result.data;
-												this.data.productsList.map(item => {
+												console.log(this.data.productsList, '555555')
+												this.data.productsList.forEach(item => {
 													(item._id === data._id) && (item.isOff = data.isOff === '1');
-													return item;
 												});
+												console.log(this.data.productsList, '444444444444')
 												this.setData({
 													productsList: this.data.productsList,
 												});
@@ -742,6 +750,7 @@ Page({
 										},
 										fail: e => {
 											console.log(e, 'error2')
+											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
 												icon: 'none',
@@ -758,6 +767,7 @@ Page({
 							confirmColor: '#f00',
 							success: (res) => {
 								if(res.confirm) {
+									wx.showLoading();
 									wx.cloud.callFunction({
 										name: 'updateProductsData',
 										data: {
@@ -767,6 +777,7 @@ Page({
 										},
 										success: res => {
 											console.log(res, '9038409jr')
+											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												this.data.pageData.currentPage = 1;
 												this.data.productsList = [];
@@ -780,6 +791,7 @@ Page({
 										},
 										fail: e => {
 											console.log(e, 'error3')
+											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
 												icon: 'none',
