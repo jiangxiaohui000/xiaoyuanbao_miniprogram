@@ -135,7 +135,10 @@ Page({
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: res => {
-				wx.showLoading({ title: '请稍候...' });
+				wx.showLoading({
+					title: '请稍候...',
+					mask: true,
+				});
         this.data.imgSecCheckArr = [];
         const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
 				const tempFilesLength = res.tempFiles.length; // 临时文件数量
@@ -210,7 +213,8 @@ Page({
 	},
 	// 将图片上传
 	uploadImg(item, index1, tempFilesLength) {
-		wx.cloud.uploadFile({ // 3 上传文件
+    // const uploadTask = wx.cloud.uploadFile({ // 3 上传文件
+    wx.cloud.uploadFile({ // 3 上传文件
 			cloudPath: 'temp/' + new Date().getTime() + "-post-" + Math.floor(Math.random() * 1000),
 			filePath: item,
 			success: uploadFileResult => { // 文件上传成功
@@ -241,6 +245,13 @@ Page({
 				});
 			}
 		});
+		// uploadTask.onProgressUpdate(res => {
+		// 	console.log(res, '112233445555555')
+		// 	wx.showLoading({
+		// 		title: `已上传 ${res.progress}%`,
+		// 		mask: true,
+		// 	});
+		// })
 	},
   // 图片预览
   imgPreview(e) {

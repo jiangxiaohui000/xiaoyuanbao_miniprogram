@@ -341,7 +341,10 @@ Page({
 			sourceType: ['album', 'camera'],
 			success: res => {
 				console.log(res, 'chooseImage-res')
-				wx.showLoading({ title: '请稍候...' });
+				wx.showLoading({
+					title: '请稍候...',
+					mask: true,
+				});
 				const imgSecCheckArr = []; // 图片安全检查结果
 				const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
 				const tempFilesLength = res.tempFiles.length; // 临时文件数量
@@ -386,8 +389,8 @@ Page({
 			console.log(tempFilesLength, index, imgSecCheckArr, 'len_index_imgSecCheckArr');
 			if(tempFilesLength == index + 1) { // 等遍历到最后一个数据，然后检查每一个返回的结果
 				if(imgSecCheckArr.every(item => item.result.errCode === 0)) { // 检查通过
-					this.data.tempFilePaths.forEach((item, index1) => { // 遍历临时文件，将每一个文件上传到云存储
-						this.uploadImg(item, index1, tempFilesLength); // 上传图片
+					this.data.tempFilePaths.forEach((item, tempFilePaths_index1) => { // 遍历临时文件，将每一个文件上传到云存储
+						this.uploadImg(item, tempFilePaths_index1, tempFilesLength); // 上传图片
 					});
 				} else if(imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 检查未通过
 					wx.hideLoading();
@@ -414,7 +417,8 @@ Page({
 		});
 	},
 	// 将图片上传
-	uploadImg(item, index1, tempFilesLength) {
+	uploadImg(item, tempFilePaths_index1, tempFilesLength) {
+		// const uploadTask = wx.cloud.uploadFile({ // 3 上传文件
 		wx.cloud.uploadFile({ // 3 上传文件
 			cloudPath: 'temp/' + new Date().getTime() + "-me-" + Math.floor(Math.random() * 1000),
 			filePath: item,
@@ -423,7 +427,7 @@ Page({
 				const fileID = uploadFileResult.fileID;
 				this.data.fileIdArr.push(fileID);
 				wx.hideLoading();
-				if(tempFilesLength === index1 + 1) { // 等数据遍历结束，全部放进数组，再跳转
+				if(tempFilesLength === tempFilePaths_index1 + 1) { // 等数据遍历结束，全部放进数组，再跳转
 					const params = {
 						filePath: this.data.tempFilePaths,
 						fileIdArr: this.data.fileIdArr,
@@ -435,7 +439,7 @@ Page({
 						success: function(result) {
 							result.eventChannel.emit('sendImage', params);
 						}
-					});	
+					});
 				}
 			},
 			fail: e => { // 文件上传失败
@@ -447,6 +451,13 @@ Page({
 				});
 			}
 		});
+		// uploadTask.onProgressUpdate(res => {
+		// 	console.log(res, '112233445555555')
+		// 	wx.showLoading({
+		// 		title: `已上传 ${res.progress}%`,
+		// 		mask: true,
+		// 	});
+		// })
 	},
 	// 下拉刷新列表
 	onPullDownRefresh: function() {

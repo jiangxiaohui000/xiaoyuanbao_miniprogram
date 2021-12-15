@@ -148,8 +148,8 @@ Component({
         const doc = {
           _id: `${Math.random()}_${Date.now()}`,
           groupId: this.data.groupId,
-          // avatarUrl: this.data.userInfo.avatarUrl,
-          // nickName: this.data.userInfo.nickName,
+          avatarUrl: this.properties.chatInfo.buyer_avatarUrl,
+          nickName: this.properties.chatInfo.buyer_nickName,
           msgType: 'text',
           textContent: e.detail.value,
           sendTime: new Date(),
@@ -216,8 +216,8 @@ Component({
           const doc = {
             _id: `${Math.random()}_${Date.now()}`,
             groupId: this.data.groupId,
-            // avatarUrl: this.data.userInfo.avatarUrl,
-            // nickName: this.data.userInfo.nickName,
+            avatarUrl: this.properties.chatInfo.buyer_avatarUrl,
+            nickName: this.properties.chatInfo.buyer_nickName,
             msgType: 'image',
             sendTime: new Date(),
             sendTimeTS: Date.now(), // fallback

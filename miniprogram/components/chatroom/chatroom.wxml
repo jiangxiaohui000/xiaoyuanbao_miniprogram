@@ -9,7 +9,7 @@
   </view>
 
   <!-- chats -->
-  <scroll-view 
+  <scroll-view
     class="body"
     enable-flex="true"
     scroll-y
