@@ -122,6 +122,11 @@
 	border-radius: 10rpx;
 }
 
+.message-time {
+	color: #aaa;
+	font-size: 24rpx;
+}
+
 .message-content {
 	display: flex;
 	flex-direction: column;
@@ -138,7 +143,6 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	font-size: 24rpx;
-	margin-top: 10rpx;
 	color: #666;
 }
 

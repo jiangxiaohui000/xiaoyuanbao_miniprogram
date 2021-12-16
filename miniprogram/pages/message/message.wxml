@@ -27,7 +27,7 @@
             <!-- 昵称 消息 -->
             <view class="message-content">
               <view class="message-nickName">{{item.isOwn ? item.buyer_nickName : item.seller_nickName}}</view>
-              <!-- <view class="message-info">{{item.desc}}</view> -->
+              <view class="message-info">阿克苏讲道理很反感好哦啊好地方哈诶佛奥是偶尔的话是偶的很反感好奥术大黄蜂</view>
               <view class="message-time">{{item.handledMTime}}</view>
             </view>
             <image class="message-product-img" src="{{item.img}}" mode="aspectFill" lazy-load="false"></image>
