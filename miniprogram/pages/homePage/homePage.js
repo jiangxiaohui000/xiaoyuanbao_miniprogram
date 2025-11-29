@@ -131,7 +131,7 @@ Page({
           this.initData(this.data.userLongitude, this.data.userLatitude);
           this.useQQMap(res.latitude, res.longitude, _this);
         },
-        fail (e) { // 未获取到经纬度
+        fail: e => { // 未获取到经纬度
           console.log(e, 'fail')
           this.initData('', '');
           wx.showModal({

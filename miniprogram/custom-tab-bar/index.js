@@ -11,14 +11,15 @@ Component({
 			selectedIconPath: "/images/icon_home_selected.png",
 			text: "首页"
 		}, {
-			iconPath: "/images/icon_add.png",
-			selectedIconPath: "/images/icon_add.png",
-			text: ""
-		}, {
-			pagePath: "/pages/chat/chat",
-			iconPath: "/images/icon_chat.png",
-			selectedIconPath: "/images/icon_chat_selected.png",
+			pagePath: "/pages/message/message",
+			iconPath: "/images/icon_message.png",
+			selectedIconPath: "/images/icon_message_selected.png",
 			text: "消息"
+		}, {
+			pagePath: "/pages/me/me",
+			iconPath: "/images/icon_me.png",
+			selectedIconPath: "/images/icon_me_selected.png",
+			text: "我的"
 		}]
 	},
 	attached() {
@@ -39,6 +40,8 @@ Component({
 		},
 		// 上传图片
 		doUpload: function () {
+			// 获取app实例
+			const app = getApp();
 			// 选择图片
 			wx.chooseImage({
 				count: 9,
