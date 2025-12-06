@@ -132,11 +132,22 @@ Page({
           this.useQQMap(res.latitude, res.longitude, _this);
         },
         fail: e => { // 未获取到经纬度
-          console.log(e, 'fail')
+          console.log('获取位置失败:', e);
           this.initData('', '');
+          wx.hideLoading();
+          let errorMsg = '位置获取失败，请点击左上角位置图标选择位置';
+          if (e.errMsg) {
+            if (e.errMsg.indexOf('auth deny') > -1) {
+              errorMsg = '您拒绝了位置授权，请在右上角...中开启位置权限';
+            } else if (e.errMsg.indexOf('timeout') > -1) {
+              errorMsg = '定位超时，请检查GPS是否开启或网络是否正常';
+            } else if (e.errMsg.indexOf('fail') > -1) {
+              errorMsg = '定位失败，请确保已开启位置服务';
+            }
+          }
           wx.showModal({
             title: '位置获取失败',
-            content: '请点击左上角位置图标选择一下位置吧~',
+            content: errorMsg,
             showCancel: false,
             confirmText: '我知道了'
           })

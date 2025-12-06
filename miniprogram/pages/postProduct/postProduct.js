@@ -473,9 +473,37 @@ Page({
           this.useQQMap(res.latitude, res.longitude, _this);
         },
         fail: e => { // 未获取到经纬度
-          console.log(e, 'fail')
+          console.log('获取位置失败:', e);
+          let errorMsg = '自动定位失败';
+          if (e.errMsg) {
+            if (e.errMsg.indexOf('auth deny') > -1) {
+              errorMsg = '您拒绝了位置授权，请在设置中开启位置权限';
+            } else if (e.errMsg.indexOf('timeout') > -1) {
+              errorMsg = '定位超时，请检查GPS是否开启';
+            } else if (e.errMsg.indexOf('fail') > -1) {
+              errorMsg = '定位失败，请确保已开启位置服务';
+            }
+          }
+          wx.showToast({
+            title: errorMsg,
+            icon: 'none',
+            duration: 2000
+          });
         }
       })
+    } else {
+      // 用户未授权位置，引导授权
+      wx.showModal({
+        title: '需要位置权限',
+        content: '请授权位置信息，以便为您展示地理位置',
+        confirmText: '去设置',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            this.authorizeLocation();
+          }
+        }
+      });
     }
   },
   // 使用腾讯位置服务

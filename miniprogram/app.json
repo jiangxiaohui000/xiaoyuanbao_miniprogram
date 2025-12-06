@@ -70,5 +70,9 @@
     "scope.userLocation": {
       "desc": "您的位置信息将用于校园宝为您提供更优质的服务，建议开启。"
     }
-  }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
+  ]
 }

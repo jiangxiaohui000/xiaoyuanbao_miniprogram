@@ -82,7 +82,10 @@ Page({
         })
       },
       fail: err => {
-        icon: 'none',
+        wx.showToast({
+          icon: 'none',
+          title: '更新记录失败'
+        })
         console.error('[数据库] [更新记录] 失败：', err)
       }
     })
@@ -101,7 +104,10 @@ Page({
         })
       },
       fail: err => {
-        icon: 'none',
+        wx.showToast({
+          icon: 'none',
+          title: '更新记录失败'
+        })
         console.error('[数据库] [更新记录] 失败：', err)
       }
     })
