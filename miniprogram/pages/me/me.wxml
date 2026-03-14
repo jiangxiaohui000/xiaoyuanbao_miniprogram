@@ -1,14 +1,23 @@
 <!-- pages/me/me -->
 <view class="user-info">
   <view class="user-info-left">
-    <!-- 用户头像 -->
+    <!-- 用户头像（新版：open-type="chooseAvatar"） -->
     <button
-      bindtap="onGetUserInfo"
+      open-type="chooseAvatar"
+      bindchooseavatar="onChooseAvatar"
       class="user-info-avatar"
       style="background-image: url({{userInfo.avatarUrl}})"
     ></button>
-    <!-- 用户昵称 -->
-    <view class="user-name" bindtap="login">{{userInfo.nickName}}</view>  
+    <!-- 用户昵称（已登录且已有昵称则展示，否则展示昵称输入框） -->
+    <view wx:if="{{hasUserInfo}}" class="user-name" bindtap="login">{{userInfo.nickName}}</view>
+    <input
+      wx:else
+      type="nickname"
+      class="user-name-input"
+      placeholder="{{openid ? '点击设置昵称' : '点击登录'}}"
+      bindblur="onNicknameInput"
+      bindtap="login"
+    />
   </view>
   <view class="user-info-right">
     <!-- 点我速卖 -->
@@ -80,17 +89,6 @@
     <view>您还未登录，<text bindtap="login" style="color: #0000ff; text-decoration: underline;">点我</text>去登录吧~</view>
   </view>
 </scroll-view>
-
-<!-- 获取用户信息弹窗 -->
-<mp-dialog
-  title="授权申请"
-  show="{{authorizationApplicationDialogShow}}"
-  bindbuttontap="tapAuthorizationButton"
-  buttons="{{[{text: '拒绝'}, {text: '授权'}]}}"
->
-  <view style="font-size: 26rpx; padding: 20rpx 0;">申请获取您的公开信息（昵称、头像）</view>
-  <view style="font-size: 26rpx; padding: 20rpx 0;">您的昵称和头像仅用作展示</view>
-</mp-dialog>
 
 <!-- 修改价格弹窗 -->
 <mp-dialog

@@ -61,7 +61,6 @@ Page({
   },
 
   confirmContent(e) {
-    console.log(e)
     this.data.content = e.detail.value;
   },
   confirmContact(e) {
@@ -89,7 +88,6 @@ Page({
       name: 'feedback',
       data: params,
     }).then(res => {
-      console.log(res)
       wx.hideLoading();
       wx.showToast({
         title: '反馈成功，感谢您的支持',
@@ -102,7 +100,6 @@ Page({
         clearTimeout(timer);
       }, 700);
     }).catch(e => {
-      console.log(e);
       wx.hideLoading();
       wx.showToast({
         title: '服务繁忙，请稍后再试~',

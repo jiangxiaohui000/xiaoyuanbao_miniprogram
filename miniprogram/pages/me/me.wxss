@@ -38,6 +38,14 @@ page {
   margin-bottom: 16rpx;
   color: #fff;
 }
+.user-name-input {
+  font-size: 36rpx;
+  margin-bottom: 16rpx;
+  color: #fff;
+  width: 240rpx;
+  background: transparent;
+  border: none;
+}
 .user-info-avatar {
   width: 100rpx;
   height: 100rpx;

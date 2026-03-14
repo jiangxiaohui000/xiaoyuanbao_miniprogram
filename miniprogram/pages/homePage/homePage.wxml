@@ -1,4 +1,15 @@
 <!--homePage.wxml-->
+<!-- 位置授权引导弹窗（仅在用户拒绝后出现，引导去设置页开启） -->
+<view class="location-auth-mask" wx:if="{{showLocationAuthModal}}">
+  <view class="location-auth-modal">
+    <view class="location-auth-icon">📍</view>
+    <view class="location-auth-title">开启位置权限</view>
+    <view class="location-auth-desc">授权后可查看附近的宝贝，让您更快找到心仪商品</view>
+    <button class="location-auth-btn" bindtap="onGetLocationSuccess">去开启位置权限</button>
+    <view class="location-skip-btn" bindtap="onSkipLocation">暂不授权，看全部商品</view>
+  </view>
+</view>
+
 <scroll-view class="container" scroll-y="true" enable-flex="true">
   <!-- 工具栏 -->
   <view class="tool-box">

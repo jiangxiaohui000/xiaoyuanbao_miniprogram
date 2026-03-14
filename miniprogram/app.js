@@ -21,7 +21,6 @@ App({
         name: 'login',
         data: {},
       }).then(res => {
-        console.log('login result:', res);
         if(res && res.result) {
           // 检查是否有错误
           if (res.result.error) {

@@ -57,7 +57,6 @@ Page({
 				}
 			},
 			fail: e => {
-				console.log(e);
 				wx.hideLoading();
 				wx.stopPullDownRefresh();
 				wx.showToast({
@@ -90,9 +89,7 @@ Page({
 
   // 重新卖
   resole(e) {
-    console.log(e, '4444433333')
     const target = e.currentTarget.dataset.resoleitem;
-    console.log(target, '344344')
     wx.showModal({
       title: '交易取消了？',
       content: '若买家与您取消了交易，可重新售卖该宝贝，确定重新卖吗？',
@@ -106,7 +103,6 @@ Page({
               isSold: '0',
             },
             success: res => {
-              console.log(res, '89iusdui')
               if(res && res.result && res.result.status && res.result.status == 200) {
                 this.setData({
                   productsList: [],
@@ -117,7 +113,6 @@ Page({
               }
             },
             fail: e => {
-              console.log(e, '897489798')
               wx.showToast({
                 title: '服务繁忙，请稍后再试~',
                 icon: 'none',

@@ -30,7 +30,6 @@ Page({
         uid: this.data.uid,
 			},
 			success: res => {
-        console.log(res, '049894785')
 				wx.hideLoading();
 				wx.stopPullDownRefresh();
 				if(res && res.result && res.result.data && res.result.data.length) {
@@ -43,7 +42,6 @@ Page({
                 useCommand: 'or',
               },
               success: res => {
-                console.log(res, ';434444444')
                 if(res && res.result && res.result.data && res.result.data.data) {
                   const data = res.result.data.data;
                   data.map(item => {
@@ -63,7 +61,6 @@ Page({
                 }
               },
               fail: e => {
-                console.log(e, 'error')
                 wx.hideLoading();
                 wx.stopPullDownRefresh();
                 wx.showToast({
@@ -76,7 +73,6 @@ Page({
 				}
 			},
 			fail: e => {
-				console.log(e);
 				wx.hideLoading();
 				wx.stopPullDownRefresh();
 				wx.showToast({

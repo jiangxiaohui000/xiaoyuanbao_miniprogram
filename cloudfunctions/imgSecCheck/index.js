@@ -13,7 +13,7 @@ exports.main = async (event, context) => {
   // });
   try {
     const res = await axios({
-      methods: 'get',
+      method: 'get',
       url: event.imgData,
       responseType: 'arraybuffer',
 			headers: { "Content-Type": "*" }

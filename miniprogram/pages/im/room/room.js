@@ -19,9 +19,6 @@ Page({
   },
 
   onLoad: function(options) {
-    console.log(options, 'room.js options')
-    console.log(app.globalData.openid, 'room.js app.globalData.openid')
-    // console.log(wx.getStorageSync('nickName'),wx.getStorageSync('avatarUrl'), 'room.js getStorageSync')
     this.getSystemInfo();
     this.data.openid = app.globalData.openid;
     this.data.groupId = options.groupId;
@@ -97,62 +94,48 @@ Page({
       });
 		}
 	},
-	// 获取用户信息(nickName avatarUrl)
+	// 获取用户信息 — 新版：通过 chooseAvatar 回调触发，此处直接从 storage 读取
 	onGetUserInfo() {
 		if(!this.data.hasUserInfo) {
-			wx.getUserProfile({
-				desc: '用于展示用户信息',
-				success: res => {
-					if(res && res.userInfo) {
-						let avatarUrl = res.userInfo.avatarUrl;
-						avatarUrl = avatarUrl.split("/");
-						avatarUrl[avatarUrl.length - 1] = 0;
-						this.data.buyer_avatarUrl = avatarUrl.join('/');
-            this.data.buyer_nickName = res.userInfo.nickName;
-            this.data.chatInfo = {
-              buyer_nickName: this.data.buyer_nickName,
-              buyer_avatarUrl: this.data.buyer_avatarUrl,
-              buyer_uid: this.data.openid,
-              seller_nickName: this.data.productInfo.seller_nickName,
-              seller_avatarUrl: this.data.productInfo.seller_avatarUrl,
-              seller_uid: this.data.productInfo.seller_uid,
-              img: this.data.productInfo.img,
-              price: this.data.productInfo.price,
-              productId: this.data.productInfo.productId,
-            };
-						wx.setStorageSync('avatarUrl', this.data.buyer_avatarUrl);
-            wx.setStorageSync('nickName', this.data.buyer_nickName);
-            this.data.hasUserInfo = true;
-            this.setData({
-              chatInfo: this.data.chatInfo,
-              groupId: this.data.groupId,
-              openid: this.data.openid,
-            });
-					}
-				},
-				fail: e => {
-					console.log(e, 'getUserInfo-fail');
-					wx.showToast({
-						title: '服务繁忙，请稍后再试~',
-						icon: 'none',
-					})
-				},
-			})
+			// 新版无法主动弹窗，引导用户前往"我的"页面设置头像和昵称
+			const nickName = wx.getStorageSync('nickName');
+			const avatarUrl = wx.getStorageSync('avatarUrl');
+			if (nickName && avatarUrl) {
+				this.data.buyer_nickName = nickName;
+				this.data.buyer_avatarUrl = avatarUrl;
+			} else {
+				this.data.buyer_nickName = '微信用户';
+				this.data.buyer_avatarUrl = 'https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLgo5ychFeqjfjsLia7HnyymiawHq6b5guj0RNKID3EmN9ticOwBTutRB3v8ibA8sYxNr5icJ7IZSZibc2A/0';
+			}
+			this.data.chatInfo = {
+				buyer_nickName: this.data.buyer_nickName,
+				buyer_avatarUrl: this.data.buyer_avatarUrl,
+				buyer_uid: this.data.openid,
+				seller_nickName: this.data.productInfo.seller_nickName,
+				seller_avatarUrl: this.data.productInfo.seller_avatarUrl,
+				seller_uid: this.data.productInfo.seller_uid,
+				img: this.data.productInfo.img,
+				price: this.data.productInfo.price,
+				productId: this.data.productInfo.productId,
+			};
+			wx.setStorageSync('nickName', this.data.buyer_nickName);
+			wx.setStorageSync('avatarUrl', this.data.buyer_avatarUrl);
+			this.data.hasUserInfo = true;
+			this.setData({
+				chatInfo: this.data.chatInfo,
+				groupId: this.data.groupId,
+				openid: this.data.openid,
+			});
 		}
   },
   // 获取系统信息
   getSystemInfo() {
-    wx.getSystemInfo({
-      success: res => {
-        // console.log('system info', res)
-        if (res.safeArea) {
-          const { top, bottom } = res.safeArea
-          this.setData({
-            // containerStyle: `padding-top: ${(/ios/i.test(res.system) ? 10 : 20) + top}px; padding-bottom: ${20 + res.windowHeight - bottom}px`,
-            containerStyle: `padding-bottom: ${20 + res.windowHeight - bottom}px`,
-          })
-        }
-      },
-    })
+    const res = wx.getWindowInfo();
+    if (res.safeArea) {
+      const { bottom } = res.safeArea;
+      this.setData({
+        containerStyle: `padding-bottom: ${20 + res.windowHeight - bottom}px`,
+      });
+    }
   },
 })

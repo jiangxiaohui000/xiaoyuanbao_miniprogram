@@ -31,7 +31,6 @@ Page({
   onLoad: function (options) {
     // 获取历史搜索
     const searchKey = wx.getStorageSync('searchKey');
-    console.log(searchKey, 'searchKey');
     this.setData({
       historyTags: searchKey ? searchKey : [],
     });
@@ -46,7 +45,6 @@ Page({
         }
       },
       fail: e => {
-        console.log(e);
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none',
@@ -193,7 +191,6 @@ Page({
         searchKey: value,
       },
       success: res => {
-        console.log(res, 'product-count')
         if(res && res.result && res.result.count) {
           const total = res.result.count.total;
           this.data.hasSearchedData = Boolean(total);
@@ -204,7 +201,6 @@ Page({
         }
       },
       fail: e => {
-        console.log(e);
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none'
@@ -221,7 +217,6 @@ Page({
         searchKey: value,
       },
       success: res => {
-        console.log(res, 'product-data')
         this.setData({
           showWhichPage: 'list'
         });
@@ -247,7 +242,6 @@ Page({
         }
       },
       fail: e => {
-        console.log(e, 'error');
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none',
@@ -266,7 +260,6 @@ Page({
         isDeleted: '0',
       },
       success: res => {
-        console.log(res, 'product-all-data')
         this.setData({
           showWhichPage: 'list'
         });
@@ -291,7 +284,6 @@ Page({
         }
       },
       fail: e => {
-        console.log(e);
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none'

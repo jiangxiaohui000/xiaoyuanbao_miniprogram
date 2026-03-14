@@ -49,7 +49,6 @@ Page({
     },
 		showLoading: false,
 		openid: '',
-		authorizationApplicationDialogShow: false,
 		hasUserInfo: false,
 		currentDataId: '',
 		isOwn: '0',
@@ -58,9 +57,11 @@ Page({
 	},
 	onLoad: function() {
 		if (!wx.cloud) {
-			wx.redirectTo({
-				url: '../chooseLib/chooseLib',
-			})
+			wx.showModal({
+				title: '提示',
+				content: '请使用 2.2.3 或以上的基础库以使用云能力',
+				showCancel: false,
+			});
 			return;
 		}
 		checkNetworkStatus(); // 检测网络状态
@@ -68,19 +69,16 @@ Page({
 		this.setData({
 			openid: openid,
 		});
-		console.log(this.data.openid, 'openid');
-		console.log(app.globalData, 'globalData');
 		const avatarUrl = wx.getStorageSync('avatarUrl');
 		const nickName = wx.getStorageSync('nickName');
 		this.data.hasUserInfo = (!!avatarUrl && !!nickName);
 		openid && (this.data.openid = openid);
 		!openid && this.login(); // 微信账号登录
 		if(this.data.openid) { // 已登录
-			this.data.userInfo.nickName = this.data.hasUserInfo ? wx.getStorageSync('nickName') : '微信用户';
+			this.data.userInfo.nickName = this.data.hasUserInfo ? wx.getStorageSync('nickName') : '点击设置昵称';
 			this.data.userInfo.avatarUrl = this.data.hasUserInfo ? wx.getStorageSync('avatarUrl') : '../../images/user-unlogin.png';
 			this.setData({
 				userInfo: this.data.userInfo,
-				authorizationApplicationDialogShow: !this.data.hasUserInfo,
 			});
 			wx.showLoading({ title: '加载中...' });
 			this.initData();
@@ -132,7 +130,6 @@ Page({
 			}
 		});
 		Promise.all([promise1, promise2, promise3]).then(res => {
-			console.log(res, 'me_init_data');
 			wx.hideLoading();
 			wx.stopPullDownRefresh();
 			if(res && res.length) {
@@ -170,7 +167,6 @@ Page({
 				}
 			}
 		}).catch(e => {
-			console.log(e);
 			wx.hideLoading();
 			wx.stopPullDownRefresh();
 			wx.showToast({
@@ -190,7 +186,6 @@ Page({
 				isDeleted: '0',
 			}
 		}).then(data1 => {
-			console.log(data1, 'data1')
 			wx.hideLoading();
 			if(data1 && data1.result && data1.result.data && data1.result.data.data && data1.result.count && data1.result.count.total) { // 发布的商品
 				const data = data1.result.data.data;
@@ -219,7 +214,6 @@ Page({
 				isDeleted: '0',
 			}
 		}).then(data2 => {
-			console.log(data2, 'data2')
 			wx.hideLoading();
 			if(data2 && data2.result && data2.result.count) { // 卖出的商品
 				const total = data2.result.count.total;
@@ -238,7 +232,6 @@ Page({
 				uid: this.data.openid,
 			}
 		}).then(data3 => {
-			console.log(data3, 'data3')
 			wx.hideLoading();
 			if(data3 && data3.result && data3.result.data && data3.result.data.length) {
 				const collectedProducts = data3.result.data[0].collectedProducts;
@@ -265,65 +258,31 @@ Page({
 				});
 				wx.showLoading();
 				this.initData();
-				const timer = setTimeout(() => { // 然后判断当前有没有拿到真实的用户信息
-					if(this.data.hasUserInfo) {
-						this.setData({
-							userInfo: this.data.userInfo,
-						});
-					} else {
-						this.setData({
-							authorizationApplicationDialogShow: true,
-						});
-					}
-				}, 1000);
-				clearTimeout(timer);
 			}
 		}
 	},
-	// 获取用户信息(nickName avatarUrl)
-	onGetUserInfo() {
-		if(!this.data.hasUserInfo) {
-			wx.getUserProfile({
-				desc: '用于展示用户信息',
-				success: res => {
-					if(res && res.userInfo) {
-						let avatarUrl = res.userInfo.avatarUrl;
-						const nickName = res.userInfo.nickName;
-						avatarUrl = avatarUrl.split("/")
-						avatarUrl[avatarUrl.length - 1] = 0;
-						avatarUrl = avatarUrl.join('/');
-						wx.setStorageSync('avatarUrl', avatarUrl);
-						wx.setStorageSync('nickName', nickName);
-						this.setData({
-							userInfo: res.userInfo,
-							hasUserInfo: true,
-						});	
-					}
-				},
-				fail: e => {
-					console.log(e, 'getUserInfo-fail');
-					wx.showToast({
-						title: '服务繁忙，请稍后再试~',
-						icon: 'none',
-					})
-				},
-			})
-		}
+	// 新版：选择头像回调（open-type="chooseAvatar"）
+	onChooseAvatar(e) {
+		if (!this.data.openid) return;
+		const avatarUrl = e.detail.avatarUrl;
+		wx.setStorageSync('avatarUrl', avatarUrl);
+		this.data.userInfo.avatarUrl = avatarUrl;
+		this.setData({ userInfo: this.data.userInfo });
 	},
-	// 弹窗 -- 获取授权
-	tapAuthorizationButton(e) {
+	// 新版：昵称输入框失焦回调（type="nickname"）
+	onNicknameInput(e) {
+		if (!this.data.openid) return;
+		const nickName = e.detail.value;
+		if (!nickName) return;
+		wx.setStorageSync('nickName', nickName);
+		this.data.userInfo.nickName = nickName;
 		this.setData({
-			authorizationApplicationDialogShow: false,
+			userInfo: this.data.userInfo,
+			hasUserInfo: true,
 		});
-		if(e.detail.index) { // 授权
-			this.onGetUserInfo();
-		} else { // 未授权
-			this.data.userInfo.nickName = this.data.openid ? '微信用户' : '点击登录';
-			this.setData({
-				userInfo: this.data.userInfo,
-			})
-		}
 	},
+	// 弹窗 -- 获取授权（已废弃，保留空函数避免旧引用报错）
+	tapAuthorizationButton() {},
 	// 上传图片
 	doUpload: function () {
 		if(!this.data.openid) { // 未登录，提示登录
@@ -335,16 +294,16 @@ Page({
 			});
 			return;
 		}
-		wx.chooseImage({ // 1 选择图片
+		wx.chooseMedia({ // 1 选择图片
 			count: 9,
+			mediaType: ['image'],
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
 			success: res => {
-				console.log(res, 'chooseImage-res')
 				const imgSecCheckArr = []; // 图片安全检查结果
 				const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
 				const tempFilesLength = res.tempFiles.length; // 临时文件数量
-				this.data.tempFilePaths = res.tempFilePaths; // 临时文件路径
+				this.data.tempFilePaths = tempFiles.map(f => f.tempFilePath); // 临时文件路径
 				if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
 					this.setData({
 						toptipsShow: true,
@@ -357,23 +316,20 @@ Page({
 					title: '请稍候...',
 					mask: true,
 				});
-				tempFiles.forEach((item, index) => { // 遍历临时文件数组，将每一个数据进行安全检查
-					const size = item.size;
-					const path = item.path;
-					if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
-						console.log('图片大于1M')
-						wx.compressImage({ src: path,	quality: 20 }).then(compressResult => {
-							const handledPath = compressResult.tempFilePath;
-							this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, index);
-						})
-					} else { // 图片大小小于1M，直接进行安全检查
-						console.log('图片小于1M');
-						this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, index);
-					}
-				});
+			tempFiles.forEach((item, index) => { // 遍历临时文件数组，将每一个数据进行安全检查
+				const size = item.size;
+				const path = item.tempFilePath; // chooseMedia 用 tempFilePath
+				if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
+					wx.compressImage({ src: path, quality: 20 }).then(compressResult => {
+						const handledPath = compressResult.tempFilePath;
+						this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, index);
+					})
+				} else { // 图片大小小于1M，直接进行安全检查
+					this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, index);
+				}
+			});
 			},
 			fail: e => {
-				console.error(e);
 				// wx.showToast({
 				// 	title: '未获取到有效图片，请再试一次',
 				// 	icon: 'none'
@@ -392,9 +348,7 @@ Page({
 				})
 			}
 		}).then(secCheckResult => {
-			console.log(secCheckResult, 'img check')
 			imgSecCheckArr.push(secCheckResult); // 将检查结果放进数组
-			console.log(tempFilesLength, index, imgSecCheckArr, 'len_index_imgSecCheckArr');
 			if(tempFilesLength == index + 1) { // 等遍历到最后一个数据，然后检查每一个返回的结果
 				if(imgSecCheckArr.every(item => item.result.errCode === 0)) { // 检查通过
 					this.data.tempFilePaths.forEach((item, tempFilePaths_index1) => { // 遍历临时文件，将每一个文件上传到云存储
@@ -416,7 +370,6 @@ Page({
 				}
 			}
 		}).catch(e => {
-			console.log(e, 'imgSecCheck fail');
 			wx.hideLoading();
 			wx.showToast({
 				title: '服务繁忙，请稍后再试~',
@@ -431,7 +384,6 @@ Page({
 			cloudPath: 'temp/' + new Date().getTime() + "-me-" + Math.floor(Math.random() * 1000),
 			filePath: item,
 			success: uploadFileResult => { // 文件上传成功
-				console.log(uploadFileResult, 'uploadFileResult')
 				const fileID = uploadFileResult.fileID;
 				this.data.fileIdArr.push(fileID);
 				wx.hideLoading();
@@ -441,7 +393,6 @@ Page({
 						fileIdArr: this.data.fileIdArr,
 						userInfo: this.data.userInfo,
 					}
-					console.log(params, 'eventChannel-emit-params')
 					wx.navigateTo({
 						url: '../postProduct/postProduct',
 						success: function(result) {
@@ -451,7 +402,6 @@ Page({
 				}
 			},
 			fail: e => { // 文件上传失败
-				console.log(e, 'uploadfile fail');
 				wx.hideLoading();
 				wx.showToast({
 					title: '上传失败，请稍后再试~',
@@ -460,7 +410,6 @@ Page({
 			}
 		});
 		// uploadTask.onProgressUpdate(res => {
-		// 	console.log(res, '112233445555555')
 		// 	wx.showLoading({
 		// 		title: `已上传 ${res.progress}%`,
 		// 		mask: true,
@@ -515,7 +464,6 @@ Page({
 											isOff: '0',
 										},
 										success: res => {
-											console.log(res, '9999999')
 											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												const data = res.result.data;
@@ -532,7 +480,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error2')
 											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
@@ -560,7 +507,6 @@ Page({
 											isDeleted: '1',
 										},
 										success: res => {
-											console.log(res, '9038409jr')
 											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												this.data.pageData.currentPage = 1;
@@ -574,7 +520,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error3')
 											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
@@ -592,7 +537,6 @@ Page({
 	},
 	// 降价--按钮
 	priceReduction(e) {
-		console.log(e, 'priceReduction')
 		if(!e.currentTarget.dataset.item.isOff) {
 			this.data.currentDataId = e.currentTarget.dataset.item._id;
 			this.setData({
@@ -631,7 +575,6 @@ Page({
 					currentPrice: +this.data.modifiedPrice,
 				},
 				success: res => {
-					console.log(res, '1221');
 					if(res && res.result && res.result.status && res.result.status == 200) {
 						const data = res.result.data;
 						this.data.productsList.map(item => {
@@ -653,7 +596,6 @@ Page({
 					}
 				},
 				fail: e => {
-					console.log(e, '22222')
 					wx.showToast({
 						title: '修改失败，请稍后再试...',
 						icon: 'none',
@@ -668,13 +610,11 @@ Page({
 	},
 	// 更多 -- 卖出 下架 删除
 	more(e) {
-		console.log(e, 'more')
 		if(!e.currentTarget.dataset.item.isOff) {
 			this.data.currentDataId = e.currentTarget.dataset.item._id;
 			wx.showActionSheet({
 				itemList: ['卖出', '下架', '删除'],
 				success: (res) => {
-					console.log(res, 'success')
 					if(res.tapIndex === 0) { // 卖出
 						wx.showModal({
 							title: '宝贝已经卖出？',
@@ -691,7 +631,6 @@ Page({
 											isSold: '1',
 										},
 										success: res => {
-											console.log(res, '9038409jr')
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												this.data.pageData.currentPage = 1;
 												this.data.productsList = [];
@@ -705,7 +644,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error1')
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
 												icon: 'none'
@@ -730,15 +668,12 @@ Page({
 											isOff: '1',
 										},
 										success: res => {
-											console.log(res, '9999999')
 											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												const data = res.result.data;
-												console.log(this.data.productsList, '555555')
 												this.data.productsList.forEach(item => {
 													(item._id === data._id) && (item.isOff = data.isOff === '1');
 												});
-												console.log(this.data.productsList, '444444444444')
 												this.setData({
 													productsList: this.data.productsList,
 												});
@@ -749,7 +684,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error2')
 											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
@@ -776,7 +710,6 @@ Page({
 											isDeleted: '1',
 										},
 										success: res => {
-											console.log(res, '9038409jr')
 											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												this.data.pageData.currentPage = 1;
@@ -790,7 +723,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error3')
 											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
@@ -823,7 +755,6 @@ Page({
 	},
 	// 卖出 收藏
 	toMineItemDetail: function(e) {
-		console.log('e', e);
 		const targetItem = e.currentTarget.dataset.item;
 		if(targetItem.value === 0) { // 卖出
 			wx.navigateTo({

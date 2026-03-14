@@ -19,6 +19,7 @@ Page({
     userAddress: '',
     locationFlash: true,
     locationShow: false,
+    showLocationAuthModal: false, // 是否显示位置授权引导弹窗
     timer: null,
     heatIconList: [],
     notHeatIconList: [],
@@ -38,23 +39,17 @@ Page({
 
   onLoad() {
     if (!wx.cloud) {
-      wx.redirectTo({
-        url: '../chooseLib/chooseLib',
+      wx.showModal({
+        title: '提示',
+        content: '请使用 2.2.3 或以上的基础库以使用云能力',
+        showCancel: false,
       });
       return;
     }
     app.login(res => this.data.openid = res); // 调用全局登录方法获取openid
     checkNetworkStatus(); // 网络状态检测
-    const _this = this;
-    wx.getSetting({
-      success: res => {
-        this.getUserLocation(res, _this); // 获取用户位置信息，然后再去取数据
-        if(!res.authSetting['scope.userLocation']) {
-          app.globalData.userLocation = '';
-        }
-      }
-    });
     wx.showLoading({ title: '加载中...' });
+    this.getUserLocation(null, this); // 获取用户位置（微信会自动处理授权弹窗）
 		wx.disableAlertBeforeUnload();
   },
   onUnload() {
@@ -74,7 +69,6 @@ Page({
         userLatitude: userLatitude,
       },
       success: res => {
-        console.log(res, 'success-getProductData')
         wx.hideLoading();
         wx.stopPullDownRefresh();
         if(res && res.result && res.result.data && res.result.data.data && res.result.data.data.length) { // 查找到数据
@@ -106,11 +100,15 @@ Page({
             }]
           });
         } else { // 没有相关数据
-          this.initData('', '');
+          // 如果带位置查询没结果，降级为不带位置查全部；若已经是不带位置查询仍无结果则不再递归
+          if(userLongitude || userLatitude) {
+            this.initData('', '');
+          } else {
+            this.setData({ showLoading: false, isLoaded: true });
+          }
         }
       },
       fail: e => {
-        console.log(e);
         wx.hideLoading();
         wx.stopPullDownRefresh();
         wx.showToast({
@@ -122,102 +120,54 @@ Page({
   },
   // 自动获取用户位置
   getUserLocation(res, _this) {
-    if(res.authSetting['scope.userLocation']) { // 用户默认同意授权位置信息
-      wx.getLocation({
-        type: 'gcj02',
-        success: res => { // 先获取到经纬度
-          this.data.userLongitude = res.longitude;
-          this.data.userLatitude = res.latitude;
-          this.initData(this.data.userLongitude, this.data.userLatitude);
-          this.useQQMap(res.latitude, res.longitude, _this);
-        },
-        fail: e => { // 未获取到经纬度
-          console.log('获取位置失败:', e);
-          this.initData('', '');
-          wx.hideLoading();
-          let errorMsg = '位置获取失败，请点击左上角位置图标选择位置';
-          if (e.errMsg) {
-            if (e.errMsg.indexOf('auth deny') > -1) {
-              errorMsg = '您拒绝了位置授权，请在右上角...中开启位置权限';
-            } else if (e.errMsg.indexOf('timeout') > -1) {
-              errorMsg = '定位超时，请检查GPS是否开启或网络是否正常';
-            } else if (e.errMsg.indexOf('fail') > -1) {
-              errorMsg = '定位失败，请确保已开启位置服务';
-            }
-          }
-          wx.showModal({
-            title: '位置获取失败',
-            content: errorMsg,
-            showCancel: false,
-            confirmText: '我知道了'
-          })
+    // 不管是否已授权，直接调 wx.getLocation
+    // 已授权：直接返回坐标
+    // 未授权：微信会自动弹出官方授权框（真机），用户同意后返回坐标
+    wx.getLocation({
+      type: 'gcj02',
+      success: res => {
+        this.setData({ showLocationAuthModal: false });
+        this.data.userLongitude = res.longitude;
+        this.data.userLatitude = res.latitude;
+        this.initData(this.data.userLongitude, this.data.userLatitude);
+        this.useQQMap(res.latitude, res.longitude, _this || this);
+      },
+      fail: e => {
+        wx.hideLoading();
+        // 授权被拒或获取失败：降级显示全部商品，同时提示用户可手动选择位置
+        this.initData('', '');
+        if (e.errMsg && e.errMsg.indexOf('auth deny') > -1) {
+          this.setData({ showLocationAuthModal: true });
         }
-      })
-    } else { // 用户未同意授权位置信息
-      wx.authorize({ // 向用户发起授权请求
-        scope: 'scope.userLocation',  
-        success: () => { // 用户同意授权位置信息
-          wx.chooseLocation({
+      }
+    });
+  },
+  // 位置授权弹窗：用户点击"去授权"按钮，跳转系统设置页
+  onGetLocationSuccess() {
+    this.setData({ showLocationAuthModal: false });
+    wx.openSetting({
+      success: data => {
+        if (data.authSetting['scope.userLocation']) {
+          wx.showLoading({ title: '加载中...' });
+          this.data.productsList = [];
+          this.data.initCount = 0;
+          wx.getLocation({
+            type: 'gcj02',
             success: res => {
               this.data.userLongitude = res.longitude;
               this.data.userLatitude = res.latitude;
               this.initData(this.data.userLongitude, this.data.userLatitude);
-              this.useQQMap(res.latitude, res.longitude, _this)
+              this.useQQMap(res.latitude, res.longitude, this);
             },
-            fail: error => {
-              console.log('打开地图选择位置取消', error);
-              this.initData('', '');
-            }
-          })
-        },
-        fail: () => { // 用户未同意授权位置信息
-          console.log('用户未同意授权位置信息');
-          wx.hideLoading();
-          wx.showModal({
-            title: '未授权位置信息',
-            content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
-            success: (tip) => {
-              if (tip.confirm) {
-                wx.openSetting({ // 调起客户端小程序设置界面，返回用户设置的操作结果
-                  success: (data) => {
-                    if (data.authSetting["scope.userLocation"]) {
-                      wx.chooseLocation({
-                        success: res => {
-                          this.data.userLongitude = res.longitude;
-                          this.data.userLatitude = res.latitude;
-                          this.initData(this.data.userLongitude, this.data.userLatitude);
-                          this.useQQMap(res.latitude, res.longitude, _this);
-                        }
-                      })
-                    } else {
-                      this.initData('', '');
-                      wx.showModal({
-                        title: '未授权位置信息',
-                        content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
-                        showCancel: false,
-                        confirmText: '我知道了'
-                      })
-                    }
-                  },
-                  fail: error => {
-                    console.log(error, 'ee');
-                    this.initData('', '');
-                  },
-                });
-              } else {
-                this.initData('', '');
-                wx.showModal({
-                  title: '未授权位置信息',
-                  content: '请点击左上角位置图标授权位置信息，以便更好地为您展示相关宝贝',
-                  showCancel: false,
-                  confirmText: '我知道啦'
-                })
-              }
-            }
+            fail: () => this.initData('', '')
           });
         }
-      })
-    }
+      }
+    });
+  },
+  // 位置授权弹窗：用户点击"暂不授权"
+  onSkipLocation() {
+    this.setData({ showLocationAuthModal: false });
   },
   // 用户自己选择位置
   goLocationPage() {
@@ -227,7 +177,6 @@ Page({
         if(res.authSetting['scope.userLocation']) { // 用户授权位置
           wx.chooseLocation({
             success: res => {
-              console.log(res, '877748374837648768')
               this.data.productsList = [];
               this.data.initCount = 0;
               this.data.userLongitude = res.longitude;
@@ -261,7 +210,6 @@ Page({
               }
             },
             fail: error => {
-              console.log(error, 'eeeee');
               this.data.productsList = [];
               this.data.initCount = 0;
               this.initData('', '');
@@ -285,7 +233,6 @@ Page({
     qqmapsdk.reverseGeocoder({ // 再通过腾讯位置服务获取到地理位置
       location: { latitude, longitude },
       success: res => {
-        console.log('location service', res);
         app.globalData.userLocation = {
           longitude: longitude,
           latitude: latitude,
@@ -302,7 +249,6 @@ Page({
         }, 3000);
       },
       fail: e => { // 腾讯位置服务出错
-        console.log(e, 'fail')
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none',
@@ -338,8 +284,6 @@ Page({
     const targetItem = e.currentTarget.dataset.item;
     // 用买方、卖方、商品的ID组成一个groupId
     const groupId = `${app.globalData.openid}${targetItem._id}${targetItem.uid}`;
-    // console.log('homePage groupId', groupId);
-    // console.log('homePage...........', app.globalData.openid, targetItem._id, targetItem.uid);
     wx.navigateTo({
       url: '../productDetail/productDetail',
       success: function(res) {
@@ -355,7 +299,6 @@ Page({
   },
   // 点击轮播图
   bannerClick(e) {
-    console.log(e.currentTarget.dataset.item)
   },
   // 选择商品分类
   // chooseCategory(e) {
@@ -363,9 +306,7 @@ Page({
   //   query.selectAll('.products-category-item').boundingClientRect();
   //   query.select('.products-category-item').boundingClientRect();
   //   query.exec(res => {
-  //     console.log(res);
   //     const selectedItemLeft = res[0][e.target.dataset.index].left;
-  //     console.log(selectedItemLeft);
   //     if(selectedItemLeft > 190) {
   //       this.setData({
   //         selectedItemLeft: selectedItemLeft

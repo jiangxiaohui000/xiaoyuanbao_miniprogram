@@ -19,39 +19,19 @@ Page({
   },
 
   onLoad: function() {
-    // 获取用户信息
-    wx.getSetting({
-      success: res => {
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          wx.getUserInfo({
-            success: res => {
-              this.setData({
-                avatarUrl: res.userInfo.avatarUrl,
-                userInfo: res.userInfo
-              })
-            }
-          })
-        }
-      }
-    })
-
     this.setData({
       onGetUserInfo: this.onGetUserInfo,
       getOpenID: this.getOpenID,
     })
 
-    wx.getSystemInfo({
-      success: res => {
-        console.log('system info', res)
-        if (res.safeArea) {
-          const { top, bottom } = res.safeArea
-          this.setData({
-            containerStyle: `padding-top: ${(/ios/i.test(res.system) ? 10 : 20) + top}px; padding-bottom: ${20 + res.windowHeight - bottom}px`,
-          })
-        }
-      },
-    })
+    // 获取窗口信息（替换废弃的 getSystemInfo）
+    const sysRes = wx.getWindowInfo();
+    if (sysRes.safeArea) {
+      const { top, bottom } = sysRes.safeArea;
+      this.setData({
+        containerStyle: `padding-top: ${(/ios/i.test(sysRes.system || '') ? 10 : 20) + top}px; padding-bottom: ${20 + sysRes.windowHeight - bottom}px`,
+      });
+    }
   },
 
   getOpenID: async function() {

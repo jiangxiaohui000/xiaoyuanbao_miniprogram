@@ -14,7 +14,6 @@ Page({
   },
   onShow() {
     if(this.data.dataIsReady) {
-      console.log(11111)
       this.initData();
     }
   },
@@ -26,21 +25,18 @@ Page({
         uid: this.data.openid,
       },
       success: res => {
-        console.log(res, 'message-data')
         wx.stopPullDownRefresh();
-        this.data.dataIsReady = true;
         const result = res.result.result.data;
         result.forEach(item => {
           item.handledMTime = timeFormatter(item.mtime);
           item.isOwn = item.seller_uid == this.data.openid;
         });
-        console.log(result, 'message-result')
         this.setData({
           messageList: result,
+          dataIsReady: true,
         });
       },
       fail: e => {
-        console.log(e, 'getChatsData-error');
         wx.stopPullDownRefresh();
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
@@ -54,23 +50,21 @@ Page({
   },
   // 登录
   login() {
-    app.login(res => this.data.openid = res);
-    if(this.data.openid) {
-      wx.showLoading({ title: '加载中...' });
-      this.initData();
-      this.setData({
-        openid: this.data.openid
-      });
-    } else {
-      wx.showToast({
-        title: '登录异常，请稍后再试！',
-        icon: 'none',
-      })
-    }
+    app.login(res => {
+      if (res) {
+        this.setData({ openid: res });
+        wx.showLoading({ title: '加载中...' });
+        this.initData();
+      } else {
+        wx.showToast({
+          title: '登录异常，请稍后再试！',
+          icon: 'none',
+        });
+      }
+    });
   },
   // 去聊天
   gotoChatItem(e) {
-    console.log(e, 'chatItem');
     const item = e.currentTarget.dataset.item;
     const productInfo = JSON.stringify({
       img: item.img,
@@ -90,7 +84,6 @@ Page({
   },
   // 删除聊天
   slideDelete(e) {
-    // console.log(e, '111111122222222')
     const target = e.currentTarget.dataset;
     const index = this.data.messageList.findIndex(item => item._id === target.id);
     wx.cloud.callFunction({
@@ -99,7 +92,6 @@ Page({
         _id: target.id,
       },
       success: res => {
-        // console.log(res, '333333333333')
         if(res && res.result && res.result.result && res.result.result.stats && res.result.result.stats.removed) {
           this.data.messageList.splice(index, 1);
           this.setData({
@@ -118,7 +110,6 @@ Page({
         }
       },
       fail: e => {
-        console.log(e, 'delete-fail');
         wx.showToast({
           title: '删除失败，请稍后再试~',
           icon: 'none',
@@ -136,7 +127,6 @@ Page({
   },
   // 处理 movable-view 位移
   handleMovableChange(e) {
-    // console.log(e, 'handleMovableChange')
     if(e.detail.source === 'friction') {
       e.detail.x < -30 ? this.showDeleteButton(e) : this.hideDeleteButton(e);
     } else if(e.detail.source === 'out-of-bounds' && e.detail.x === 0) {
@@ -145,12 +135,10 @@ Page({
   },
   // 处理toucestart事件
   handleTouchStart(e) {
-    // console.log(e,'start')
     this.startX = e.touches[0].pageX;
   },
   // 处理touchend事件
   handleTouchEnd(e) {
-    // console.log(e, 'end')
     if(e.changedTouches[0].pageX < this.startX && e.changedTouches[0].pageX - this.startX <= -30) {
       this.showDeleteButton(e);
     } else if(e.changedTouches[0].pageX > this.startX && e.changedTouches[0].pagex - this.pageX < 30) {
@@ -171,7 +159,6 @@ Page({
   },
 	// 下拉刷新
 	onPullDownRefresh() {
-    console.log(3333)
     this.initData();
 	},
 })
