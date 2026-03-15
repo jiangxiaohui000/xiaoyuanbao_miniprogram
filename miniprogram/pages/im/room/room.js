@@ -2,7 +2,7 @@ const app = getApp()
 
 Page({
   data: {
-    avatarUrl: './user-unlogin.png',
+    avatarUrl: '../../images/user-unlogin.png',
     logged: false,
     takeSession: false,
     requestResult: '',
