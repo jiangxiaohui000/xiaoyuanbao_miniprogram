@@ -299,36 +299,37 @@ Page({
 			mediaType: ['image'],
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
-			success: res => {
-				const imgSecCheckArr = []; // 图片安全检查结果
-				const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
-				const tempFilesLength = res.tempFiles.length; // 临时文件数量
-				this.data.tempFilePaths = tempFiles.map(f => f.tempFilePath); // 临时文件路径
-				if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
-					this.setData({
-						toptipsShow: true,
-						resultText: '图片大小不得超过 5MB，请重新选择',
-						toptipsType: 'info',
-					});
-					return;
-				}
-				wx.showLoading({
-					title: '请稍候...',
-					mask: true,
+		success: res => {
+			const imgSecCheckArr = []; // 图片安全检查结果
+			let imgSecCheckCount = 0; // 已完成安全检查的数量
+			const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
+			const tempFilesLength = res.tempFiles.length; // 临时文件数量
+			this.data.tempFilePaths = tempFiles.map(f => f.tempFilePath); // 临时文件路径
+			if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
+				this.setData({
+					toptipsShow: true,
+					resultText: '图片大小不得超过 5MB，请重新选择',
+					toptipsType: 'info',
 				});
-			tempFiles.forEach((item, index) => { // 遍历临时文件数组，将每一个数据进行安全检查
-				const size = item.size;
-				const path = item.tempFilePath; // chooseMedia 用 tempFilePath
-				if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
-					wx.compressImage({ src: path, quality: 20 }).then(compressResult => {
-						const handledPath = compressResult.tempFilePath;
-						this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, index);
-					})
-				} else { // 图片大小小于1M，直接进行安全检查
-					this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, index);
-				}
+				return;
+			}
+			wx.showLoading({
+				title: '请稍候...',
+				mask: true,
 			});
-			},
+		tempFiles.forEach((item) => { // 遍历临时文件数组，将每一个数据进行安全检查
+			const size = item.size;
+			const path = item.tempFilePath; // chooseMedia 用 tempFilePath
+			if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
+				wx.compressImage({ src: path, quality: 20 }).then(compressResult => {
+					const handledPath = compressResult.tempFilePath;
+					this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++ ; return imgSecCheckCount; });
+				})
+			} else { // 图片大小小于1M，直接进行安全检查
+				this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++ ; return imgSecCheckCount; });
+			}
+		});
+		},
 			fail: e => {
 				// wx.showToast({
 				// 	title: '未获取到有效图片，请再试一次',
@@ -338,10 +339,11 @@ Page({
 		})
 	},
 	// 图片安全检查
-	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, index) {
+	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, getCount) {
 		wx.cloud.callFunction({ // 2 图片安全检查
 			name: 'imgSecCheck',
 			data: {
+				filePath: filePath,
 				imgData: wx.cloud.CDN({
 					type: 'filePath',
 					filePath: filePath
@@ -349,7 +351,8 @@ Page({
 			}
 		}).then(secCheckResult => {
 			imgSecCheckArr.push(secCheckResult); // 将检查结果放进数组
-			if(tempFilesLength == index + 1) { // 等遍历到最后一个数据，然后检查每一个返回的结果
+			const count = getCount(); // 已完成数量+1并获取当前值
+			if(count === tempFilesLength) { // 所有图片都检查完成
 				if(imgSecCheckArr.every(item => item.result.errCode === 0)) { // 检查通过
 					this.data.tempFilePaths.forEach((item, tempFilePaths_index1) => { // 遍历临时文件，将每一个文件上传到云存储
 						this.uploadImg(item, tempFilePaths_index1, tempFilesLength); // 上传图片
