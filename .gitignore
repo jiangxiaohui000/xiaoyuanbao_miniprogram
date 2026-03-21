@@ -23,3 +23,7 @@ npm-debug.log*
 .idea/
 *.swp
 *.swo
+
+# ===== AI 辅助工具 =====
+# WorkBuddy AI 助手生成的工作记忆和对话状态，属于本地会话数据，不应提交
+.workbuddy/

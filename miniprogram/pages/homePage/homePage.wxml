@@ -13,9 +13,18 @@
 <scroll-view class="container" scroll-y="true" enable-flex="true">
   <!-- 工具栏 -->
   <view class="tool-box">
-    <!-- 定位 -->
-    <i class="iconfont icon-dingwei {{locationFlash ? 'dingwei' : ''}}" bindtap="goLocationPage"></i>
-    <text class="user-address" wx:if="{{locationShow && userAddress}}">当前位置：{{userAddress}}</text>
+    <!-- 定位区域：未授权显示图标，已授权显示小区名 -->
+    <view class="location-area" bindtap="goLocationPage">
+      <view wx:if="{{!locationAuthorized}}">
+        <!-- 未授权：仅显示定位图标，加载中有脉冲动画 -->
+        <i class="iconfont icon-dingwei {{locationFlash ? 'dingwei' : ''}}"></i>
+      </view>
+      <view wx:else class="estate-tag">
+        <!-- 已授权：显示小区名，若没找到小区则降级显示图标+地址 -->
+        <i class="iconfont icon-dingwei estate-icon"></i>
+        <text class="estate-name">{{nearbyEstate || userAddress}}</text>
+      </view>
+    </view>
     <!-- 搜索框 -->
     <view class="search" bindtap="gotoSearch">
       <icon type='search' size="14"></icon>

@@ -18,17 +18,40 @@ page {
   margin-top: 20rpx;
   position: relative;
 }
-.user-address {
-  position: absolute;
-  padding: 10rpx;
-  background-color: rgba(200, 200, 200, 0.8);
-  left: 0;
-  top: 86rpx;
-  z-index: 1;
-  border-radius: 15rpx;
-  font-size: 24rpx;
-  line-height: 1;
+/* 定位区域容器（可点击） */
+.location-area {
+  display: flex;
+  align-items: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
 }
+/* 已授权后：小区名胶囊（高度与搜索框 70rpx 对齐，圆角 20rpx 一致） */
+.estate-tag {
+  display: flex;
+  align-items: center;
+  height: 70rpx;
+  background-color: #f0faf4;
+  border: 2rpx solid #d0eedd;
+  border-radius: 20rpx;
+  padding: 0 20rpx 0 12rpx;
+  max-width: 220rpx;
+}
+/* 胶囊内图标：与小区名字号一致 */
+.estate-icon::before {
+  font-size: 24rpx;
+  color: #3CB371;
+  margin-right: 6rpx;
+}
+.estate-name {
+  font-size: 24rpx;
+  color: #3CB371;
+  font-weight: 500;
+  max-width: 160rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* 原有的 tooltip 样式保留备用，不再显示 */
 .search {
 	height: 70rpx;
 	background-color: #eeeeee;
@@ -230,9 +253,8 @@ page {
   }
 }
 .icon-dingwei::before {
-  font-size: 48rpx;
+  font-size: 24rpx;
   color: #3CB371;
-  margin-right: 20rpx;
 }
 
 /* 位置授权引导弹窗 */

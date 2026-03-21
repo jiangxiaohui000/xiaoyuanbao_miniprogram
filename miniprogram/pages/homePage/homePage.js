@@ -18,10 +18,10 @@ Page({
     currentIndex: 0,
     selectedItemLeft: undefined,
     userAddress: '',
+    nearbyEstate: '', // 最近的小区名，授权后替换定位图标
     locationFlash: true,
-    locationShow: false,
+    locationAuthorized: false, // 是否已获得定位授权
     showLocationAuthModal: false, // 是否显示位置授权引导弹窗
-    timer: null,
     heatIconList: [],
     notHeatIconList: [],
     pageData: {
@@ -54,7 +54,6 @@ Page({
 		wx.disableAlertBeforeUnload();
   },
   onUnload() {
-    clearTimeout(this.data.timer);
   },
   // 数据初始化
   initData(userLongitude, userLatitude) {
@@ -231,23 +230,45 @@ Page({
     const qqmapsdk = new QQMapWX({
       key: QQ_MAP_KEY
     });
-    qqmapsdk.reverseGeocoder({ // 再通过腾讯位置服务获取到地理位置
+    qqmapsdk.reverseGeocoder({
       location: { latitude, longitude },
+      get_poi: 1, // 开启周边 POI 返回，用于提取小区信息
       success: res => {
+        const result = res.result;
+        const address = result.formatted_addresses && result.formatted_addresses.recommend || '';
         app.globalData.userLocation = {
           longitude: longitude,
           latitude: latitude,
-          address: res.result.formatted_addresses.recommend,
+          address: address,
+        };
+
+        // 从 pois 里找最近的住宅小区
+        // 腾讯地图 category 中住宅区通常是 "房产;住宅区;住宅小区" 或 "房产;住宅区"
+        const pois = result.pois || [];
+        let nearbyEstate = '';
+        const residentialPoi = pois.find(poi =>
+          poi.category && (
+            poi.category.indexOf('住宅') > -1 ||
+            poi.category.indexOf('小区') > -1 ||
+            poi.category.indexOf('公寓') > -1
+          )
+        );
+        if (residentialPoi) {
+          nearbyEstate = residentialPoi.title;
+        } else {
+          // 降级：尝试从 address_reference.landmark_l1 获取地标名
+          const landmark = result.address_reference && result.address_reference.landmark_l1;
+          if (landmark && landmark.title) {
+            nearbyEstate = landmark.title;
+          }
         }
+
         _this.setData({
-          userAddress: res.result.formatted_addresses.recommend,
+          userAddress: address,
+          nearbyEstate: nearbyEstate,
           locationFlash: false,
-          locationShow: true,
+          locationAuthorized: true,
         });
-        _this.data.timer = setTimeout(() => {
-          _this.setData({ locationShow: false });
-          clearTimeout(_this.data.timer);
-        }, 3000);
       },
       fail: e => { // 腾讯位置服务出错
         wx.showToast({
@@ -255,7 +276,7 @@ Page({
           icon: 'none',
         });
         _this.setData({
-          locationFlash: false
+          locationFlash: false,
         });
       }
     });

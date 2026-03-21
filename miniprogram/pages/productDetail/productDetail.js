@@ -334,7 +334,7 @@ Page({
 	onShareAppMessage: function() {
 		const desc = this.data.productInfo && this.data.productInfo.desc
 			? this.data.productInfo.desc.substring(0, 10) + '...'
-			: '校园宝好物推荐';
+			: '拾旧坊好物推荐';
 		const promise = new Promise(resolve => {
 			setTimeout(() => {
 				resolve({ title: desc });
