@@ -19,6 +19,7 @@ Page({
     selectedItemLeft: undefined,
     userAddress: '',
     nearbyEstate: '', // 最近的小区名，授权后替换定位图标
+    loadingEstate: '', // 小区名称加载占位符，避免页面闪烁
     locationFlash: true,
     locationAuthorized: false, // 是否已获得定位授权
     showLocationAuthModal: false, // 是否显示位置授权引导弹窗
@@ -266,6 +267,7 @@ Page({
         _this.setData({
           userAddress: address,
           nearbyEstate: nearbyEstate,
+          loadingEstate: nearbyEstate, // 加载完成后赋值
           locationFlash: false,
           locationAuthorized: true,
         });

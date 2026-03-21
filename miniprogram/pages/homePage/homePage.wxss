@@ -46,7 +46,7 @@ page {
   font-size: 24rpx;
   color: #3CB371;
   font-weight: 500;
-  max-width: 160rpx;
+  max-width: 120rpx; /* 约可显示4个汉字，超出显示省略号 */
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

@@ -22,7 +22,7 @@
       <view wx:else class="estate-tag">
         <!-- 已授权：显示小区名，若没找到小区则降级显示图标+地址 -->
         <i class="iconfont icon-dingwei estate-icon"></i>
-        <text class="estate-name">{{nearbyEstate || userAddress}}</text>
+        <text class="estate-name">{{loadingEstate || userAddress}}</text>
       </view>
     </view>
     <!-- 搜索框 -->
