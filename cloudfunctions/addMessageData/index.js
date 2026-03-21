@@ -7,11 +7,20 @@ cloud.init({
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  console.log(event, 'event')
   const db = cloud.database();
   const result = await db.collection('data_message').where({ _id: event.groupId }).get();
-  console.log(result, '1111111')
-  if(result && result.data && result.data.length) return;
+
+  if (result && result.data && result.data.length) {
+    // 会话已存在：更新最后消息时间（mtime），保证消息列表时间戳始终是最新的
+    await db.collection('data_message').where({ _id: event.groupId }).update({
+      data: {
+        mtime: event.mtime,
+      }
+    });
+    return { updated: true };
+  }
+
+  // 会话不存在：新建会话记录
   const addResult = await db.collection('data_message').add({
     data: {
       _id: event.groupId,
@@ -27,7 +36,7 @@ exports.main = async (event, context) => {
       img: event.img,
       price: event.price,
     }
-  })
+  });
 
   return {
     addResult

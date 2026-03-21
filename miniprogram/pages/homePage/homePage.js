@@ -1,8 +1,9 @@
 //homePage.js
 const app = getApp();
 const QQMapWX = require('../../utils/qqmap-wx-jssdk.js'); // 引入腾讯位置服务
-const { priceConversion } = require('../../utils/priceConversion');
 const { checkNetworkStatus } = require('../../utils/checkNetworkStatus');
+const { QQ_MAP_KEY } = require('../../utils/config');
+const { calculatingHeat, calculatingPrice } = require('../../utils/productUtils');
 
 Page({
   data: {
@@ -228,7 +229,7 @@ Page({
   // 使用腾讯位置服务
   useQQMap(latitude, longitude, _this) {
     const qqmapsdk = new QQMapWX({
-      key: 'A4BBZ-RMHYU-LDQVQ-BZDUV-EOPZO-5BFWK'
+      key: QQ_MAP_KEY
     });
     qqmapsdk.reverseGeocoder({ // 再通过腾讯位置服务获取到地理位置
       location: { latitude, longitude },
@@ -317,37 +318,12 @@ Page({
   //     currentIndex: e.target.dataset.index
   //   });
   // },
-  // 计算热度
+  // 计算热度（使用公共工具函数）
   calculatingHeat(item) {
-    const heatIconList = [];
-    const notHeatIconList = [];
-    let heat = 0;
-    const collectedArrLength = item.isCollected.length;
-    if(collectedArrLength > 0 && collectedArrLength <= 10) {
-      heat = 1;
-    } else if(collectedArrLength > 10 && collectedArrLength <= 20) {
-      heat = 2;
-    } else if(collectedArrLength > 20 && collectedArrLength <= 30) {
-      heat = 3;
-    } else if(collectedArrLength > 30 && collectedArrLength <= 40) {
-      heat = 4;
-    } else if(collectedArrLength > 40) {
-      heat = 5;
-    }
-    heatIconList.length = heat;
-    notHeatIconList.length = 5 - heat;
-    return {
-      heatIconList,
-      notHeatIconList,
-    }
+    return calculatingHeat(item);
   },
-  // 计算价格
+  // 计算价格（使用公共工具函数）
   calculatingPrice(item) {
-    let newCurrentPrice = priceConversion(item.currentPrice);
-    let newOriginPrice = priceConversion(item.originPrice);
-    return {
-      newCurrentPrice,
-      newOriginPrice
-    }
+    return calculatingPrice(item);
   },
 })

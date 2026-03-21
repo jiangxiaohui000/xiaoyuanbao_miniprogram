@@ -1,6 +1,6 @@
 // pages/collectedProducts/collectedProducts.js
 const app = getApp()
-const { priceConversion } = require('../../utils/priceConversion');
+const { calculatingHeat, calculatingPrice } = require('../../utils/productUtils');
 
 Page({
 
@@ -95,40 +95,14 @@ Page({
     });
   },
 
-  // 计算价格
+  // 计算价格（使用公共工具函数）
   calculatingPrice(item) {
-    let newCurrentPrice = priceConversion(item.currentPrice);
-    let newOriginPrice = priceConversion(item.originPrice);
-    return {
-      newCurrentPrice,
-      newOriginPrice
-    }
+    return calculatingPrice(item);
   },
 
-
-  // 计算热度
+  // 计算热度（使用公共工具函数）
   calculatingHeat(item) {
-    const heatIconList = [];
-    const notHeatIconList = [];
-    let heat = 0;
-    const collectedArrLength = item.isCollected.length;
-    if(collectedArrLength > 0 && collectedArrLength <= 10) {
-      heat = 1;
-    } else if(collectedArrLength > 10 && collectedArrLength <= 20) {
-      heat = 2;
-    } else if(collectedArrLength > 20 && collectedArrLength <= 30) {
-      heat = 3;
-    } else if(collectedArrLength > 30 && collectedArrLength <= 40) {
-      heat = 4;
-    } else if(collectedArrLength > 40) {
-      heat = 5;
-    }
-    heatIconList.length = heat;
-    notHeatIconList.length = 5 - heat;
-    return {
-      heatIconList,
-      notHeatIconList,
-    }
+    return calculatingHeat(item);
   },
 
   /**
@@ -154,13 +128,10 @@ Page({
 
   /**
    * 生命周期函数--监听页面卸载
+   * 注意：collectedProducts 页面本身没有"重新卖"操作，无需向上一页回传 isResold
+   * 原来的 this.data.hasResole 变量在此页面从未定义，已移除，避免传递 undefined
    */
   onUnload: function () {
-    const pages = getCurrentPages(); // 获取页面栈
-    const prevPage = pages[pages.length - 2]; // 跳转之前的页面
-    prevPage.setData({
-      isResold: this.data.hasResole,
-    });
   },
 
   /**

@@ -4,12 +4,10 @@
     "pages/homePage/homePage",
     "pages/message/message",
     "pages/me/me",
-    "pages/im/im",
     "pages/im/room/room",
     "pages/productDetail/productDetail",
     "pages/search/search",
     "pages/postProduct/postProduct",
-    "pages/login/login",
     "pages/soldProducts/soldProducts",
     "pages/collectedProducts/collectedProducts",
     "pages/feedback/feedback"

@@ -1,17 +1,13 @@
+/**
+ * @deprecated
+ * 此页面为早期 IM 演示空壳，已从 app.json 中移除注册，不会被导航到。
+ * 实际聊天功能由 pages/im/room/room.js 实现。
+ */
 const app = getApp()
 
 Page({
   data: {
   },
-
   onLoad: function (options) {
-    if (app.globalData.openid) {
-      this.setData({
-        openid: app.globalData.openid
-      })
-    }
-
-    console.group('数据库"实时数据推送"文档')
-    console.groupEnd()
   },
 })

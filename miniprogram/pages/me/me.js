@@ -2,6 +2,7 @@ const app = getApp()
 const { priceConversion } = require('../../utils/priceConversion');
 const { money } = require('../../utils/moneyInputLimit');
 const { checkNetworkStatus } = require('../../utils/checkNetworkStatus');
+const { imgSecCheck, uploadImg } = require('../../utils/productUtils');
 
 Page({
 	data: {
@@ -338,86 +339,29 @@ Page({
 			}
 		})
 	},
-	// 图片安全检查
+	// 图片安全检查（调用公共工具函数）
 	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, getCount) {
-		wx.cloud.callFunction({ // 2 图片安全检查
-			name: 'imgSecCheck',
-			data: {
-				filePath: filePath,
-				imgData: wx.cloud.CDN({
-					type: 'filePath',
-					filePath: filePath
-				})
-			}
-		}).then(secCheckResult => {
-			imgSecCheckArr.push(secCheckResult); // 将检查结果放进数组
-			const count = getCount(); // 已完成数量+1并获取当前值
-			if(count === tempFilesLength) { // 所有图片都检查完成
-				if(imgSecCheckArr.every(item => item.result.errCode === 0)) { // 检查通过
-					this.data.tempFilePaths.forEach((item, tempFilePaths_index1) => { // 遍历临时文件，将每一个文件上传到云存储
-						this.uploadImg(item, tempFilePaths_index1, tempFilesLength); // 上传图片
-					});
-				} else if(imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 检查未通过
-					wx.hideLoading();
-					this.setData({
-						resultText: '不得上传违法违规内容，请重新选择！',
-						toptipsShow: true,
-						toptipsType: 'error',
-					});
-				} else { // 检查异常
-					wx.hideLoading();
-					wx.showToast({
-						title: '服务繁忙，请稍后再试~',
-						icon: 'none'
-					});
-				}
-			}
-		}).catch(e => {
-			wx.hideLoading();
-			wx.showToast({
-				title: '服务繁忙，请稍后再试~',
-				icon: 'none'
+		imgSecCheck(this, filePath, imgSecCheckArr, tempFilesLength, getCount, () => {
+			this.data.tempFilePaths.forEach((item, tempFilePaths_index1) => {
+				this.uploadImg(item, tempFilePaths_index1, tempFilesLength);
 			});
 		});
 	},
-	// 将图片上传
+	// 将图片上传（调用公共工具函数）
 	uploadImg(item, tempFilePaths_index1, tempFilesLength) {
-		// const uploadTask = wx.cloud.uploadFile({ // 3 上传文件
-		wx.cloud.uploadFile({ // 3 上传文件
-			cloudPath: 'temp/' + new Date().getTime() + "-me-" + Math.floor(Math.random() * 1000),
-			filePath: item,
-			success: uploadFileResult => { // 文件上传成功
-				const fileID = uploadFileResult.fileID;
-				this.data.fileIdArr.push(fileID);
-				wx.hideLoading();
-				if(tempFilesLength === tempFilePaths_index1 + 1) { // 等数据遍历结束，全部放进数组，再跳转
-					const params = {
-						filePath: this.data.tempFilePaths,
-						fileIdArr: this.data.fileIdArr,
-						userInfo: this.data.userInfo,
-					}
-					wx.navigateTo({
-						url: '../postProduct/postProduct',
-						success: function(result) {
-							result.eventChannel.emit('sendImage', params);
-						}
-					});
-				}
-			},
-			fail: e => { // 文件上传失败
-				wx.hideLoading();
-				wx.showToast({
-					title: '上传失败，请稍后再试~',
-					icon: 'error'
-				});
-			}
+		uploadImg(this, item, tempFilePaths_index1, tempFilesLength, 'me', () => {
+			const params = {
+				filePath: this.data.tempFilePaths,
+				fileIdArr: this.data.fileIdArr,
+				userInfo: this.data.userInfo,
+			};
+			wx.navigateTo({
+				url: '../postProduct/postProduct',
+				success: function(result) {
+					result.eventChannel.emit('sendImage', params);
+				},
+			});
 		});
-		// uploadTask.onProgressUpdate(res => {
-		// 	wx.showLoading({
-		// 		title: `已上传 ${res.progress}%`,
-		// 		mask: true,
-		// 	});
-		// })
 	},
 	// 下拉刷新列表
 	onPullDownRefresh: function() {
