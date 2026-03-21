@@ -1,29 +1,47 @@
 <!-- pages/me/me -->
 <view class="user-info">
   <view class="user-info-left">
-    <!-- 用户头像（新版：open-type="chooseAvatar"） -->
+    <!-- 用户头像 -->
     <button
-      open-type="chooseAvatar"
-      bindchooseavatar="onChooseAvatar"
+      wx:if="{{!hasUserInfo && canIUse}}"
+      open-type="getUserInfo"
+      bindgetuserinfo="getUserInfo"
       class="user-info-avatar"
       style="background-image: url({{userInfo.avatarUrl}})"
     ></button>
-    <!-- 用户昵称（已登录且已有昵称则展示，否则展示昵称输入框） -->
-    <view wx:if="{{hasUserInfo}}" class="user-name" bindtap="login">{{userInfo.nickName}}</view>
-    <input
-      wx:else
-      type="nickname"
-      class="user-name-input"
-      placeholder="{{openid ? '点击设置昵称' : '点击登录'}}"
-      bindblur="onNicknameInput"
-      bindtap="login"
-    />
+    <button
+      wx:elif="{{!hasUserInfo && !canIUse}}"
+      class="user-info-avatar"
+      bindtap="getUserProfile"
+      style="background-image: url({{userInfo.avatarUrl}})"
+    ></button>
+    <block wx:else>
+      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}"></image>
+    </block>
+
+    <!-- 用户昵称 -->
+    <block wx:if="{{!hasUserInfo && canIUse}}">
+      <button
+        wx:if="{{!hasUserInfo && canIUse}}"
+        open-type="getUserInfo"
+        bindgetuserinfo="getUserInfo"
+        class="user-name"
+      >获取头像昵称</button>
+    </block>
+    <block wx:elif="{{!hasUserInfo && !canIUse}}">
+      <button
+        class="user-name"
+        bindtap="getUserProfile"
+      >获取头像昵称</button>
+    </block>
+    <block wx:else>
+      <text class="user-name">{{userInfo.nickName}}</text>
+    </block>
   </view>
   <view class="user-info-right">
-    <!-- 点我速卖 -->
+    <!-- 发布闲置 -->
     <view class="sole-button" bindtap="doUpload">
-      <i class="iconfont icon-maichu"></i>
-      <text>点我速卖</text>
+      <text>发布闲置</text>
     </view>
   </view>
 </view>

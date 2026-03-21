@@ -24,14 +24,22 @@ page {
 }
 .sole-button {
   width: 200rpx;
-  border-radius: 26rpx;
+  height: 70rpx;
+  border-radius: 35rpx;
   display: flex;
   align-items: center;
-  background-color: #3CB371;
-  justify-content: space-around;
+  background-color: rgba(255, 255, 255, 0.2);
+  justify-content: center;
   margin-right: 20rpx;
-  border: 2px solid #fff;
+  border: 2rpx solid rgba(255, 255, 255, 0.4);
   color: #fff;
+  font-size: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.sole-button:active {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(0.96);
 }
 .user-name {
   font-size: 36rpx;
