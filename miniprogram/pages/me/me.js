@@ -7,8 +7,7 @@ const { imgSecCheck, uploadImg } = require('../../utils/productUtils');
 Page({
 	data: {
 		userInfo: {
-			avatarUrl: '',
-			nickName: '',
+			avatarUrl: '../../images/user-unlogin.png',
 		},
 		logged: false,
 		takeSession: false,
@@ -66,27 +65,17 @@ Page({
 			return;
 		}
 		checkNetworkStatus(); // 检测网络状态
-		const openid = app.globalData.openid;
-		this.setData({
-			openid: openid,
-		});
-		const avatarUrl = wx.getStorageSync('avatarUrl');
-		const nickName = wx.getStorageSync('nickName');
-		this.data.hasUserInfo = (!!avatarUrl && !!nickName);
-		openid && (this.data.openid = openid);
-		!openid && this.login(); // 微信账号登录
-		if(this.data.openid) { // 已登录
-			this.data.userInfo.nickName = this.data.hasUserInfo ? wx.getStorageSync('nickName') : '点击设置昵称';
-			this.data.userInfo.avatarUrl = this.data.hasUserInfo ? wx.getStorageSync('avatarUrl') : '../../images/user-unlogin.png';
-			this.setData({
-				userInfo: this.data.userInfo,
-			});
+
+		// 静默登录：直接获取 openid，无需用户授权
+		if (app.globalData.openid) {
+			this.setData({ openid: app.globalData.openid });
 			wx.showLoading({ title: '加载中...' });
 			this.initData();
-		} else { // 未登录
-			this.data.userInfo.nickName = '点击登录';
-			this.setData({
-				userInfo: this.data.userInfo,
+		} else {
+			app.login(openid => {
+				this.setData({ openid });
+				wx.showLoading({ title: '加载中...' });
+				this.initData();
 			});
 		}
 	},
@@ -243,25 +232,6 @@ Page({
 			}
 		});
 	},
-	// 登录
-	login() {
-		if(!this.data.openid) { // 如果当前没有openid，才需要调用登录接口
-			app.login(res => this.setData({ openid: res })); // 调用全局登录方法获取openid
-			if(this.data.openid) { // 拿到openid后判断为已登录状态
-				wx.setStorageSync('openid', this.data.openid);
-				app.globalData.openid = this.data.openid;
-				this.setData({
-					openid: this.data.openid,
-				});
-				wx.showToast({
-					title: '登录成功',
-					icon: 'success',
-				});
-				wx.showLoading();
-				this.initData();
-			}
-		}
-	},
 	// 新版：选择头像回调（open-type="chooseAvatar"）
 	onChooseAvatar(e) {
 		if (!this.data.openid) return;
@@ -282,8 +252,6 @@ Page({
 			hasUserInfo: true,
 		});
 	},
-	// 弹窗 -- 获取授权（已废弃，保留空函数避免旧引用报错）
-	tapAuthorizationButton() {},
 	// 上传图片
 	doUpload: function () {
 		if(!this.data.openid) { // 未登录，提示登录

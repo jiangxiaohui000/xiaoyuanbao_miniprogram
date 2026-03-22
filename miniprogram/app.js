@@ -11,6 +11,7 @@ App({
     }
     this.globalData = {};
     this.globalData.needAdaptIphoneX = phoneType();
+    this.login(); // 静默登录，获取 openid
   },
   login: function(cb) {
     const _this = this;

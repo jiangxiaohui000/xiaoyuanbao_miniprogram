@@ -9,10 +9,20 @@ cloud.init({
 exports.main = async (event, context) => {
   const db = cloud.database();
   const _ = db.command;
-  const result = await db.collection('data_user').where({ uid: _.eq(event.uid) }).update({
-    data: {
-      collectedProducts: event.collectedProducts,
-    }
+
+  // 动态构建更新数据
+  const updateData = {};
+
+  // 支持更新收藏列表
+  if (event.collectedProducts !== undefined) {
+    updateData.collectedProducts = event.collectedProducts;
+  }
+
+  // 使用 openid 或 uid 查询
+  const whereCondition = event.openid ? { openid: _.eq(event.openid) } : { uid: _.eq(event.uid) };
+
+  const result = await db.collection('data_user').where(whereCondition).update({
+    data: updateData
   });
 
   return {

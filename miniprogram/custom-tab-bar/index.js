@@ -30,53 +30,8 @@ Component({
 			this.setData({
 				selected: data.index
 			});
-			if(data.index === 1) { // 发布
-				this.doUpload();
-			} else { // 首页、消息tab
-				const url = data.path
-				wx.switchTab({ url })
-			}
-		},
-		// 上传图片
-		doUpload: function () {
-			// 获取app实例
-			const app = getApp();
-			// 选择图片
-		wx.chooseMedia({
-			count: 9,
-			mediaType: ['image'],
-			sizeType: ['compressed'],
-			sourceType: ['album', 'camera'],
-			success: function (res) {
-				wx.showLoading({ title: '上传中...' });
-				const filePath = res.tempFiles[0].tempFilePath // chooseMedia 用 tempFilePath
-					// 上传图片
-					const cloudPath = 'my-image' + filePath.match(/\.[^.]+?$/)[0]
-					wx.cloud.uploadFile({
-						cloudPath,
-						filePath,
-						success: res => {
-							app.globalData.fileID = res.fileID
-							app.globalData.cloudPath = cloudPath
-							app.globalData.imagePath = filePath
-							wx.navigateTo({
-								url: '../storageConsole/storageConsole'
-							})
-						},
-						fail: e => {
-							wx.showToast({
-								title: '上传失败',
-								icon: 'error',
-							})
-						},
-						complete: () => {
-							wx.hideLoading()
-						}
-					})
-				},
-				fail: e => {
-				}
-			})
+			const url = data.path;
+			wx.switchTab({ url });
 		},
 	},
 })

@@ -7,7 +7,6 @@ cloud.init({
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  console.log(event, 'event')
   const db = cloud.database();
   let result = '';
   const params = {
@@ -27,7 +26,6 @@ exports.main = async (event, context) => {
   }).catch(e => {
     result = e;
   });
-  console.log(result, count, '4444222211')
   return {
     result,
     count,

@@ -1,42 +1,8 @@
 <!-- pages/me/me -->
 <view class="user-info">
   <view class="user-info-left">
-    <!-- 用户头像 -->
-    <button
-      wx:if="{{!hasUserInfo && canIUse}}"
-      open-type="getUserInfo"
-      bindgetuserinfo="getUserInfo"
-      class="user-info-avatar"
-      style="background-image: url({{userInfo.avatarUrl}})"
-    ></button>
-    <button
-      wx:elif="{{!hasUserInfo && !canIUse}}"
-      class="user-info-avatar"
-      bindtap="getUserProfile"
-      style="background-image: url({{userInfo.avatarUrl}})"
-    ></button>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}"></image>
-    </block>
-
-    <!-- 用户昵称 -->
-    <block wx:if="{{!hasUserInfo && canIUse}}">
-      <button
-        wx:if="{{!hasUserInfo && canIUse}}"
-        open-type="getUserInfo"
-        bindgetuserinfo="getUserInfo"
-        class="user-name"
-      >获取头像昵称</button>
-    </block>
-    <block wx:elif="{{!hasUserInfo && !canIUse}}">
-      <button
-        class="user-name"
-        bindtap="getUserProfile"
-      >获取头像昵称</button>
-    </block>
-    <block wx:else>
-      <text class="user-name">{{userInfo.nickName}}</text>
-    </block>
+    <!-- 用户头像（仅展示，不可点击） -->
+    <image class="user-info-avatar" src="{{userInfo.avatarUrl}}"></image>
   </view>
   <view class="user-info-right">
     <!-- 发布闲置 -->
@@ -101,10 +67,10 @@
       <text>点击右上角按钮去发布吧~</text>
     </view>
   </view>
-  <!-- 未登录 -->
+  <!-- 未登录/加载中 -->
   <view wx:if="{{!openid}}" class="not-login">
     <i class="iconfont icon-weidenglu"></i>
-    <view>您还未登录，<text bindtap="login" style="color: #0000ff; text-decoration: underline;">点我</text>去登录吧~</view>
+    <view>正在加载...</view>
   </view>
 </scroll-view>
 

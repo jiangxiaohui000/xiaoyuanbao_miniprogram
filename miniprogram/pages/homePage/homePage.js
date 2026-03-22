@@ -17,9 +17,7 @@ Page({
     searchKeyWord: '',
     currentIndex: 0,
     selectedItemLeft: undefined,
-    userAddress: '',
-    nearbyEstate: '', // 最近的小区名，授权后替换定位图标
-    loadingEstate: '', // 小区名称加载占位符，避免页面闪烁
+    locationText: '定位中...', // 定位显示文本：定位中/小区名/完整地址
     locationFlash: true,
     locationAuthorized: false, // 是否已获得定位授权
     showLocationAuthModal: false, // 是否显示位置授权引导弹窗
@@ -265,9 +263,7 @@ Page({
         }
 
         _this.setData({
-          userAddress: address,
-          nearbyEstate: nearbyEstate,
-          loadingEstate: nearbyEstate, // 加载完成后赋值
+          locationText: nearbyEstate || address, // 优先小区名，降级完整地址
           locationFlash: false,
           locationAuthorized: true,
         });
@@ -324,23 +320,6 @@ Page({
   // 点击轮播图
   bannerClick(e) {
   },
-  // 选择商品分类
-  // chooseCategory(e) {
-  //   const query = wx.createSelectorQuery();
-  //   query.selectAll('.products-category-item').boundingClientRect();
-  //   query.select('.products-category-item').boundingClientRect();
-  //   query.exec(res => {
-  //     const selectedItemLeft = res[0][e.target.dataset.index].left;
-  //     if(selectedItemLeft > 190) {
-  //       this.setData({
-  //         selectedItemLeft: selectedItemLeft
-  //       })
-  //     }
-  //   });
-  //   this.setData({
-  //     currentIndex: e.target.dataset.index
-  //   });
-  // },
   // 计算热度（使用公共工具函数）
   calculatingHeat(item) {
     return calculatingHeat(item);

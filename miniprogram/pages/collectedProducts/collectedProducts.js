@@ -113,39 +113,10 @@ Page({
   },
 
   /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   * 注意：collectedProducts 页面本身没有"重新卖"操作，无需向上一页回传 isResold
-   * 原来的 this.data.hasResole 变量在此页面从未定义，已移除，避免传递 undefined
-   */
-  onUnload: function () {
-  },
-
-  /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
     this.initData();
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
   },
 
   /**

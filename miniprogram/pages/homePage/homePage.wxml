@@ -20,9 +20,9 @@
         <i class="iconfont icon-dingwei {{locationFlash ? 'dingwei' : ''}}"></i>
       </view>
       <view wx:else class="estate-tag">
-        <!-- 已授权：显示小区名，若没找到小区则降级显示图标+地址 -->
+        <!-- 已授权：显示小区名，若没找到小区则降级显示完整地址 -->
         <i class="iconfont icon-dingwei estate-icon"></i>
-        <text class="estate-name">{{loadingEstate || userAddress}}</text>
+        <text class="estate-name">{{locationText}}</text>
       </view>
     </view>
     <!-- 搜索框 -->
@@ -55,18 +55,6 @@
       </swiper-item>
     </swiper>
   </view>
-  <!-- 商品分类 -->
-  <!-- <view class="products-category-container">
-    <scroll-view class="products-category">
-      <view
-        bindtap="chooseCategory"
-        wx:for="{{productsCategory}}"
-        wx:key="item"
-        data-index="{{index}}"
-        class="products-category-item {{index === currentIndex ? 'active' : ''}}"
-      >{{item}}</view>
-    </scroll-view>
-  </view> -->
   <!-- 没有用户地理位置相关数据时给出的提示 -->
   <view class="noRelevantData" wx:if="{{!hasRelevantData}}">
     <text>您身边1000米内没有相关商品</text>
@@ -113,20 +101,6 @@
   <!-- <view class="uploader">
     <navigator url="../databaseGuide/databaseGuide" open-type="navigate" class="uploader-text">
       <text>前端操作数据库</text>
-    </navigator>
-  </view> -->
-
-  <!-- 即时通信 -->
-  <!-- <view class="uploader">
-    <navigator url="../im/im" open-type="navigate" class="uploader-text">
-      <text>即时通信 Demo</text>
-    </navigator>
-  </view> -->
-
-  <!-- 云调用 -->
-  <!-- <view class="uploader">
-    <navigator url="../openapi/openapi" open-type="navigate" class="uploader-text">
-      <text>云调用</text>
     </navigator>
   </view> -->
 </scroll-view>

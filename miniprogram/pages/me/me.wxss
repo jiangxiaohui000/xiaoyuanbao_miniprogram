@@ -1,6 +1,6 @@
 page {
   background-color: #eee;
-  position: relative;
+  /* position: relative; */
   height: 100%;
   width: 100%;
   display: flex;
@@ -10,17 +10,13 @@ page {
 .user-info {
   height: 160rpx;
   width: 100%;
-  margin-top: 0;
+  /* margin-top: 0; */
   background-color: #3CB371;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom-right-radius: 50rpx;
-  border-bottom-left-radius: 50rpx;
-}
-.user-info-left {
-  display: flex;
-  align-items: center;
+  /* border-bottom-right-radius: 50rpx;
+  border-bottom-left-radius: 50rpx; */
 }
 .sole-button {
   width: 200rpx;
@@ -40,19 +36,6 @@ page {
 .sole-button:active {
   background-color: rgba(255, 255, 255, 0.3);
   transform: scale(0.96);
-}
-.user-name {
-  font-size: 36rpx;
-  margin-bottom: 16rpx;
-  color: #fff;
-}
-.user-name-input {
-  font-size: 36rpx;
-  margin-bottom: 16rpx;
-  color: #fff;
-  width: 240rpx;
-  background: transparent;
-  border: none;
 }
 .user-info-avatar {
   width: 100rpx;
