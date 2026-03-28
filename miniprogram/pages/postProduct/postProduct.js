@@ -2,6 +2,8 @@
 const app = getApp();
 const { money } = require('../../utils/moneyInputLimit');
 const QQMapWX = require('../../utils/qqmap-wx-jssdk.js'); // 引入腾讯位置服务
+const { QQ_MAP_KEY } = require('../../utils/config');
+const { imgSecCheck, uploadImg } = require('../../utils/productUtils');
 
 Page({
   data: {
@@ -130,136 +132,64 @@ Page({
   },
   // 上传图片
 	addImage: function () {
-		wx.chooseImage({ // 1,选择图片
-			count: 9 - this.data.imageList.length,
-			sizeType: ['compressed'],
-			sourceType: ['album', 'camera'],
-			success: res => {
-        this.data.imgSecCheckArr = [];
-        const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
-				const tempFilesLength = res.tempFiles.length; // 临时文件数量
-        this.data.tempFilePaths = res.tempFilePaths; // 临时文件路径
-        if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
-					this.setData({
-						toptipsShow: true,
-						resultText: '图片大小不得超过 5MB，请重新选择',
-						toptipsType: 'info',
-					});
-					return;
-				}
-				wx.showLoading({
-					title: '请稍候...',
-					mask: true,
+	wx.chooseMedia({ // 1,选择图片
+		count: 9 - this.data.imageList.length,
+		mediaType: ['image'],
+		sizeType: ['compressed'],
+		sourceType: ['album', 'camera'],
+		success: res => {
+      const imgSecCheckArr = []; // 安全检查结果（局部变量，避免直接操作 this.data）
+      let imgSecCheckCount = 0; // 已完成安全检查的数量
+      const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
+			const tempFilesLength = res.tempFiles.length; // 临时文件数量
+      this.data.tempFilePaths = tempFiles.map(f => f.tempFilePath); // 临时文件路径
+      if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
+				this.setData({
+					toptipsShow: true,
+					resultText: '图片大小不得超过 5MB，请重新选择',
+					toptipsType: 'info',
 				});
-			  tempFiles.forEach((item, index) => {
+				return;
+			}
+			wx.showLoading({
+				title: '请稍候...',
+				mask: true,
+			});
+		  tempFiles.forEach((item) => {
           const size = item.size;
-          const path = item.path;
+          const path = item.tempFilePath; // chooseMedia 用 tempFilePath
           if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
-						console.log('图片大于1M')
-						wx.compressImage({ src: path,	quality: 20 }).then(compressResult => {
-							const handledPath = compressResult.tempFilePath;
-							this.imgSecCheck(handledPath, tempFilesLength, index);
-						})
-					} else { // 图片大小小于1M，直接进行安全检查
-						console.log('图片小于1M');
-						this.imgSecCheck(path, tempFilesLength, index);
+					wx.compressImage({ src: path,	quality: 20 }).then(compressResult => {
+						const handledPath = compressResult.tempFilePath;
+						this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++; return imgSecCheckCount; });
+					})
+				} else { // 图片大小小于1M，直接进行安全检查
+					this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++; return imgSecCheckCount; });
           }
-				});
-			},
+		  });
+		},
 			fail: e => {
-				console.error(e, 'choose img fail');
-				// wx.showToast({
-				// 	title: '未获取到有效图片，请再试一次',
-				// 	icon: 'none'
-				// });
 			}
 		})
 	},
-	// 图片安全检查
-	imgSecCheck(filePath, tempFilesLength, index) {
-		wx.cloud.callFunction({ // 2 图片安全检查
-			name: 'imgSecCheck',
-			data: {
-				imgData: wx.cloud.CDN({
-					type: 'filePath',
-					filePath: filePath
-				})
-			}
-		}).then(secCheckResult => {
-			console.log(secCheckResult, 'img check')
-			this.data.imgSecCheckArr.push(secCheckResult); // 将检查结果放进数组
-			console.log(tempFilesLength, index, this.data.imgSecCheckArr, 'tempFilesLength_index_imgSecCheckArr');
-			if(tempFilesLength == index + 1) { // 等遍历到最后一个数据，然后检查每一个返回的结果
-				if(this.data.imgSecCheckArr.every(item => item.result.errCode === 0)) { // 检查通过
-					this.data.tempFilePaths.forEach((item, index1) => { // 遍历临时文件，将每一个文件上传到云存储
-						this.uploadImg(item, index1, tempFilesLength); // 上传图片
-          });
-				} else if(this.data.imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 检查未通过
-					wx.hideLoading();
-					this.setData({
-						resultText: '不得上传违法违规内容，请重新选择！',
-						toptipsShow: true,
-						toptipsType: 'error',
-					});
-				} else { // 检查异常
-					wx.hideLoading();
-					this.setData({
-						resultText: '服务异常，请稍后再试~',
-						toptipsShow: true,
-						toptipsType: 'error',
-					});
-				}
-			}
-		}).catch(e => {
-			console.log(e, 'imgSecCheck fail');
-			wx.hideLoading();
-			wx.showToast({
-				title: '服务繁忙，请稍后再试~',
-				icon: 'none'
+	// 图片安全检查（调用公共工具函数）
+	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, getCount) {
+		imgSecCheck(this, filePath, imgSecCheckArr, tempFilesLength, getCount, () => {
+			this.data.tempFilePaths.forEach((item, index1) => {
+				this.uploadImg(item, index1, tempFilesLength);
 			});
 		});
 	},
-	// 将图片上传
+	// 将图片上传（调用公共工具函数）
 	uploadImg(item, index1, tempFilesLength) {
-    // const uploadTask = wx.cloud.uploadFile({ // 3 上传文件
-    wx.cloud.uploadFile({ // 3 上传文件
-			cloudPath: 'temp/' + new Date().getTime() + "-post-" + Math.floor(Math.random() * 1000),
-			filePath: item,
-			success: uploadFileResult => { // 文件上传成功
-				console.log(uploadFileResult, 'uploadFileResult')
-				const fileID = uploadFileResult.fileID;
-				this.data.fileIdArr.push(fileID);
-        wx.hideLoading();
-        console.log(tempFilesLength, 'tempFilesLength')
-        console.log(this.data.fileIdArr, 'fileIdArr')
-        console.log(index1, 'index1')
-        if(tempFilesLength === index1 + 1) { // 等数据遍历结束，全部放进数组
-          console.log(3333333)
-          this.data.imageList.push(...this.data.tempFilePaths);
-          this.setData({
-            imageList: this.data.imageList,
-            imgUrls: this.data.imageList,
-            releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
-          });
-          console.log(this.data.imageList, this.data.fileIdArr, '------------------')
-				}
-			},
-			fail: e => { // 文件上传失败
-				console.log(e, 'uploadfile fail');
-				wx.hideLoading();
-				wx.showToast({
-					title: '上传失败，请稍后再试~',
-					icon: 'error'
-				});
-			}
+		uploadImg(this, item, index1, tempFilesLength, 'post', () => {
+			this.data.imageList.push(...this.data.tempFilePaths);
+			this.setData({
+				imageList: this.data.imageList,
+				imgUrls: this.data.imageList,
+				releaseDisabled: !(this.data.productDesc && this.data.imageList.length && this.data.price),
+			});
 		});
-		// uploadTask.onProgressUpdate(res => {
-		// 	console.log(res, '112233445555555')
-		// 	wx.showLoading({
-		// 		title: `已上传 ${res.progress}%`,
-		// 		mask: true,
-		// 	});
-		// })
 	},
   // 图片预览
   imgPreview(e) {
@@ -357,7 +287,6 @@ Page({
       }).then(res => {
         const { errCode } = res.result;
         if(errCode == 0) { // 信息安全检查成功
-          console.log(this.data.fileIdArr, 'fileIdArr')
           const tempFileList = [];
           wx.cloud.getTempFileURL({ // 根据fileID获取临时URL
             fileList: this.data.fileIdArr,
@@ -389,7 +318,6 @@ Page({
                   name: 'postProduct',
                   data: params,
                   success: res => {
-                    console.log(res, 'postProduct-success')
                     wx.hideLoading();
                     wx.disableAlertBeforeUnload();
                     wx.showToast({
@@ -409,7 +337,6 @@ Page({
                     }, 600);
                   },
                   fail: e => {
-                    console.log(e);
                     wx.hideLoading();
                     wx.showToast({
                       title: '服务繁忙，请稍后再试~',
@@ -420,7 +347,6 @@ Page({
               }
             },
             fail: e => {
-              console.log(e);
               wx.hideLoading();
               wx.showToast({
                 title: '服务繁忙，请稍后再试~',
@@ -437,7 +363,6 @@ Page({
           });
         }
       }).catch(e => {
-        console.log(e, 'msgSecCheck fail')
         wx.hideLoading();
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
@@ -473,52 +398,71 @@ Page({
           this.useQQMap(res.latitude, res.longitude, _this);
         },
         fail: e => { // 未获取到经纬度
-          console.log(e, 'fail')
+          let errorMsg = '自动定位失败';
+          if (e.errMsg) {
+            if (e.errMsg.indexOf('auth deny') > -1) {
+              errorMsg = '您拒绝了位置授权，请在设置中开启位置权限';
+            } else if (e.errMsg.indexOf('timeout') > -1) {
+              errorMsg = '定位超时，请检查GPS是否开启';
+            } else if (e.errMsg.indexOf('fail') > -1) {
+              errorMsg = '定位失败，请确保已开启位置服务';
+            }
+          }
+          wx.showToast({
+            title: errorMsg,
+            icon: 'none',
+            duration: 2000
+          });
         }
       })
+    } else {
+      // 用户未授权位置，引导授权
+      wx.showModal({
+        title: '需要位置权限',
+        content: '请授权位置信息，以便为您展示地理位置',
+        confirmText: '去设置',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            this.authorizeLocation();
+          }
+        }
+      });
     }
   },
   // 使用腾讯位置服务
   useQQMap(latitude, longitude, _this) {
-    console.log(latitude, longitude, 'qqqqqqqqqqq')
     const qqmapsdk = new QQMapWX({
-      key: 'A4BBZ-RMHYU-LDQVQ-BZDUV-EOPZO-5BFWK'
+      key: QQ_MAP_KEY
     });
     qqmapsdk.reverseGeocoder({ // 再通过腾讯位置服务获取到地理位置
       location: { latitude, longitude },
       success: res => {
-        // console.log('location service', res);
         _this.setData({
           userAddress: res.result.formatted_addresses.recommend,
         });
       },
       fail: e => { // 腾讯位置服务出错
-        console.log(e, 'fail')
       }
     });
   },
-  // 引导开启位置授权
+  // 引导开启位置授权（由用户点击弹框"去设置"后调用，触发链合规）
   authorizeLocation() {
-    const _this = this;
     wx.openSetting({
       success: data => {
         if (data.authSetting["scope.userLocation"]) { // 已授权位置信息
-          wx.chooseLocation({
+          wx.getLocation({
+            type: 'gcj02',
             success: res => {
               this.data.latitude = res.latitude;
               this.data.longitude = res.longitude;
-              this.useQQMap(res.latitude, res.longitude, _this);
+              this.useQQMap(res.latitude, res.longitude, this);
             }
-          })
+          });
         }
       },
       fail: () => {
-        wx.showModal({
-          title: '提示',
-          content: '服务繁忙，请稍后再试~',
-          showCancel: false,
-          confirmText: '好的~'
-        })
+        wx.showToast({ title: '服务繁忙，请稍后再试~', icon: 'none' });
       },
     });
   },
@@ -530,20 +474,6 @@ Page({
   },
 
   /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
@@ -551,20 +481,6 @@ Page({
       wx.disableAlertBeforeUnload();
     }
     this.data.fileIdArr = [];
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
   },
 
   /**

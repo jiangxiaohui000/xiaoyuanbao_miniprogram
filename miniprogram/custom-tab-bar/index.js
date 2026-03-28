@@ -11,72 +11,27 @@ Component({
 			selectedIconPath: "/images/icon_home_selected.png",
 			text: "首页"
 		}, {
-			iconPath: "/images/icon_add.png",
-			selectedIconPath: "/images/icon_add.png",
-			text: ""
-		}, {
-			pagePath: "/pages/chat/chat",
-			iconPath: "/images/icon_chat.png",
-			selectedIconPath: "/images/icon_chat_selected.png",
+			pagePath: "/pages/message/message",
+			iconPath: "/images/icon_message.png",
+			selectedIconPath: "/images/icon_message_selected.png",
 			text: "消息"
+		}, {
+			pagePath: "/pages/me/me",
+			iconPath: "/images/icon_me.png",
+			selectedIconPath: "/images/icon_me_selected.png",
+			text: "我的"
 		}]
 	},
 	attached() {
 	},
 	methods: {
 		switchTab(e) {
-			console.log(e, 'switchTab')
 			const data = e.currentTarget.dataset;
 			this.setData({
 				selected: data.index
 			});
-			if(data.index === 1) { // 发布
-				this.doUpload();
-			} else { // 首页、消息tab
-				const url = data.path
-				wx.switchTab({ url })
-			}
-		},
-		// 上传图片
-		doUpload: function () {
-			// 选择图片
-			wx.chooseImage({
-				count: 9,
-				sizeType: ['compressed'],
-				sourceType: ['album', 'camera'],
-				success: function (res) {
-					wx.showLoading({ title: '上传中...' });
-					const filePath = res.tempFilePaths[0]
-					// 上传图片
-					const cloudPath = 'my-image' + filePath.match(/\.[^.]+?$/)[0]
-					wx.cloud.uploadFile({
-						cloudPath,
-						filePath,
-						success: res => {
-							console.log('[上传文件] 成功：', res)
-							app.globalData.fileID = res.fileID
-							app.globalData.cloudPath = cloudPath
-							app.globalData.imagePath = filePath
-							wx.navigateTo({
-								url: '../storageConsole/storageConsole'
-							})
-						},
-						fail: e => {
-							console.error('[上传文件] 失败：', e)
-							wx.showToast({
-								title: '上传失败',
-								icon: 'error',
-							})
-						},
-						complete: () => {
-							wx.hideLoading()
-						}
-					})
-				},
-				fail: e => {
-					console.error(e)
-				}
-			})
+			const url = data.path;
+			wx.switchTab({ url });
 		},
 	},
 })

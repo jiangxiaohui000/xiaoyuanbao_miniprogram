@@ -4,21 +4,10 @@
     "pages/homePage/homePage",
     "pages/message/message",
     "pages/me/me",
-    "pages/userConsole/userConsole",
-    "pages/storageConsole/storageConsole",
-    "pages/databaseGuide/databaseGuide",
-    "pages/deployFunctions/deployFunctions",
-    "pages/chooseLib/chooseLib",
-    "pages/openapi/openapi",
-    "pages/openapi/serverapi/serverapi",
-    "pages/openapi/callback/callback",
-    "pages/openapi/cloudid/cloudid",
-    "pages/im/im",
     "pages/im/room/room",
     "pages/productDetail/productDetail",
     "pages/search/search",
     "pages/postProduct/postProduct",
-    "pages/login/login",
     "pages/soldProducts/soldProducts",
     "pages/collectedProducts/collectedProducts",
     "pages/feedback/feedback"
@@ -54,7 +43,7 @@
     "backgroundColor": "#ffffff",
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#3CB371",
-    "navigationBarTitleText": "校园宝",
+    "navigationBarTitleText": "拾旧坊",
     "navigationBarTextStyle": "white"
   },
   "sitemapLocation": "sitemap.json",
@@ -63,12 +52,13 @@
     "uploadFile": 15000,
     "downloadFile": 15000
   },
-  "requiredBackgroundModes": [
-    "location"
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
   ],
   "permission": {
     "scope.userLocation": {
-      "desc": "您的位置信息将用于校园宝为您提供更优质的服务，建议开启。"
+      "desc": "你的位置信息将用于展示附近的商品"
     }
   }
 }

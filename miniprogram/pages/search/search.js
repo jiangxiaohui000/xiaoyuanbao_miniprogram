@@ -1,6 +1,6 @@
 // miniprogram/pages/search/index.js
 const app = getApp();
-const { priceConversion } = require('../../utils/priceConversion');
+const { calculatingHeat, calculatingPrice } = require('../../utils/productUtils');
 
 Page({
   /**
@@ -31,7 +31,6 @@ Page({
   onLoad: function (options) {
     // 获取历史搜索
     const searchKey = wx.getStorageSync('searchKey');
-    console.log(searchKey, 'searchKey');
     this.setData({
       historyTags: searchKey ? searchKey : [],
     });
@@ -46,7 +45,6 @@ Page({
         }
       },
       fail: e => {
-        console.log(e);
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none',
@@ -59,34 +57,6 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
 
   },
 
@@ -104,12 +74,6 @@ Page({
     }
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
   // 搜索
   confirmSearch(e) {
     this.data.searchedValue = typeof e === 'string' ? e : e.detail.value;
@@ -193,7 +157,6 @@ Page({
         searchKey: value,
       },
       success: res => {
-        console.log(res, 'product-count')
         if(res && res.result && res.result.count) {
           const total = res.result.count.total;
           this.data.hasSearchedData = Boolean(total);
@@ -204,7 +167,6 @@ Page({
         }
       },
       fail: e => {
-        console.log(e);
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none'
@@ -221,7 +183,6 @@ Page({
         searchKey: value,
       },
       success: res => {
-        console.log(res, 'product-data')
         this.setData({
           showWhichPage: 'list'
         });
@@ -247,7 +208,6 @@ Page({
         }
       },
       fail: e => {
-        console.log(e, 'error');
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none',
@@ -266,7 +226,6 @@ Page({
         isDeleted: '0',
       },
       success: res => {
-        console.log(res, 'product-all-data')
         this.setData({
           showWhichPage: 'list'
         });
@@ -291,7 +250,6 @@ Page({
         }
       },
       fail: e => {
-        console.log(e);
         wx.showToast({
           title: '服务繁忙，请稍后再试~',
           icon: 'none'
@@ -310,38 +268,13 @@ Page({
       }
     });
   },
-  // 计算热度
+  // 计算热度（使用公共工具函数）
   calculatingHeat(item) {
-    const heatIconList = [];
-    const notHeatIconList = [];
-    let heat = 0;
-    const collectedArrLength = item.isCollected.length;
-    if(collectedArrLength > 0 && collectedArrLength <= 10) {
-      heat = 1;
-    } else if(collectedArrLength > 10 && collectedArrLength <= 20) {
-      heat = 2;
-    } else if(collectedArrLength > 20 && collectedArrLength <= 30) {
-      heat = 3;
-    } else if(collectedArrLength > 30 && collectedArrLength <= 40) {
-      heat = 4;
-    } else if(collectedArrLength > 40) {
-      heat = 5;
-    }
-    heatIconList.length = heat;
-    notHeatIconList.length = 5 - heat;
-    return {
-      heatIconList,
-      notHeatIconList,
-    }
+    return calculatingHeat(item);
   },
-  // 计算价格
+  // 计算价格（使用公共工具函数）
   calculatingPrice(item) {
-    let newCurrentPrice = priceConversion(item.currentPrice);
-    let newOriginPrice = priceConversion(item.originPrice);
-    return {
-      newCurrentPrice,
-      newOriginPrice
-    }
+    return calculatingPrice(item);
   },
   // 取消搜索并返回上一级
   searchCancel() {

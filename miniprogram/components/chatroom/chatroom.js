@@ -24,8 +24,6 @@ Component({
   },
   ready() {
     // global.chatroom = this;
-    console.log('this.properties.chatInfo', this.properties.chatInfo)
-    console.log('this.properties.openid', this.properties.openid)
     this.initRoom();
     this.fatalRebuildCount = 0;
     wx.setNavigationBarTitle({
@@ -55,7 +53,6 @@ Component({
 
         const { data: initList } = await db.collection(collection).where(this.mergeCommonCriteria()).orderBy('sendTimeTS', 'desc').get()
 
-        console.log('init query chats', initList)
 
         this.setData({
           chats: initList.reverse(),
@@ -138,6 +135,16 @@ Component({
         }
       }
     },
+    // 获取当前用户的信息（根据openid判断是买家还是卖家）
+    getCurrentUserInfo() {
+      const { openid, chatInfo } = this.properties;
+      const isSeller = openid === chatInfo.seller_uid;
+      return {
+        avatarUrl: isSeller ? chatInfo.seller_avatarUrl : chatInfo.buyer_avatarUrl,
+        nickName: isSeller ? chatInfo.seller_nickName : chatInfo.buyer_nickName,
+        isSeller,
+      };
+    },
     // 发送消息
     async onConfirmSendText(e) {
       this.try(async () => {
@@ -146,12 +153,13 @@ Component({
         const { collection } = this.properties
         const db = this.db
         const _ = db.command
+        const { avatarUrl, nickName } = this.getCurrentUserInfo();
 
         const doc = {
           _id: `${Math.random()}_${Date.now()}`,
           groupId: this.data.groupId,
-          avatarUrl: this.properties.chatInfo.buyer_avatarUrl,
-          nickName: this.properties.chatInfo.buyer_nickName,
+          avatarUrl: avatarUrl,
+          nickName: nickName,
           msgType: 'text',
           textContent: e.detail.value,
           sendTime: new Date(),
@@ -188,7 +196,6 @@ Component({
         })
 
         // 如果当前聊天没有添加到消息数据里，则添加进去
-        console.log(this.properties.chatInfo, 'aaaaaaaaaa')
         wx.cloud.callFunction({
           name: 'addMessageData',
           data: {
@@ -204,22 +211,27 @@ Component({
             mtime: this.data.chats[this.data.chats.length - 1].sendTimeTS,
             img: this.properties.chatInfo.img,
             price: this.properties.chatInfo.price,
+            lastMessage: e.detail.value,
+            isSender: true,
           },
         });
       }, '发送文字失败')
     },
     // 发送图片
     async onChooseImage(e) {
-      wx.chooseImage({
+      wx.chooseMedia({
         count: 1,
+        mediaType: ['image'],
         sourceType: ['album', 'camera'],
         success: async res => {
           const { envId, collection } = this.properties
+          const tempFilePath = res.tempFiles[0].tempFilePath; // chooseMedia 用 tempFilePath
+          const { avatarUrl, nickName } = this.getCurrentUserInfo();
           const doc = {
             _id: `${Math.random()}_${Date.now()}`,
             groupId: this.data.groupId,
-            avatarUrl: this.properties.chatInfo.buyer_avatarUrl,
-            nickName: this.properties.chatInfo.buyer_nickName,
+            avatarUrl: avatarUrl,
+            nickName: nickName,
             msgType: 'image',
             sendTime: new Date(),
             sendTimeTS: Date.now(), // fallback
@@ -231,7 +243,7 @@ Component({
               {
                 ...doc,
                 _openid: this.data.openId,
-                tempFilePath: res.tempFilePaths[0],
+                tempFilePath: tempFilePath,
                 writeStatus: 0,
               },
             ]
@@ -239,8 +251,8 @@ Component({
           this.scrollToBottom(true)
 
           const uploadTask = wx.cloud.uploadFile({
-            cloudPath: `chat/${this.data.openId}/${Math.random()}_${Date.now()}.${res.tempFilePaths[0].match(/\.(\w+)$/)[1]}`,
-            filePath: res.tempFilePaths[0],
+            cloudPath: `chat/${this.data.openId}/${Math.random()}_${Date.now()}.${tempFilePath.match(/\.(\w+)$/)[1]}`,
+            filePath: tempFilePath,
             config: {
               env: envId,
             },
@@ -254,7 +266,6 @@ Component({
                 })
 
                 // 如果当前聊天没有添加到消息数据里，则添加进去
-                console.log(this.properties.chatInfo, 'bbbbbbbbbb')
                 wx.cloud.callFunction({
                   name: 'addMessageData',
                   data: {
@@ -270,6 +281,8 @@ Component({
                     mtime: this.data.chats[this.data.chats.length - 1].sendTimeTS,
                     img: this.properties.chatInfo.img,
                     price: this.properties.chatInfo.price,
+                    lastMessage: '[图片]',
+                    isSender: true,
                   },
                 });
               }, '发送图片失败')
@@ -303,14 +316,12 @@ Component({
     // 滚动到底部
     scrollToBottom(force) {
       if (force) {
-        console.log('force scroll to bottom')
         this.setData(SETDATA_SCROLL_TO_BOTTOM)
         return
       }
       this.createSelectorQuery().select('.body').boundingClientRect(bodyRect => {
         this.createSelectorQuery().select(`.body`).scrollOffset(scroll => {
           if (scroll.scrollTop + bodyRect.height * 3 > scroll.scrollHeight) {
-            console.log('should scroll to bottom')
             this.setData(SETDATA_SCROLL_TO_BOTTOM)
           }
         }).exec()
@@ -340,7 +351,6 @@ Component({
       }
     },
     showError(title, content, confirmText, confirmCallback) {
-      console.error(title, content)
       wx.showModal({
         title,
         content: content.toString(),
@@ -357,9 +367,7 @@ Component({
       //   keyboardHeight: e.detail.height
       // })
       this.createSelectorQuery().select('.body').boundingClientRect(bodyRect => {
-        console.log(bodyRect.bottom, e.detail.height, '获取焦点时')
         if(bodyRect.bottom + 10 <= e.detail.height) {
-          console.log('获取焦点时1111')
         }
       }).exec()
     },

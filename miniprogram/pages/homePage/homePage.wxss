@@ -18,17 +18,40 @@ page {
   margin-top: 20rpx;
   position: relative;
 }
-.user-address {
-  position: absolute;
-  padding: 10rpx;
-  background-color: rgba(200, 200, 200, 0.8);
-  left: 0;
-  top: 86rpx;
-  z-index: 1;
-  border-radius: 15rpx;
-  font-size: 24rpx;
-  line-height: 1;
+/* 定位区域容器（可点击） */
+.location-area {
+  display: flex;
+  align-items: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
 }
+/* 已授权后：小区名胶囊（高度与搜索框 70rpx 对齐，圆角 20rpx 一致） */
+.estate-tag {
+  display: flex;
+  align-items: center;
+  height: 70rpx;
+  background-color: #f0faf4;
+  border: 2rpx solid #d0eedd;
+  border-radius: 20rpx;
+  padding: 0 20rpx 0 12rpx;
+  max-width: 220rpx;
+}
+/* 胶囊内图标：与小区名字号一致 */
+.estate-icon::before {
+  font-size: 24rpx;
+  color: #3CB371;
+  margin-right: 6rpx;
+}
+.estate-name {
+  font-size: 24rpx;
+  color: #3CB371;
+  font-weight: 500;
+  max-width: 120rpx; /* 约可显示4个汉字，超出显示省略号 */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* 原有的 tooltip 样式保留备用，不再显示 */
 .search {
 	height: 70rpx;
 	background-color: #eeeeee;
@@ -230,7 +253,64 @@ page {
   }
 }
 .icon-dingwei::before {
-  font-size: 48rpx;
+  font-size: 24rpx;
   color: #3CB371;
-  margin-right: 20rpx;
+}
+
+/* 位置授权引导弹窗 */
+.location-auth-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.location-auth-modal {
+  width: 580rpx;
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 60rpx 40rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.location-auth-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+.location-auth-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+.location-auth-desc {
+  font-size: 26rpx;
+  color: #888;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 50rpx;
+}
+.location-auth-btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background-color: #3CB371;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 44rpx;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+.location-skip-btn {
+  margin-top: 28rpx;
+  font-size: 26rpx;
+  color: #aaa;
+  padding: 10rpx 20rpx;
 }

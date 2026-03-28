@@ -23,7 +23,6 @@ Page({
 		wx.showLoading({ title: '加载中...' });
 		let eventChannel = this.getOpenerEventChannel();
 		eventChannel.on('toProductDetail', (data) => {
-			console.log(data, 'data');
 			data && data.isOwn && this.setData({ isOwn: data.isOwn });
 			data && data.groupId && this.setData({ groupId: data.groupId });
 			data && data._id && this.initData(data._id);
@@ -42,7 +41,6 @@ Page({
 				_id: id
 			},
 			success: res => {
-				console.log(res, 'data-info')
 				wx.hideLoading()
 				if(res && res.result && res.result.data && res.result.data.data && res.result.data.data.length) {
 					this.data.productInfo = res.result.data.data[0];
@@ -65,7 +63,6 @@ Page({
 				}
 			},
 			fail: e => {
-				console.log(e, 'getProductsInfoData-error');
 				wx.showToast({
 					title: '服务繁忙，请稍后再试~',
 					icon: 'none'
@@ -79,7 +76,6 @@ Page({
 			wx.showLoading();
 			const index = this.data.productInfo.isCollected.findIndex(item => item === this.data.uid);
 			this.data.productInfo.isCollected.splice(index, 1);
-			console.log(this.data.productInfo.isCollected, '4947444')
 			wx.cloud.callFunction({ // 先更新商品数据
 				name: 'updateProductsData',
 				data: {
@@ -88,14 +84,12 @@ Page({
 					isCollected: this.data.productInfo.isCollected,
 				},
 				success: res => {
-					console.log(res, '99494944')
 					wx.cloud.callFunction({ // 获取用户数据，拿到用户收藏商品的数据
 						name: 'getUserData',
 						data: {
 							uid: this.data.uid
 						},
 						success: res => {
-							console.log(res, '435763735467')
 							if(res && res.result && res.result.data && res.result.data.length) {
 								const collectedProducts = res.result.data[0].collectedProducts;
 								const index = collectedProducts.findIndex(item => item == this.data._id);
@@ -107,7 +101,6 @@ Page({
 										collectedProducts: collectedProducts,
 									},
 									success: res => {
-										console.log(res, '9op9jdsfh')
 										wx.hideLoading();
 										this.setData({
 											collectedText: '收藏',
@@ -121,7 +114,6 @@ Page({
 										});
 									},
 									fail: e => {
-										console.log(e, 'error')
 										wx.showToast({
 											title: '服务繁忙，请稍后再试~',
 											icon: 'none',
@@ -131,7 +123,6 @@ Page({
 							}
 						},
 						fail: e => {
-							console.log(e, 'error')
 							wx.showToast({
 								title: '服务繁忙，请稍后再试~',
 								icon: 'none',
@@ -140,7 +131,6 @@ Page({
 					});
 				},
 				fail: e => {
-					console.log(e, 'error')
 					wx.showToast({
 						title: '服务繁忙，请稍后再试~',
 						icon: 'none',
@@ -158,14 +148,12 @@ Page({
 					isCollected: this.data.productInfo.isCollected,
 				},
 				success: res => {
-					console.log(res, '445566')
 					wx.cloud.callFunction({ // 获取用户数据，拿到用户收藏商品的数据
 						name: 'getUserData',
 						data: {
 							uid: this.data.uid,
 						},
 						success: res => {
-							console.log(res.result.data,'8444434')
 							if(res && res.result && res.result.data && res.result.data.length) {
 								const collectedProducts = res.result.data[0].collectedProducts;
 								collectedProducts.push(this.data._id);
@@ -176,7 +164,6 @@ Page({
 										collectedProducts: collectedProducts,
 									},
 									success: res => {
-										console.log(res, '9op9jdsfh')
 										wx.hideLoading();
 										this.setData({
 											collectedText: '已收藏',
@@ -190,7 +177,6 @@ Page({
 										});
 									},
 									fail: e => {
-										console.log(e, 'error')
 										wx.showToast({
 											title: '服务繁忙，请稍后再试~',
 											icon: 'none',
@@ -200,7 +186,6 @@ Page({
 							}
 						},
 						fail: e => {
-							console.log(e, 'error')
 							wx.showToast({
 								title: '服务繁忙，请稍后再试~',
 								icon: 'none',
@@ -209,7 +194,6 @@ Page({
 					});
 				},
 				fail: e => {
-					console.log(e, 'error')
 					wx.showToast({
 						title: '服务繁忙，请稍后再试~',
 						icon: 'none',
@@ -221,7 +205,6 @@ Page({
 	// 聊一聊
 	gotoChatRoom() {
 		const data = this.data.productInfo;
-		console.log(data, '---------')
 		const nickName = wx.getStorageSync('nickName');
 		const avatarUrl = wx.getStorageSync('avatarUrl');
 		const productInfo = JSON.stringify({
@@ -272,7 +255,6 @@ Page({
 							isDeleted: '1',
 						},
 						success: res => {
-							console.log(res, '9038409jr')
 							wx.hideLoading();
 							if(res && res.result && res.result.status && res.result.status == 200) {
 								wx.showToast({
@@ -287,7 +269,6 @@ Page({
 							}
 						},
 						fail: e => {
-							console.log(e, 'error3')
 							wx.showToast({
 								title: '服务繁忙，请稍后再试~',
 								icon: 'none',
@@ -300,7 +281,6 @@ Page({
 	},
 	// 图片预览
 	imgPreview(e) {
-		console.log(e)
 		wx.previewImage({
 			urls: this.data.productInfo.img,
 			current: e.currentTarget.dataset.img,
@@ -351,18 +331,19 @@ Page({
 	/**
 	 * 用户点击右上角分享
 	 */
-	onShareAppMessage: (data) => {
+	onShareAppMessage: function() {
+		const desc = this.data.productInfo && this.data.productInfo.desc
+			? this.data.productInfo.desc.substring(0, 10) + '...'
+			: '拾旧坊好物推荐';
 		const promise = new Promise(resolve => {
-      setTimeout(() => {
-        resolve({
-          title: data ? data.desc.substring(0, 10) + '...' : this.data.productInfo.desc.substring(0, 10) + '...'
-        })
-      }, 2000)
-    })
-    return {
-      title: data ? data.desc.substring(0, 10) + '...' : this.data.productInfo.desc.substring(0, 10) + '...',
-      path: '/pages/productDetail/productDetail',
-      promise 
-    }
+			setTimeout(() => {
+				resolve({ title: desc });
+			}, 2000);
+		});
+		return {
+			title: desc,
+			path: '/pages/productDetail/productDetail',
+			promise,
+		};
 	},
 })

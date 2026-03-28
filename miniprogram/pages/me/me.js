@@ -2,11 +2,12 @@ const app = getApp()
 const { priceConversion } = require('../../utils/priceConversion');
 const { money } = require('../../utils/moneyInputLimit');
 const { checkNetworkStatus } = require('../../utils/checkNetworkStatus');
+const { imgSecCheck, uploadImg } = require('../../utils/productUtils');
 
 Page({
 	data: {
 		userInfo: {
-			avatarUrl: '',
+			avatarUrl: '../../images/user-unlogin.png',
 			nickName: '',
 		},
 		logged: false,
@@ -43,51 +44,43 @@ Page({
 		toptipsShow: false,
 		toptipsType: '',
 		resultText: '',
-    pageData: {
-      pageSize: 20,
-      currentPage: 1,
-    },
+		pageData: {
+			pageSize: 20,
+			currentPage: 1,
+		},
 		showLoading: false,
 		openid: '',
-		authorizationApplicationDialogShow: false,
 		hasUserInfo: false,
 		currentDataId: '',
 		isOwn: '0',
 		tempFilePaths: [], // 图片临时文件
 		fileIdArr: [], // 传给发布页面的文件ID
+		// 用户信息设置弹窗
+		showUserInfoModal: false,
+		tempAvatarUrl: '',
+		tempNickName: '',
 	},
 	onLoad: function() {
 		if (!wx.cloud) {
-			wx.redirectTo({
-				url: '../chooseLib/chooseLib',
-			})
+			wx.showModal({
+				title: '提示',
+				content: '请使用 2.2.3 或以上的基础库以使用云能力',
+				showCancel: false,
+			});
 			return;
 		}
 		checkNetworkStatus(); // 检测网络状态
-		const openid = app.globalData.openid;
-		this.setData({
-			openid: openid,
-		});
-		console.log(this.data.openid, 'openid');
-		console.log(app.globalData, 'globalData');
-		const avatarUrl = wx.getStorageSync('avatarUrl');
-		const nickName = wx.getStorageSync('nickName');
-		this.data.hasUserInfo = (!!avatarUrl && !!nickName);
-		openid && (this.data.openid = openid);
-		!openid && this.login(); // 微信账号登录
-		if(this.data.openid) { // 已登录
-			this.data.userInfo.nickName = this.data.hasUserInfo ? wx.getStorageSync('nickName') : '微信用户';
-			this.data.userInfo.avatarUrl = this.data.hasUserInfo ? wx.getStorageSync('avatarUrl') : '../../images/user-unlogin.png';
-			this.setData({
-				userInfo: this.data.userInfo,
-				authorizationApplicationDialogShow: !this.data.hasUserInfo,
-			});
+
+		// 静默登录：直接获取 openid，无需用户授权
+		if (app.globalData.openid) {
+			this.setData({ openid: app.globalData.openid });
 			wx.showLoading({ title: '加载中...' });
 			this.initData();
-		} else { // 未登录
-			this.data.userInfo.nickName = '点击登录';
-			this.setData({
-				userInfo: this.data.userInfo,
+		} else {
+			app.login(openid => {
+				this.setData({ openid });
+				wx.showLoading({ title: '加载中...' });
+				this.initData();
 			});
 		}
 	},
@@ -108,6 +101,15 @@ Page({
 	},
 	// 数据初始化
 	initData() {
+		// 读取本地存储的用户信息
+		const avatarUrl = wx.getStorageSync('avatarUrl') || '../../images/user-unlogin.png';
+		const nickName = wx.getStorageSync('nickName') || '';
+		this.setData({
+			'userInfo.avatarUrl': avatarUrl,
+			'userInfo.nickName': nickName,
+			hasUserInfo: !!(avatarUrl && nickName && nickName !== '微信用户'),
+		});
+
 		const promise1 = wx.cloud.callFunction({ // 列表展示的
 			name: 'getProductsData',
 			data: {
@@ -132,7 +134,6 @@ Page({
 			}
 		});
 		Promise.all([promise1, promise2, promise3]).then(res => {
-			console.log(res, 'me_init_data');
 			wx.hideLoading();
 			wx.stopPullDownRefresh();
 			if(res && res.length) {
@@ -170,7 +171,6 @@ Page({
 				}
 			}
 		}).catch(e => {
-			console.log(e);
 			wx.hideLoading();
 			wx.stopPullDownRefresh();
 			wx.showToast({
@@ -190,7 +190,6 @@ Page({
 				isDeleted: '0',
 			}
 		}).then(data1 => {
-			console.log(data1, 'data1')
 			wx.hideLoading();
 			if(data1 && data1.result && data1.result.data && data1.result.data.data && data1.result.count && data1.result.count.total) { // 发布的商品
 				const data = data1.result.data.data;
@@ -219,7 +218,6 @@ Page({
 				isDeleted: '0',
 			}
 		}).then(data2 => {
-			console.log(data2, 'data2')
 			wx.hideLoading();
 			if(data2 && data2.result && data2.result.count) { // 卖出的商品
 				const total = data2.result.count.total;
@@ -238,7 +236,6 @@ Page({
 				uid: this.data.openid,
 			}
 		}).then(data3 => {
-			console.log(data3, 'data3')
 			wx.hideLoading();
 			if(data3 && data3.result && data3.result.data && data3.result.data.length) {
 				const collectedProducts = data3.result.data[0].collectedProducts;
@@ -249,79 +246,114 @@ Page({
 			}
 		});
 	},
-	// 登录
-	login() {
-		if(!this.data.openid) { // 如果当前没有openid，才需要调用登录接口
-			app.login(res => this.setData({ openid: res })); // 调用全局登录方法获取openid
-			if(this.data.openid) { // 拿到openid后判断为已登录状态
-				wx.setStorageSync('openid', this.data.openid);
-				app.globalData.openid = this.data.openid;
-				this.setData({
-					openid: this.data.openid,
-				});
-				wx.showToast({
-					title: '登录成功',
-					icon: 'success',
-				});
-				wx.showLoading();
-				this.initData();
-				const timer = setTimeout(() => { // 然后判断当前有没有拿到真实的用户信息
-					if(this.data.hasUserInfo) {
-						this.setData({
-							userInfo: this.data.userInfo,
-						});
-					} else {
-						this.setData({
-							authorizationApplicationDialogShow: true,
-						});
-					}
-				}, 1000);
-				clearTimeout(timer);
-			}
-		}
+	// 新版：选择头像回调（open-type="chooseAvatar"）
+	onChooseAvatar(e) {
+		if (!this.data.openid) return;
+		const avatarUrl = e.detail.avatarUrl;
+		wx.setStorageSync('avatarUrl', avatarUrl);
+		this.data.userInfo.avatarUrl = avatarUrl;
+		this.setData({ userInfo: this.data.userInfo });
 	},
-	// 获取用户信息(nickName avatarUrl)
-	onGetUserInfo() {
-		if(!this.data.hasUserInfo) {
-			wx.getUserProfile({
-				desc: '用于展示用户信息',
-				success: res => {
-					if(res && res.userInfo) {
-						let avatarUrl = res.userInfo.avatarUrl;
-						const nickName = res.userInfo.nickName;
-						avatarUrl = avatarUrl.split("/")
-						avatarUrl[avatarUrl.length - 1] = 0;
-						avatarUrl = avatarUrl.join('/');
-						wx.setStorageSync('avatarUrl', avatarUrl);
-						wx.setStorageSync('nickName', nickName);
-						this.setData({
-							userInfo: res.userInfo,
-							hasUserInfo: true,
-						});	
-					}
-				},
-				fail: e => {
-					console.log(e, 'getUserInfo-fail');
-					wx.showToast({
-						title: '服务繁忙，请稍后再试~',
-						icon: 'none',
-					})
-				},
-			})
-		}
-	},
-	// 弹窗 -- 获取授权
-	tapAuthorizationButton(e) {
+	// 新版：昵称输入框失焦回调（type="nickname"）
+	onNicknameInput(e) {
+		if (!this.data.openid) return;
+		const nickName = e.detail.value;
+		if (!nickName) return;
+		wx.setStorageSync('nickName', nickName);
+		this.data.userInfo.nickName = nickName;
 		this.setData({
-			authorizationApplicationDialogShow: false,
+			userInfo: this.data.userInfo,
+			hasUserInfo: true,
 		});
-		if(e.detail.index) { // 授权
-			this.onGetUserInfo();
-		} else { // 未授权
-			this.data.userInfo.nickName = this.data.openid ? '微信用户' : '点击登录';
+	},
+	// 点击头像打开用户信息设置弹窗
+	onAvatarTap() {
+		if (!this.data.openid) {
+			wx.showToast({
+				title: '请先登录',
+				icon: 'none',
+			});
+			return;
+		}
+		this.setData({
+			showUserInfoModal: true,
+			tempAvatarUrl: this.data.userInfo.avatarUrl || '',
+			tempNickName: this.data.userInfo.nickName || '',
+		});
+	},
+	// 关闭用户信息设置弹窗
+	onCloseUserInfoModal() {
+		this.setData({
+			showUserInfoModal: false,
+			tempAvatarUrl: '',
+			tempNickName: '',
+		});
+	},
+	// 弹窗中选择头像
+	onChooseAvatarInModal(e) {
+		const avatarUrl = e.detail.avatarUrl;
+		this.setData({
+			tempAvatarUrl: avatarUrl,
+		});
+	},
+	// 弹窗中输入昵称
+	onNickNameInputInModal(e) {
+		this.setData({
+			tempNickName: e.detail.value,
+		});
+	},
+	// 保存用户信息
+	async onSaveUserInfo() {
+		const { tempAvatarUrl, tempNickName, openid } = this.data;
+		if (!tempNickName.trim()) {
+			wx.showToast({
+				title: '请输入昵称',
+				icon: 'none',
+			});
+			return;
+		}
+		wx.showLoading({ title: '保存中...' });
+		try {
+			// 上传到云存储获取永久链接
+			let finalAvatarUrl = tempAvatarUrl;
+			if (tempAvatarUrl && tempAvatarUrl.startsWith('wxfile://')) {
+				const uploadRes = await wx.cloud.uploadFile({
+					cloudPath: `avatar/${openid}/${Date.now()}.jpg`,
+					filePath: tempAvatarUrl,
+				});
+				finalAvatarUrl = uploadRes.fileID;
+			}
+			// 保存到本地存储
+			wx.setStorageSync('avatarUrl', finalAvatarUrl);
+			wx.setStorageSync('nickName', tempNickName);
+			// 更新页面数据
 			this.setData({
-				userInfo: this.data.userInfo,
-			})
+				'userInfo.avatarUrl': finalAvatarUrl,
+				'userInfo.nickName': tempNickName,
+				hasUserInfo: true,
+				showUserInfoModal: false,
+			});
+			// 同步到数据库
+			await wx.cloud.callFunction({
+				name: 'updateUserData',
+				data: {
+					openid: openid,
+					avatarUrl: finalAvatarUrl,
+					nickName: tempNickName,
+				},
+			});
+			wx.showToast({
+				title: '保存成功',
+				icon: 'success',
+			});
+		} catch (e) {
+			console.error('保存用户信息失败:', e);
+			wx.showToast({
+				title: '保存失败',
+				icon: 'none',
+			});
+		} finally {
+			wx.hideLoading();
 		}
 	},
 	// 上传图片
@@ -335,45 +367,43 @@ Page({
 			});
 			return;
 		}
-		wx.chooseImage({ // 1 选择图片
+		wx.chooseMedia({ // 1 选择图片
 			count: 9,
+			mediaType: ['image'],
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
-			success: res => {
-				console.log(res, 'chooseImage-res')
-				const imgSecCheckArr = []; // 图片安全检查结果
-				const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
-				const tempFilesLength = res.tempFiles.length; // 临时文件数量
-				this.data.tempFilePaths = res.tempFilePaths; // 临时文件路径
-				if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
-					this.setData({
-						toptipsShow: true,
-						resultText: '图片大小不得超过 5MB，请重新选择',
-						toptipsType: 'info',
-					});
-					return;
-				}
-				wx.showLoading({
-					title: '请稍候...',
-					mask: true,
+		success: res => {
+			const imgSecCheckArr = []; // 图片安全检查结果
+			let imgSecCheckCount = 0; // 已完成安全检查的数量
+			const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
+			const tempFilesLength = res.tempFiles.length; // 临时文件数量
+			this.data.tempFilePaths = tempFiles.map(f => f.tempFilePath); // 临时文件路径
+			if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
+				this.setData({
+					toptipsShow: true,
+					resultText: '图片大小不得超过 5MB，请重新选择',
+					toptipsType: 'info',
 				});
-				tempFiles.forEach((item, index) => { // 遍历临时文件数组，将每一个数据进行安全检查
-					const size = item.size;
-					const path = item.path;
-					if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
-						console.log('图片大于1M')
-						wx.compressImage({ src: path,	quality: 20 }).then(compressResult => {
-							const handledPath = compressResult.tempFilePath;
-							this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, index);
-						})
-					} else { // 图片大小小于1M，直接进行安全检查
-						console.log('图片小于1M');
-						this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, index);
-					}
-				});
-			},
+				return;
+			}
+			wx.showLoading({
+				title: '请稍候...',
+				mask: true,
+			});
+		tempFiles.forEach((item) => { // 遍历临时文件数组，将每一个数据进行安全检查
+			const size = item.size;
+			const path = item.tempFilePath; // chooseMedia 用 tempFilePath
+			if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
+				wx.compressImage({ src: path, quality: 20 }).then(compressResult => {
+					const handledPath = compressResult.tempFilePath;
+					this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++ ; return imgSecCheckCount; });
+				})
+			} else { // 图片大小小于1M，直接进行安全检查
+				this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++ ; return imgSecCheckCount; });
+			}
+		});
+		},
 			fail: e => {
-				console.error(e);
 				// wx.showToast({
 				// 	title: '未获取到有效图片，请再试一次',
 				// 	icon: 'none'
@@ -381,91 +411,29 @@ Page({
 			}
 		})
 	},
-	// 图片安全检查
-	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, index) {
-		wx.cloud.callFunction({ // 2 图片安全检查
-			name: 'imgSecCheck',
-			data: {
-				imgData: wx.cloud.CDN({
-					type: 'filePath',
-					filePath: filePath
-				})
-			}
-		}).then(secCheckResult => {
-			console.log(secCheckResult, 'img check')
-			imgSecCheckArr.push(secCheckResult); // 将检查结果放进数组
-			console.log(tempFilesLength, index, imgSecCheckArr, 'len_index_imgSecCheckArr');
-			if(tempFilesLength == index + 1) { // 等遍历到最后一个数据，然后检查每一个返回的结果
-				if(imgSecCheckArr.every(item => item.result.errCode === 0)) { // 检查通过
-					this.data.tempFilePaths.forEach((item, tempFilePaths_index1) => { // 遍历临时文件，将每一个文件上传到云存储
-						this.uploadImg(item, tempFilePaths_index1, tempFilesLength); // 上传图片
-					});
-				} else if(imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 检查未通过
-					wx.hideLoading();
-					this.setData({
-						resultText: '不得上传违法违规内容，请重新选择！',
-						toptipsShow: true,
-						toptipsType: 'error',
-					});
-				} else { // 检查异常
-					wx.hideLoading();
-					wx.showToast({
-						title: '服务繁忙，请稍后再试~',
-						icon: 'none'
-					});
-				}
-			}
-		}).catch(e => {
-			console.log(e, 'imgSecCheck fail');
-			wx.hideLoading();
-			wx.showToast({
-				title: '服务繁忙，请稍后再试~',
-				icon: 'none'
+	// 图片安全检查（调用公共工具函数）
+	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, getCount) {
+		imgSecCheck(this, filePath, imgSecCheckArr, tempFilesLength, getCount, () => {
+			this.data.tempFilePaths.forEach((item, tempFilePaths_index1) => {
+				this.uploadImg(item, tempFilePaths_index1, tempFilesLength);
 			});
 		});
 	},
-	// 将图片上传
+	// 将图片上传（调用公共工具函数）
 	uploadImg(item, tempFilePaths_index1, tempFilesLength) {
-		// const uploadTask = wx.cloud.uploadFile({ // 3 上传文件
-		wx.cloud.uploadFile({ // 3 上传文件
-			cloudPath: 'temp/' + new Date().getTime() + "-me-" + Math.floor(Math.random() * 1000),
-			filePath: item,
-			success: uploadFileResult => { // 文件上传成功
-				console.log(uploadFileResult, 'uploadFileResult')
-				const fileID = uploadFileResult.fileID;
-				this.data.fileIdArr.push(fileID);
-				wx.hideLoading();
-				if(tempFilesLength === tempFilePaths_index1 + 1) { // 等数据遍历结束，全部放进数组，再跳转
-					const params = {
-						filePath: this.data.tempFilePaths,
-						fileIdArr: this.data.fileIdArr,
-						userInfo: this.data.userInfo,
-					}
-					console.log(params, 'eventChannel-emit-params')
-					wx.navigateTo({
-						url: '../postProduct/postProduct',
-						success: function(result) {
-							result.eventChannel.emit('sendImage', params);
-						}
-					});
-				}
-			},
-			fail: e => { // 文件上传失败
-				console.log(e, 'uploadfile fail');
-				wx.hideLoading();
-				wx.showToast({
-					title: '上传失败，请稍后再试~',
-					icon: 'error'
-				});
-			}
+		uploadImg(this, item, tempFilePaths_index1, tempFilesLength, 'me', () => {
+			const params = {
+				filePath: this.data.tempFilePaths,
+				fileIdArr: this.data.fileIdArr,
+				userInfo: this.data.userInfo,
+			};
+			wx.navigateTo({
+				url: '../postProduct/postProduct',
+				success: function(result) {
+					result.eventChannel.emit('sendImage', params);
+				},
+			});
 		});
-		// uploadTask.onProgressUpdate(res => {
-		// 	console.log(res, '112233445555555')
-		// 	wx.showLoading({
-		// 		title: `已上传 ${res.progress}%`,
-		// 		mask: true,
-		// 	});
-		// })
 	},
 	// 下拉刷新列表
 	onPullDownRefresh: function() {
@@ -515,7 +483,6 @@ Page({
 											isOff: '0',
 										},
 										success: res => {
-											console.log(res, '9999999')
 											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												const data = res.result.data;
@@ -532,7 +499,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error2')
 											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
@@ -560,7 +526,6 @@ Page({
 											isDeleted: '1',
 										},
 										success: res => {
-											console.log(res, '9038409jr')
 											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												this.data.pageData.currentPage = 1;
@@ -574,7 +539,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error3')
 											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
@@ -592,7 +556,6 @@ Page({
 	},
 	// 降价--按钮
 	priceReduction(e) {
-		console.log(e, 'priceReduction')
 		if(!e.currentTarget.dataset.item.isOff) {
 			this.data.currentDataId = e.currentTarget.dataset.item._id;
 			this.setData({
@@ -631,7 +594,6 @@ Page({
 					currentPrice: +this.data.modifiedPrice,
 				},
 				success: res => {
-					console.log(res, '1221');
 					if(res && res.result && res.result.status && res.result.status == 200) {
 						const data = res.result.data;
 						this.data.productsList.map(item => {
@@ -653,7 +615,6 @@ Page({
 					}
 				},
 				fail: e => {
-					console.log(e, '22222')
 					wx.showToast({
 						title: '修改失败，请稍后再试...',
 						icon: 'none',
@@ -668,13 +629,11 @@ Page({
 	},
 	// 更多 -- 卖出 下架 删除
 	more(e) {
-		console.log(e, 'more')
 		if(!e.currentTarget.dataset.item.isOff) {
 			this.data.currentDataId = e.currentTarget.dataset.item._id;
 			wx.showActionSheet({
 				itemList: ['卖出', '下架', '删除'],
 				success: (res) => {
-					console.log(res, 'success')
 					if(res.tapIndex === 0) { // 卖出
 						wx.showModal({
 							title: '宝贝已经卖出？',
@@ -691,7 +650,6 @@ Page({
 											isSold: '1',
 										},
 										success: res => {
-											console.log(res, '9038409jr')
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												this.data.pageData.currentPage = 1;
 												this.data.productsList = [];
@@ -705,7 +663,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error1')
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
 												icon: 'none'
@@ -730,15 +687,12 @@ Page({
 											isOff: '1',
 										},
 										success: res => {
-											console.log(res, '9999999')
 											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												const data = res.result.data;
-												console.log(this.data.productsList, '555555')
 												this.data.productsList.forEach(item => {
 													(item._id === data._id) && (item.isOff = data.isOff === '1');
 												});
-												console.log(this.data.productsList, '444444444444')
 												this.setData({
 													productsList: this.data.productsList,
 												});
@@ -749,7 +703,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error2')
 											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
@@ -776,7 +729,6 @@ Page({
 											isDeleted: '1',
 										},
 										success: res => {
-											console.log(res, '9038409jr')
 											wx.hideLoading();
 											if(res && res.result && res.result.status && res.result.status == 200) {
 												this.data.pageData.currentPage = 1;
@@ -790,7 +742,6 @@ Page({
 											}
 										},
 										fail: e => {
-											console.log(e, 'error3')
 											wx.hideLoading();
 											wx.showToast({
 												title: '服务繁忙，请稍后再试~',
@@ -823,7 +774,6 @@ Page({
 	},
 	// 卖出 收藏
 	toMineItemDetail: function(e) {
-		console.log('e', e);
 		const targetItem = e.currentTarget.dataset.item;
 		if(targetItem.value === 0) { // 卖出
 			wx.navigateTo({
@@ -840,5 +790,9 @@ Page({
 		wx.navigateTo({
 			url: '../feedback/feedback',
 		});
+	},
+	// 阻止事件冒泡
+	stopPropagation() {
+		// 什么都不做，只是阻止冒泡
 	},
 })

@@ -1,10 +1,30 @@
 <!--homePage.wxml-->
+<!-- 位置授权引导弹窗（仅在用户拒绝后出现，引导去设置页开启） -->
+<view class="location-auth-mask" wx:if="{{showLocationAuthModal}}">
+  <view class="location-auth-modal">
+    <view class="location-auth-icon">📍</view>
+    <view class="location-auth-title">开启位置权限</view>
+    <view class="location-auth-desc">授权后可查看附近的宝贝，让您更快找到心仪商品</view>
+    <button class="location-auth-btn" bindtap="onGetLocationSuccess">去开启位置权限</button>
+    <view class="location-skip-btn" bindtap="onSkipLocation">暂不授权，看全部商品</view>
+  </view>
+</view>
+
 <scroll-view class="container" scroll-y="true" enable-flex="true">
   <!-- 工具栏 -->
   <view class="tool-box">
-    <!-- 定位 -->
-    <i class="iconfont icon-dingwei {{locationFlash ? 'dingwei' : ''}}" bindtap="goLocationPage"></i>
-    <text class="user-address" wx:if="{{locationShow && userAddress}}">当前位置：{{userAddress}}</text>
+    <!-- 定位区域：未授权显示图标，已授权显示小区名 -->
+    <view class="location-area" bindtap="goLocationPage">
+      <view wx:if="{{!locationAuthorized}}">
+        <!-- 未授权：仅显示定位图标，加载中有脉冲动画 -->
+        <i class="iconfont icon-dingwei {{locationFlash ? 'dingwei' : ''}}"></i>
+      </view>
+      <view wx:else class="estate-tag">
+        <!-- 已授权：显示小区名，若没找到小区则降级显示完整地址 -->
+        <i class="iconfont icon-dingwei estate-icon"></i>
+        <text class="estate-name">{{locationText}}</text>
+      </view>
+    </view>
     <!-- 搜索框 -->
     <view class="search" bindtap="gotoSearch">
       <icon type='search' size="14"></icon>
@@ -35,18 +55,6 @@
       </swiper-item>
     </swiper>
   </view>
-  <!-- 商品分类 -->
-  <!-- <view class="products-category-container">
-    <scroll-view class="products-category">
-      <view
-        bindtap="chooseCategory"
-        wx:for="{{productsCategory}}"
-        wx:key="item"
-        data-index="{{index}}"
-        class="products-category-item {{index === currentIndex ? 'active' : ''}}"
-      >{{item}}</view>
-    </scroll-view>
-  </view> -->
   <!-- 没有用户地理位置相关数据时给出的提示 -->
   <view class="noRelevantData" wx:if="{{!hasRelevantData}}">
     <text>您身边1000米内没有相关商品</text>
@@ -93,20 +101,6 @@
   <!-- <view class="uploader">
     <navigator url="../databaseGuide/databaseGuide" open-type="navigate" class="uploader-text">
       <text>前端操作数据库</text>
-    </navigator>
-  </view> -->
-
-  <!-- 即时通信 -->
-  <!-- <view class="uploader">
-    <navigator url="../im/im" open-type="navigate" class="uploader-text">
-      <text>即时通信 Demo</text>
-    </navigator>
-  </view> -->
-
-  <!-- 云调用 -->
-  <!-- <view class="uploader">
-    <navigator url="../openapi/openapi" open-type="navigate" class="uploader-text">
-      <text>云调用</text>
     </navigator>
   </view> -->
 </scroll-view>

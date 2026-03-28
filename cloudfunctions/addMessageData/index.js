@@ -7,11 +7,26 @@ cloud.init({
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  console.log(event, 'event')
   const db = cloud.database();
   const result = await db.collection('data_message').where({ _id: event.groupId }).get();
-  console.log(result, '1111111')
-  if(result && result.data && result.data.length) return;
+
+  // 构建最后一条消息内容
+  const lastMessage = event.lastMessage || '';
+
+  if (result && result.data && result.data.length) {
+    // 会话已存在：更新最后消息时间和内容
+    await db.collection('data_message').where({ _id: event.groupId }).update({
+      data: {
+        mtime: event.mtime,
+        lastMessage: lastMessage,
+        // 增加未读消息计数（对方的消息）
+        unreadCount: db.command.inc(event.isSender ? 0 : 1),
+      }
+    });
+    return { updated: true };
+  }
+
+  // 会话不存在：新建会话记录
   const addResult = await db.collection('data_message').add({
     data: {
       _id: event.groupId,
@@ -26,8 +41,10 @@ exports.main = async (event, context) => {
       mtime: event.mtime,
       img: event.img,
       price: event.price,
+      lastMessage: lastMessage,
+      unreadCount: 0,
     }
-  })
+  });
 
   return {
     addResult
