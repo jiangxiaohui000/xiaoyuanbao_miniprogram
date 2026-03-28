@@ -25,6 +25,14 @@ Page({
     this.data.productInfo = JSON.parse(options.productInfo);
     this.data.buyer_nickName = this.data.productInfo.buyer_nickName;
     this.data.buyer_avatarUrl = this.data.productInfo.buyer_avatarUrl;
+    
+    // 清除未读消息计数
+    wx.cloud.callFunction({
+      name: 'clearUnreadCount',
+      data: {
+        groupId: this.data.groupId,
+      },
+    });
     // const nickName = wx.getStorageSync('nickName');
     // const avatarUrl = wx.getStorageSync('avatarUrl');
     // if(options.seller_uid !== this.data.openid) { // 如果传过来的卖家ID不是当前账户的openID，则存储的昵称和头像是买家的

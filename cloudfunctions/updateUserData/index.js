@@ -18,6 +18,16 @@ exports.main = async (event, context) => {
     updateData.collectedProducts = event.collectedProducts;
   }
 
+  // 支持更新头像
+  if (event.avatarUrl !== undefined) {
+    updateData.avatarUrl = event.avatarUrl;
+  }
+
+  // 支持更新昵称
+  if (event.nickName !== undefined) {
+    updateData.nickName = event.nickName;
+  }
+
   // 使用 openid 或 uid 查询
   const whereCondition = event.openid ? { openid: _.eq(event.openid) } : { uid: _.eq(event.uid) };
 

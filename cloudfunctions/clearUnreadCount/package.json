@@ -1,0 +1,14 @@
+{
+  "name": "clearUnreadCount",
+  "version": "1.0.0",
+  "description": "清除聊天会话的未读消息计数",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

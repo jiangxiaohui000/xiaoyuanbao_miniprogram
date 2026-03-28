@@ -135,6 +135,16 @@ Component({
         }
       }
     },
+    // 获取当前用户的信息（根据openid判断是买家还是卖家）
+    getCurrentUserInfo() {
+      const { openid, chatInfo } = this.properties;
+      const isSeller = openid === chatInfo.seller_uid;
+      return {
+        avatarUrl: isSeller ? chatInfo.seller_avatarUrl : chatInfo.buyer_avatarUrl,
+        nickName: isSeller ? chatInfo.seller_nickName : chatInfo.buyer_nickName,
+        isSeller,
+      };
+    },
     // 发送消息
     async onConfirmSendText(e) {
       this.try(async () => {
@@ -143,12 +153,13 @@ Component({
         const { collection } = this.properties
         const db = this.db
         const _ = db.command
+        const { avatarUrl, nickName } = this.getCurrentUserInfo();
 
         const doc = {
           _id: `${Math.random()}_${Date.now()}`,
           groupId: this.data.groupId,
-          avatarUrl: this.properties.chatInfo.buyer_avatarUrl,
-          nickName: this.properties.chatInfo.buyer_nickName,
+          avatarUrl: avatarUrl,
+          nickName: nickName,
           msgType: 'text',
           textContent: e.detail.value,
           sendTime: new Date(),
@@ -200,6 +211,8 @@ Component({
             mtime: this.data.chats[this.data.chats.length - 1].sendTimeTS,
             img: this.properties.chatInfo.img,
             price: this.properties.chatInfo.price,
+            lastMessage: e.detail.value,
+            isSender: true,
           },
         });
       }, '发送文字失败')
@@ -213,11 +226,12 @@ Component({
         success: async res => {
           const { envId, collection } = this.properties
           const tempFilePath = res.tempFiles[0].tempFilePath; // chooseMedia 用 tempFilePath
+          const { avatarUrl, nickName } = this.getCurrentUserInfo();
           const doc = {
             _id: `${Math.random()}_${Date.now()}`,
             groupId: this.data.groupId,
-            avatarUrl: this.properties.chatInfo.buyer_avatarUrl,
-            nickName: this.properties.chatInfo.buyer_nickName,
+            avatarUrl: avatarUrl,
+            nickName: nickName,
             msgType: 'image',
             sendTime: new Date(),
             sendTimeTS: Date.now(), // fallback
@@ -267,6 +281,8 @@ Component({
                     mtime: this.data.chats[this.data.chats.length - 1].sendTimeTS,
                     img: this.properties.chatInfo.img,
                     price: this.properties.chatInfo.price,
+                    lastMessage: '[图片]',
+                    isSender: true,
                   },
                 });
               }, '发送图片失败')

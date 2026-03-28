@@ -10,11 +10,17 @@ exports.main = async (event, context) => {
   const db = cloud.database();
   const result = await db.collection('data_message').where({ _id: event.groupId }).get();
 
+  // 构建最后一条消息内容
+  const lastMessage = event.lastMessage || '';
+
   if (result && result.data && result.data.length) {
-    // 会话已存在：更新最后消息时间（mtime），保证消息列表时间戳始终是最新的
+    // 会话已存在：更新最后消息时间和内容
     await db.collection('data_message').where({ _id: event.groupId }).update({
       data: {
         mtime: event.mtime,
+        lastMessage: lastMessage,
+        // 增加未读消息计数（对方的消息）
+        unreadCount: db.command.inc(event.isSender ? 0 : 1),
       }
     });
     return { updated: true };
@@ -35,6 +41,8 @@ exports.main = async (event, context) => {
       mtime: event.mtime,
       img: event.img,
       price: event.price,
+      lastMessage: lastMessage,
+      unreadCount: 0,
     }
   });
 

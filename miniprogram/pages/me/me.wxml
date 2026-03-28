@@ -1,13 +1,50 @@
 <!-- pages/me/me -->
 <view class="user-info">
-  <view class="user-info-left">
-    <!-- 用户头像（仅展示，不可点击） -->
-    <image class="user-info-avatar" src="{{userInfo.avatarUrl}}"></image>
+  <view class="user-info-left" bindtap="onAvatarTap">
+    <!-- 用户头像 -->
+    <image class="user-info-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+    <!-- 用户昵称 -->
+    <view class="user-info-name" wx:if="{{userInfo.nickName}}">{{userInfo.nickName}}</view>
+    <view class="user-info-name user-info-name-placeholder" wx:else>点击设置昵称</view>
   </view>
   <view class="user-info-right">
     <!-- 发布闲置 -->
     <view class="sole-button" bindtap="doUpload">
       <text>发布闲置</text>
+    </view>
+  </view>
+</view>
+
+<!-- 用户信息设置弹窗 -->
+<view class="user-info-modal-mask" wx:if="{{showUserInfoModal}}" bindtap="onCloseUserInfoModal">
+  <view class="user-info-modal" catchtap="stopPropagation">
+    <view class="user-info-modal-title">设置个人信息</view>
+    
+    <!-- 头像选择 -->
+    <view class="user-info-modal-item">
+      <text class="user-info-modal-label">头像</text>
+      <button class="user-info-modal-avatar-btn" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatarInModal">
+        <image class="user-info-modal-avatar" src="{{tempAvatarUrl || '../../images/user-unlogin.png'}}" mode="aspectFill"></image>
+        <text class="user-info-modal-hint">点击更换</text>
+      </button>
+    </view>
+    
+    <!-- 昵称输入 -->
+    <view class="user-info-modal-item">
+      <text class="user-info-modal-label">昵称</text>
+      <input 
+        class="user-info-modal-input" 
+        type="nickname" 
+        placeholder="请输入昵称" 
+        value="{{tempNickName}}"
+        bindinput="onNickNameInputInModal"
+      />
+    </view>
+    
+    <!-- 按钮 -->
+    <view class="user-info-modal-btns">
+      <view class="user-info-modal-btn user-info-modal-btn-cancel" bindtap="onCloseUserInfoModal">取消</view>
+      <view class="user-info-modal-btn user-info-modal-btn-confirm" bindtap="onSaveUserInfo">保存</view>
     </view>
   </view>
 </view>
@@ -57,7 +94,7 @@
       <mp-loading show="{{showLoading && productsList.length < postNum}}" type="circle"></mp-loading>
       <view class="no-more" wx:if="{{!(showLoading && productsList.length < postNum)}}">
         <i class="iconfont icon-Null-data"></i>
-        <text>没有更多啦~</text>
+        <text class="no-more-text">没有更多啦~</text>
       </view>
     </view>
     <!-- 未发布商品 -->

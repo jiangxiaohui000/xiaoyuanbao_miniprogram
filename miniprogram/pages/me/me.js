@@ -8,6 +8,7 @@ Page({
 	data: {
 		userInfo: {
 			avatarUrl: '../../images/user-unlogin.png',
+			nickName: '',
 		},
 		logged: false,
 		takeSession: false,
@@ -43,10 +44,10 @@ Page({
 		toptipsShow: false,
 		toptipsType: '',
 		resultText: '',
-    pageData: {
-      pageSize: 20,
-      currentPage: 1,
-    },
+		pageData: {
+			pageSize: 20,
+			currentPage: 1,
+		},
 		showLoading: false,
 		openid: '',
 		hasUserInfo: false,
@@ -54,6 +55,10 @@ Page({
 		isOwn: '0',
 		tempFilePaths: [], // 图片临时文件
 		fileIdArr: [], // 传给发布页面的文件ID
+		// 用户信息设置弹窗
+		showUserInfoModal: false,
+		tempAvatarUrl: '',
+		tempNickName: '',
 	},
 	onLoad: function() {
 		if (!wx.cloud) {
@@ -96,6 +101,15 @@ Page({
 	},
 	// 数据初始化
 	initData() {
+		// 读取本地存储的用户信息
+		const avatarUrl = wx.getStorageSync('avatarUrl') || '../../images/user-unlogin.png';
+		const nickName = wx.getStorageSync('nickName') || '';
+		this.setData({
+			'userInfo.avatarUrl': avatarUrl,
+			'userInfo.nickName': nickName,
+			hasUserInfo: !!(avatarUrl && nickName && nickName !== '微信用户'),
+		});
+
 		const promise1 = wx.cloud.callFunction({ // 列表展示的
 			name: 'getProductsData',
 			data: {
@@ -251,6 +265,96 @@ Page({
 			userInfo: this.data.userInfo,
 			hasUserInfo: true,
 		});
+	},
+	// 点击头像打开用户信息设置弹窗
+	onAvatarTap() {
+		if (!this.data.openid) {
+			wx.showToast({
+				title: '请先登录',
+				icon: 'none',
+			});
+			return;
+		}
+		this.setData({
+			showUserInfoModal: true,
+			tempAvatarUrl: this.data.userInfo.avatarUrl || '',
+			tempNickName: this.data.userInfo.nickName || '',
+		});
+	},
+	// 关闭用户信息设置弹窗
+	onCloseUserInfoModal() {
+		this.setData({
+			showUserInfoModal: false,
+			tempAvatarUrl: '',
+			tempNickName: '',
+		});
+	},
+	// 弹窗中选择头像
+	onChooseAvatarInModal(e) {
+		const avatarUrl = e.detail.avatarUrl;
+		this.setData({
+			tempAvatarUrl: avatarUrl,
+		});
+	},
+	// 弹窗中输入昵称
+	onNickNameInputInModal(e) {
+		this.setData({
+			tempNickName: e.detail.value,
+		});
+	},
+	// 保存用户信息
+	async onSaveUserInfo() {
+		const { tempAvatarUrl, tempNickName, openid } = this.data;
+		if (!tempNickName.trim()) {
+			wx.showToast({
+				title: '请输入昵称',
+				icon: 'none',
+			});
+			return;
+		}
+		wx.showLoading({ title: '保存中...' });
+		try {
+			// 上传到云存储获取永久链接
+			let finalAvatarUrl = tempAvatarUrl;
+			if (tempAvatarUrl && tempAvatarUrl.startsWith('wxfile://')) {
+				const uploadRes = await wx.cloud.uploadFile({
+					cloudPath: `avatar/${openid}/${Date.now()}.jpg`,
+					filePath: tempAvatarUrl,
+				});
+				finalAvatarUrl = uploadRes.fileID;
+			}
+			// 保存到本地存储
+			wx.setStorageSync('avatarUrl', finalAvatarUrl);
+			wx.setStorageSync('nickName', tempNickName);
+			// 更新页面数据
+			this.setData({
+				'userInfo.avatarUrl': finalAvatarUrl,
+				'userInfo.nickName': tempNickName,
+				hasUserInfo: true,
+				showUserInfoModal: false,
+			});
+			// 同步到数据库
+			await wx.cloud.callFunction({
+				name: 'updateUserData',
+				data: {
+					openid: openid,
+					avatarUrl: finalAvatarUrl,
+					nickName: tempNickName,
+				},
+			});
+			wx.showToast({
+				title: '保存成功',
+				icon: 'success',
+			});
+		} catch (e) {
+			console.error('保存用户信息失败:', e);
+			wx.showToast({
+				title: '保存失败',
+				icon: 'none',
+			});
+		} finally {
+			wx.hideLoading();
+		}
 	},
 	// 上传图片
 	doUpload: function () {
@@ -686,5 +790,9 @@ Page({
 		wx.navigateTo({
 			url: '../feedback/feedback',
 		});
+	},
+	// 阻止事件冒泡
+	stopPropagation() {
+		// 什么都不做，只是阻止冒泡
 	},
 })
