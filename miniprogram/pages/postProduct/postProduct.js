@@ -155,16 +155,17 @@ Page({
 				title: '请稍候...',
 				mask: true,
 			});
+		  const concurrencyCtrl = { active: 0, queue: [] }; // 并发控制，最多同时检查3张
 		  tempFiles.forEach((item) => {
           const size = item.size;
           const path = item.tempFilePath; // chooseMedia 用 tempFilePath
           if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
 					wx.compressImage({ src: path,	quality: 20 }).then(compressResult => {
 						const handledPath = compressResult.tempFilePath;
-						this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++; return imgSecCheckCount; });
+						this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++; return imgSecCheckCount; }, concurrencyCtrl);
 					})
 				} else { // 图片大小小于1M，直接进行安全检查
-					this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++; return imgSecCheckCount; });
+					this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++; return imgSecCheckCount; }, concurrencyCtrl);
           }
 		  });
 		},
@@ -172,13 +173,13 @@ Page({
 			}
 		})
 	},
-	// 图片安全检查（调用公共工具函数）
-	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, getCount) {
+	// 图片安全检查（调用公共工具函数，带并发控制）
+	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, getCount, concurrencyCtrl) {
 		imgSecCheck(this, filePath, imgSecCheckArr, tempFilesLength, getCount, () => {
 			this.data.tempFilePaths.forEach((item, index1) => {
 				this.uploadImg(item, index1, tempFilesLength);
 			});
-		});
+		}, concurrencyCtrl);
 	},
 	// 将图片上传（调用公共工具函数）
 	uploadImg(item, index1, tempFilesLength) {
@@ -285,7 +286,7 @@ Page({
         name: 'msgSecCheck',
         data: { content: this.data.productDesc }
       }).then(res => {
-        const { errCode } = res.result;
+        const errCode = res.result?.errCode ?? res.errCode;
         if(errCode == 0) { // 信息安全检查成功
           const tempFileList = [];
           wx.cloud.getTempFileURL({ // 根据fileID获取临时URL

@@ -43,15 +43,26 @@ function calculatingPrice(item) {
 }
 
 /**
- * 图片安全检查
+ * 图片安全检查（带并发控制，最多同时检查3张）
  * @param {Object} ctx - Page 或 Component 实例（提供 setData / data）
  * @param {string} filePath - 待检查图片的临时路径
  * @param {Array}  imgSecCheckArr - 收集检查结果的数组（外部维护）
  * @param {number} tempFilesLength - 本批次图片总数
  * @param {Function} getCount - 调用后自增并返回已完成数量的函数
  * @param {Function} onAllPassed - 所有图片通过后的回调（由调用方执行上传）
+ * @param {Object} concurrencyCtrl - 并发控制对象 { active: number, queue: Array }
  */
-function imgSecCheck(ctx, filePath, imgSecCheckArr, tempFilesLength, getCount, onAllPassed) {
+function imgSecCheck(ctx, filePath, imgSecCheckArr, tempFilesLength, getCount, onAllPassed, concurrencyCtrl = null) {
+  // 如果没有传入并发控制对象，直接执行（保持兼容）
+  if (concurrencyCtrl) {
+    if (concurrencyCtrl.active >= 3) {
+      // 达到并发上限，加入队列
+      concurrencyCtrl.queue.push({ ctx, filePath, imgSecCheckArr, tempFilesLength, getCount, onAllPassed, concurrencyCtrl });
+      return;
+    }
+    concurrencyCtrl.active++;
+  }
+
   wx.cloud.callFunction({
     name: 'imgSecCheck',
     data: {
@@ -65,9 +76,18 @@ function imgSecCheck(ctx, filePath, imgSecCheckArr, tempFilesLength, getCount, o
     imgSecCheckArr.push(secCheckResult);
     const count = getCount();
     if (count === tempFilesLength) { // 所有图片都检查完成
-      if (imgSecCheckArr.every(item => item.result.errCode === 0)) { // 全部通过
+      const errCode = secCheckResult.result?.errCode ?? secCheckResult.errCode;
+      const hasPass = imgSecCheckArr.every(item => {
+        const code = item.result?.errCode ?? item.errCode;
+        return code === 0;
+      });
+      const hasViolation = imgSecCheckArr.some(item => {
+        const code = item.result?.errCode ?? item.errCode;
+        return code == 87014;
+      });
+      if (hasPass) { // 全部通过
         onAllPassed();
-      } else if (imgSecCheckArr.some(item => item.result.errCode == 87014)) { // 违规
+      } else if (hasViolation) { // 违规
         wx.hideLoading();
         ctx.setData({
           resultText: '不得上传违法违规内容，请重新选择！',
@@ -83,9 +103,25 @@ function imgSecCheck(ctx, filePath, imgSecCheckArr, tempFilesLength, getCount, o
         });
       }
     }
+    // 处理并发队列
+    if (concurrencyCtrl) {
+      concurrencyCtrl.active--;
+      if (concurrencyCtrl.queue.length > 0) {
+        const next = concurrencyCtrl.queue.shift();
+        imgSecCheck(next.ctx, next.filePath, next.imgSecCheckArr, next.tempFilesLength, next.getCount, next.onAllPassed, next.concurrencyCtrl);
+      }
+    }
   }).catch(() => {
     wx.hideLoading();
     wx.showToast({ title: '服务繁忙，请稍后再试~', icon: 'none' });
+    // 异常时也要处理队列
+    if (concurrencyCtrl) {
+      concurrencyCtrl.active--;
+      if (concurrencyCtrl.queue.length > 0) {
+        const next = concurrencyCtrl.queue.shift();
+        imgSecCheck(next.ctx, next.filePath, next.imgSecCheckArr, next.tempFilesLength, next.getCount, next.onAllPassed, next.concurrencyCtrl);
+      }
+    }
   });
 }
 

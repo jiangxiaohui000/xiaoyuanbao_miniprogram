@@ -191,9 +191,9 @@ Page({
 			}
 		}).then(data1 => {
 			wx.hideLoading();
-			if(data1 && data1.result && data1.result.data && data1.result.data.data && data1.result.count && data1.result.count.total) { // 发布的商品
-				const data = data1.result.data.data;
-				const total = data1.result.count.total;
+			const data = data1?.result?.data?.data || [];
+			const total = data1?.result?.count?.total || 0;
+			if(data.length > 0) { // 发布的商品
 				data.map(item => {
 					item.currentPrice = priceConversion(item.currentPrice);
 					item.displayImg = item.img[0];
@@ -205,7 +205,21 @@ Page({
 					postNum: total,
 					showLoading: !!data.length,
 				});
+			} else {
+				// 没有数据时也要更新页面，确保删除后列表被清空
+				this.setData({
+					productsList: this.data.productsList,
+					postNum: total,
+					showLoading: false,
+				});
 			}
+		}).catch(e => {
+			wx.hideLoading();
+			this.setData({
+				productsList: [],
+				postNum: 0,
+				showLoading: false,
+			});
 		});
 	},
 	// 获取卖出的数据
@@ -372,37 +386,38 @@ Page({
 			mediaType: ['image'],
 			sizeType: ['compressed'],
 			sourceType: ['album', 'camera'],
-		success: res => {
-			const imgSecCheckArr = []; // 图片安全检查结果
-			let imgSecCheckCount = 0; // 已完成安全检查的数量
-			const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
-			const tempFilesLength = res.tempFiles.length; // 临时文件数量
-			this.data.tempFilePaths = tempFiles.map(f => f.tempFilePath); // 临时文件路径
-			if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
-				this.setData({
-					toptipsShow: true,
-					resultText: '图片大小不得超过 5MB，请重新选择',
-					toptipsType: 'info',
+			success: res => {
+				const imgSecCheckArr = []; // 图片安全检查结果
+				let imgSecCheckCount = 0; // 已完成安全检查的数量
+				const tempFiles = res.tempFiles; // 临时文件（包含临时文件路径和大小）
+				const tempFilesLength = res.tempFiles.length; // 临时文件数量
+				this.data.tempFilePaths = tempFiles.map(f => f.tempFilePath); // 临时文件路径
+				if(tempFiles.some(item => item.size / 1024 / 1024 > 3)) {
+					this.setData({
+						toptipsShow: true,
+						resultText: '图片大小不得超过 5MB，请重新选择',
+						toptipsType: 'info',
+					});
+					return;
+				}
+				wx.showLoading({
+					title: '请稍候...',
+					mask: true,
 				});
-				return;
-			}
-			wx.showLoading({
-				title: '请稍候...',
-				mask: true,
-			});
-		tempFiles.forEach((item) => { // 遍历临时文件数组，将每一个数据进行安全检查
-			const size = item.size;
-			const path = item.tempFilePath; // chooseMedia 用 tempFilePath
-			if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
-				wx.compressImage({ src: path, quality: 20 }).then(compressResult => {
-					const handledPath = compressResult.tempFilePath;
-					this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++ ; return imgSecCheckCount; });
-				})
-			} else { // 图片大小小于1M，直接进行安全检查
-				this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++ ; return imgSecCheckCount; });
-			}
-		});
-		},
+				const concurrencyCtrl = { active: 0, queue: [] }; // 并发控制，最多同时检查3张
+				tempFiles.forEach((item) => { // 遍历临时文件数组，将每一个数据进行安全检查
+					const size = item.size;
+					const path = item.tempFilePath; // chooseMedia 用 tempFilePath
+					if(size / 1024 / 1024 > 1) { // 图片大小超过1M，压缩后再进行安全检查
+						wx.compressImage({ src: path, quality: 20 }).then(compressResult => {
+							const handledPath = compressResult.tempFilePath;
+							this.imgSecCheck(handledPath, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++ ; return imgSecCheckCount; }, concurrencyCtrl);
+						})
+					} else { // 图片大小小于1M，直接进行安全检查
+						this.imgSecCheck(path, imgSecCheckArr, tempFilesLength, () => { imgSecCheckCount++ ; return imgSecCheckCount; }, concurrencyCtrl);
+					}
+				});
+			},
 			fail: e => {
 				// wx.showToast({
 				// 	title: '未获取到有效图片，请再试一次',
@@ -411,13 +426,13 @@ Page({
 			}
 		})
 	},
-	// 图片安全检查（调用公共工具函数）
-	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, getCount) {
+	// 图片安全检查（调用公共工具函数，带并发控制）
+	imgSecCheck(filePath, imgSecCheckArr, tempFilesLength, getCount, concurrencyCtrl) {
 		imgSecCheck(this, filePath, imgSecCheckArr, tempFilesLength, getCount, () => {
 			this.data.tempFilePaths.forEach((item, tempFilePaths_index1) => {
 				this.uploadImg(item, tempFilePaths_index1, tempFilesLength);
 			});
-		});
+		}, concurrencyCtrl);
 	},
 	// 将图片上传（调用公共工具函数）
 	uploadImg(item, tempFilePaths_index1, tempFilesLength) {

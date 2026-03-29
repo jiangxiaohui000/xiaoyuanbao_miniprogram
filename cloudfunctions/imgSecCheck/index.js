@@ -40,6 +40,10 @@ exports.main = async (event, context) => {
     });
     return result;
   } catch (error) {
-    return error;
+    return {
+      errCode: -1,
+      errMsg: error.message || '图片检查服务异常',
+      detail: error
+    };
   }
 }
