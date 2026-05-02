@@ -50,7 +50,7 @@
   </scroll-view>
 
   <!-- message sender -->
-  <view class="footer">
+  <view class="footer safe-area-bottom">
     <view class="message-sender" wx:if="{{openId}}">
       <input 
         class="text-input"

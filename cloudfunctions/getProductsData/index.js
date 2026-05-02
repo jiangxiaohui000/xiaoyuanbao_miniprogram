@@ -16,7 +16,11 @@ exports.main = async (event, context) => {
   event.isDeleted && params.push({ isDeleted: event.isDeleted === '1' });
   if(event.userLatitude && event.userLongitude) {
     const param = {
-      location: _.geoNear({ geometry: db.Geo.Point(+event.userLongitude, +event.userLatitude), minDistance: 0, maxDistance: 1000 })
+      location: _.geoNear({ 
+        geometry: db.Geo.Point(+event.userLongitude, +event.userLatitude), 
+        minDistance: 0, 
+        maxDistance: 1000000 
+      })
     }
     params.push(param);
   }
@@ -32,20 +36,29 @@ exports.main = async (event, context) => {
   const useCommand = event.useCommand ? event.useCommand : 'and';
   const order_key = event.orderKey ? event.orderKey : 'ctime';
   const order_value = event.orderValue ? event.orderValue : 'desc';
-  const count = await db.collection('data_products').where(params.length ? _[useCommand](params) : {}).count();
-  let data;
-  if(event.pageData) {
-    data = await db.collection('data_products')
-                   .where(params.length ? _[useCommand](params) : {})
-                   .orderBy(order_key, order_value)
-                   .skip((event.pageData.currentPage - 1) * event.pageData.pageSize)
-                   .limit(event.pageData.pageSize)
-                   .get();
-  } else {
-    data = await db.collection('data_products').where(params.length ? _[useCommand](params) : {}).orderBy(order_key, order_value).get();
-  }
-  return {
-    data,
-    count,
+  try {
+    const count = await db.collection('data_products').where(params.length ? _[useCommand](params) : {}).count();
+    let data;
+    if(event.pageData) {
+      data = await db.collection('data_products')
+                     .where(params.length ? _[useCommand](params) : {})
+                     .orderBy(order_key, order_value)
+                     .skip((event.pageData.currentPage - 1) * event.pageData.pageSize)
+                     .limit(event.pageData.pageSize)
+                     .get();
+    } else {
+      data = await db.collection('data_products').where(params.length ? _[useCommand](params) : {}).orderBy(order_key, order_value).get();
+    }
+    return {
+      data,
+      count,
+    }
+  } catch(e) {
+    console.error('getProductsData error:', e);
+    return {
+      error: e.message,
+      data: { data: [] },
+      count: { total: 0 }
+    }
   }
 }

@@ -22,12 +22,11 @@ Page({
 	onLoad: function () {
 		wx.showLoading({ title: '加载中...' });
 		let eventChannel = this.getOpenerEventChannel();
-		eventChannel.on('toProductDetail', (data) => {
-			data && data.isOwn && this.setData({ isOwn: data.isOwn });
+	eventChannel.on('toProductDetail', (data) => {
 			data && data.groupId && this.setData({ groupId: data.groupId });
 			data && data._id && this.initData(data._id);
 			data && data._id && (this.data._id = data._id);
-		});
+	});
 		this.setData({
 			needAdaptIphoneX: app.globalData.needAdaptIphoneX
 		});
@@ -54,7 +53,9 @@ Page({
 					}
 					this.data.productInfo.ctime = dayjs(this.data.productInfo.ctime).format('YYYY-MM-DD HH:mm');
 					this.data.productInfo.currentPrice = priceConversion(this.data.productInfo.currentPrice);
+					const isOwn = this.data.productInfo.uid === this.data.uid ? '1' : '0';
 					this.setData({
+						isOwn: isOwn,
 						collectedText: this.data.collectedText,
 						collectedIcon: this.data.collectedIcon,
 						productInfo: this.data.productInfo,

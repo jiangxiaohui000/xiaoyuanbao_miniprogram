@@ -288,18 +288,10 @@ Page({
       }).then(res => {
         const errCode = res.result?.errCode ?? res.errCode;
         if(errCode == 0) { // 信息安全检查成功
-          const tempFileList = [];
-          wx.cloud.getTempFileURL({ // 根据fileID获取临时URL
-            fileList: this.data.fileIdArr,
-            success: res => {
-              if(res && res.fileList && res.fileList.length) {
-                res.fileList.forEach(item => {
-                  tempFileList.push(item.tempFileURL);
-                });
-                const params = {
-                  productDesc: this.data.productDesc,
-                  imageList: tempFileList,
-                  price: this.data.price,
+          const params = {
+            productDesc: this.data.productDesc,
+            imageList: this.data.fileIdArr, // 直接用 cloud:// fileID，永不过期
+            price: this.data.price,
                   originPrice: this.data.originPrice,
                   classify: this.data.selectedClassify,
                   brandName: this.data.brandName,
@@ -345,16 +337,6 @@ Page({
                     })
                   }
                 })
-              }
-            },
-            fail: e => {
-              wx.hideLoading();
-              wx.showToast({
-                title: '服务繁忙，请稍后再试~',
-                icon: 'none'
-              });
-            }
-          });
         } else if(errCode == 87014) { // 发布违规内容
           wx.hideLoading();
           this.setData({

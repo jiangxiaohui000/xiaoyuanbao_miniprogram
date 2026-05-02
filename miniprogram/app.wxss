@@ -29,6 +29,11 @@ page {
   justify-content: flex-start;
 }
 
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom); /* iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom); /* iOS >= 11.2 */
+}
+
 .tunnel {
   margin-top: 40rpx;
   height: 140rpx;

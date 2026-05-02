@@ -23,15 +23,26 @@ Component({
     // sendFocus: false,
   },
   ready() {
-    // global.chatroom = this;
-    this.initRoom();
     this.fatalRebuildCount = 0;
-    wx.setNavigationBarTitle({
-      title: this.properties.openid === this.properties.chatInfo.seller_uid ? this.properties.chatInfo.buyer_nickName : this.properties.chatInfo.seller_nickName
-    });
-    this.setData({
-      scrollToMessage: `item-${this.data.chats.length}`, // 进入到页面时，自动滚到最下面
-    });
+    if (this.properties.openid) {
+      this.initRoom();
+    }
+  },
+  observers: {
+    'openid': function(openid) {
+      if (openid && !this._roomInited) {
+        this._roomInited = true;
+        this.initRoom();
+      }
+    },
+    'chatInfo': function(chatInfo) {
+      if (chatInfo && chatInfo.seller_uid && this.properties.openid) {
+        const title = this.properties.openid === chatInfo.seller_uid
+          ? chatInfo.buyer_nickName
+          : chatInfo.seller_nickName;
+        wx.setNavigationBarTitle({ title: title || '聊天' });
+      }
+    },
   },
   methods: {
     // 云函数参数合并
@@ -44,7 +55,7 @@ Component({
     // 初始化数据
     async initRoom() {
       this.try(async () => {
-        this.data.openId = this.properties.openid;
+        const openId = this.properties.openid;
         const { envId, collection } = this.properties
         const db = this.db = wx.cloud.database({
           env: envId,
@@ -57,7 +68,8 @@ Component({
         this.setData({
           chats: initList.reverse(),
           scrollTop: 10000,
-          openId: this.data.openId,
+          openId: openId,
+          scrollToMessage: `item-${initList.length}`,
         })
 
         this.initWatch(initList.length ? {

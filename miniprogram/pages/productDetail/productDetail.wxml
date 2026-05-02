@@ -30,7 +30,7 @@
 </view>
 
 <!-- 底部功能 -->
-<view class="features" wx:if="{{productInfo}}">
+<view class="features safe-area-bottom" wx:if="{{productInfo}}">
   <!-- 不是自己的商品，展示收藏和聊一聊 -->
   <view class="features-item" wx:if="{{isOwn === '0'}}">
     <view class="features-item-left">
